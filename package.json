@@ -1,5 +1,5 @@
 {
-  "name": "warmind",
+  "name": "quria",
   "version": "1.0.0",
   "description": "NodeJS library wrapper for BungieNET Destiny API",
   "main": "index.js",
@@ -8,20 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FraWolf/warmind.js.git"
+    "url": "git+https://github.com/FraWolf/quria.git"
   },
   "keywords": [
     "Destiny2",
     "Warmind",
+    "Quria",
     "API",
     "Bungie"
   ],
   "author": "Francesco Lombardo <frawolf@outlook.it>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/FraWolf/warmind/issues"
+    "url": "https://github.com/FraWolf/quria/issues"
   },
-  "homepage": "https://github.com/FraWolf/warmind#readme",
+  "homepage": "https://github.com/FraWolf/quria#readme",
   "dependencies": {
     "axios": "^0.21.1"
   }
