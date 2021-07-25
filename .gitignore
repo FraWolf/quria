@@ -5,3 +5,8 @@ test/
 # Files
 package-lock.json
 yarn.lock
+
+# Environment
+.env
+.env.local
+.env.prod
