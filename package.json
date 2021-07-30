@@ -1,7 +1,7 @@
 {
   "name": "quria",
-  "version": "1.0.2",
-  "description": "NodeJS library wrapper for BungieNET Destiny API",
+  "version": "1.0.3",
+  "description": "A simple Destiny 2 API Wrapper made with Node.js.",
   "main": "index.js",
   "scripts": {
     "test": "node test/index"
@@ -18,7 +18,7 @@
     "Bungie"
   ],
   "author": "Francesco Lombardo <frawolf@outlook.it>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/FraWolf/quria/issues"
   },
