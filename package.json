@@ -1,6 +1,6 @@
 {
   "name": "quria",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NodeJS library wrapper for BungieNET Destiny API",
   "main": "index.js",
   "scripts": {
@@ -25,5 +25,9 @@
   "homepage": "https://github.com/FraWolf/quria#readme",
   "dependencies": {
     "axios": "^0.21.1"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {}
 }
