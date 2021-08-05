@@ -1,1 +1,1 @@
-module.exports = require("./lib/bungie");
+module.exports = require("./lib/main");
