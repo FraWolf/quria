@@ -25,7 +25,7 @@ const quria = new QuriaAPI({
   API_KEY: "your-api-key-here",
 });
 
-quria
+quria.destiny2
   .GetDestinyManifest()
   .then((res) => {
     console.log(res.data.Response);
