@@ -37,7 +37,7 @@ quria.destiny2
 
 ### Documentation
 
-You can use the [Bungie API Docs](bungie-net.github.io/multi/) as **Quria Documentation** because all of it's methods are the same as the docs says.
+You can use the [Bungie API Docs](https://bungie-net.github.io/multi/) as **Quria Documentation** because all of it's methods are the same as the docs says.
 
 ### Links
 
@@ -51,7 +51,7 @@ Currently no projects uses Quria because it's still in development phase. If you
 
 ### To do:
 
-- [ ] OAuth2 Integration
+- [x] OAuth2 Integration
 - [ ] Better request function (to avoid api url repeating every time)
 - [ ] Finishing authentication required function
 - [ ] Typescript rewrite (maybe using DIM's api types)
