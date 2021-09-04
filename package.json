@@ -1,6 +1,6 @@
 {
   "name": "quria",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A simple Destiny 2 API Wrapper made with Node.js.",
   "main": "index.js",
   "scripts": {
