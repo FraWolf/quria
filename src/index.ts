@@ -3,8 +3,8 @@ import { generateOptions } from "./utils";
 import Destiny from "./contents/destiny2/api";
 
 export class QuriaWrapper {
-  public options: ClientOptions;
-  public destiny2: any;
+  private options: ClientOptions;
+  public destiny2: Destiny;
 
   constructor(config: Options) {
     this.options = generateOptions(config);

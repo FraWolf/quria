@@ -27,11 +27,11 @@ export function formatQueryStrings(
 
 export function parseAuthenticationHeaders(
   headers: object,
-  tokens: { access_token: string; refresh_token: string }
+  tokens: { access_token?: string; refresh_token?: string }
 ) {
   var newObject = {};
 
-  if (tokens.access_token)
+  if (tokens && tokens.access_token)
     newObject = { Authorization: `Bearer ${tokens.access_token}` };
 
   return { ...headers, ...newObject };
