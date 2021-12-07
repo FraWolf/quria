@@ -1,11 +1,12 @@
 import { request } from "../../adapters/http-request";
 import { APIResponse } from "../../types/api";
+import { DestinyEntityDefinition } from "../../types/destiny";
 import { Manifest } from "../../types/manifest";
 import { formatQueryStrings, parseAuthenticationHeaders } from "../../utils";
 
 export default class Destiny {
-  public url: string;
-  public headers: { [key: string]: string };
+  private url: string;
+  private headers: { [key: string]: string };
 
   constructor(apiPath: string, headers: { [key: string]: string }) {
     this.url = apiPath;
@@ -25,7 +26,10 @@ export default class Destiny {
    * @param {uint32} hashIdentifier The hash identifier for the specific Entity you want returned.
    * @returns The static definition of an entity of the given Type and hash identifier.
    */
-  GetDestinyEntityDefinition(entityType: string, hashIdentifier: number) {
+  GetDestinyEntityDefinition(
+    entityType: string,
+    hashIdentifier: number
+  ): Promise<APIResponse<DestinyEntityDefinition>> {
     return request(
       `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`,
       true,
@@ -34,29 +38,28 @@ export default class Destiny {
     );
   }
 
-  // /**
-  //  * Returns a list of Destiny memberships given a full Gamertag or PSN ID.
-  //  * @param {uint32} membershipType A valid non-BungieNet membership type, or All.
-  //  * @param {string} displayName The full gamertag or PSN id of the player.
-  //  * @param {object} queryString The optional querystrings that can be applied.
-  //  * @returns A list of Destiny memberships given a full Gamertag or PSN ID
-  //  */
-  // SearchDestinyPlayer(
-  //   membershipType,
-  //   displayName,
-  //   queryString = { returnOriginalProfile: null },
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   const requestURL = formatQueryStrings(
-  //     `${this.wrapper.config.urls.api}/Destiny2/SearchDestinyPlayer/${membershipType}/${displayName}/`,
-  //     queryString
-  //   );
-  //   return request(
-  //     requestURL,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+  /**
+   * Returns a list of Destiny memberships given a full Gamertag or PSN ID.
+   * @param {uint32} membershipType A valid non-BungieNet membership type, or All.
+   * @param {string} displayName The full gamertag or PSN id of the player.
+   * @param {object} queryString The optional querystrings that can be applied.
+   * @returns A list of Destiny memberships given a full Gamertag or PSN ID
+   */
+  SearchDestinyPlayerByBungieName(
+    membershipType: -1 | 0 | 1 | 2,
+    displayName: string,
+    tokens?: { access_token?: string }
+  ) {
+    const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
+
+    const splittedName = displayName.split("#");
+    const searchBody = JSON.stringify({
+      displayName: splittedName[0],
+      displayNameCode: splittedName[1],
+    });
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "POST", authHeaders, searchBody);
+  }
 
   // /**
   //  * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
