@@ -2,8 +2,10 @@
   "name": "quria",
   "version": "1.0.6",
   "description": "A simple Destiny 2 API Wrapper made with Node.js.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "compile": "tsc",
     "test": "node test/index"
   },
   "repository": {
@@ -24,11 +26,10 @@
   },
   "homepage": "https://github.com/FraWolf/quria#readme",
   "dependencies": {
-    "axios": "^0.21.1",
-    "btoa": "^1.2.1"
+    "btoa": "^1.2.1",
+    "isomorphic-unfetch": "^3.1.0"
   },
-  "directories": {
-    "lib": "lib"
-  },
-  "devDependencies": {}
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
 }

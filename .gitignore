@@ -1,6 +1,7 @@
 # Directories
 node_modules/
 test/
+dist/
 
 # Environment
 .env
