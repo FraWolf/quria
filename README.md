@@ -1,6 +1,9 @@
 # Quria
 
 A simple Destiny 2 API Wrapper made with Node.js.
+
+----
+### A TypeScript refactoring is coming.
 <br />
 
 ### Installation
