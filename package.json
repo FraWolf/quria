@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/FraWolf/quria#readme",
   "dependencies": {
-    "btoa": "^1.2.1",
     "isomorphic-unfetch": "^3.1.0"
   },
   "devDependencies": {
