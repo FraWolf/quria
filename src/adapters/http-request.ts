@@ -1,6 +1,4 @@
-import * as fetchImport from "isomorphic-unfetch";
-const fetch = (fetchImport.default ||
-  fetchImport) as typeof fetchImport.default;
+import fetch from "isomorphic-unfetch";
 
 export async function request(
   url: string,
@@ -20,10 +18,9 @@ export async function request(
       if (!json) req = await req1.text();
       else if (json) req = await req1.json();
     } catch (e: any) {
-      console.log(`[REQUEST] Error on request: ${url}`);
-      e.error = true;
-      return e;
+      return e.message;
     }
+
     return req;
   }
 }
