@@ -1,8 +1,17 @@
 import { request } from "../../adapters/http-request";
-import { APIResponse } from "../../types/api";
-import { DestinyEntityDefinition } from "../../types/destiny";
+import { APIResponse, MembershipTypes } from "../../types/api";
+import {
+  DestinyEntityDefinition,
+  DestinyLinkedProfile,
+  DestinyPlayerProfile,
+} from "../../types/destiny";
+import { Tokens } from "../../types/general";
 import { Manifest } from "../../types/manifest";
-import { formatQueryStrings, parseAuthenticationHeaders } from "../../utils";
+import { DestinyComponentType } from "../../types/manifest_definition/DestinyComponentType";
+import {
+  formatQueryStrings,
+  parseAuthenticationHeaders,
+} from "../../adapters/utils";
 
 export default class Destiny {
   private url: string;
@@ -30,12 +39,8 @@ export default class Destiny {
     entityType: string,
     hashIdentifier: number
   ): Promise<APIResponse<DestinyEntityDefinition>> {
-    return request(
-      `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`,
-      true,
-      "GET",
-      this.headers
-    );
+    const requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
@@ -46,95 +51,87 @@ export default class Destiny {
    * @returns A list of Destiny memberships given a full Gamertag or PSN ID
    */
   SearchDestinyPlayerByBungieName(
-    membershipType: -1 | 0 | 1 | 2,
-    displayName: string,
-    tokens?: { access_token?: string }
-  ) {
+    membershipType: MembershipTypes,
+    displayName: string
+  ): Promise<APIResponse<DestinyPlayerProfile[]>> {
     const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
 
-    const splittedName = displayName.split("#");
+    const [name, code] = displayName.split("#");
     const searchBody = JSON.stringify({
-      displayName: splittedName[0],
-      displayNameCode: splittedName[1],
+      displayName: name,
+      displayNameCode: code,
     });
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "POST", authHeaders, searchBody);
+    return request(requestURL, true, "POST", this.headers, searchBody);
   }
 
-  // /**
-  //  * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
-  //  * @param {uint32} membershipType Destiny membership ID.
-  //  * @param {string} membershipId A valid non-BungieNet membership type.
-  //  * @param {object} queryString The optional querystrings that can be applied.
-  //  * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
-  //  */
-  // GetLinkedProfiles(
-  //   membershipType,
-  //   membershipId,
-  //   queryString = { getAllMemberships: null },
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   const requestURL = formatQueryStrings(
-  //     `${this.wrapper.config.urls.api}/Destiny2/${membershipType}/Profile/${membershipId}/LinkedProfiles/`,
-  //     queryString
-  //   );
-  //   return request(
-  //     requestURL,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+  /**
+   * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
+   * @param {uint32} membershipType Destiny membership ID.
+   * @param {string} membershipId A valid non-BungieNet membership type.
+   * @param {object} queryString The optional querystrings that can be applied.
+   * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
+   */
+  GetLinkedProfiles(
+    membershipType: MembershipTypes,
+    membershipId: string,
+    queryString?: { getAllMemberships: boolean },
+    tokens?: Tokens
+  ): Promise<APIResponse<DestinyLinkedProfile>> {
+    const requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${membershipId}/LinkedProfiles/`,
+      queryString
+    );
 
-  // /**
-  //  * Returns Destiny Profile information for the supplied membership.
-  //  * @param {int64} membershipType Destiny membership ID.
-  //  * @param {int32} destinyMembershipId A valid non-BungieNet membership type.
-  //  * @param {object} queryString The optional querystrings that can be applied.
-  //  * @returns Destiny Profile information for the supplied membership.
-  //  */
-  // GetProfile(
-  //   membershipType,
-  //   destinyMembershipId,
-  //   queryString = { components: [] },
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   const requestURL = formatQueryStrings(
-  //     `${this.wrapper.config.urls.api}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/`,
-  //     queryString
-  //   );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-  //   return request(
-  //     requestURL,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+    return request(requestURL, true, "GET", authHeaders);
+  }
 
-  // /**
-  //  * Returns character information for the supplied character.
-  //  * @param {int64} membershipType ID of the character.
-  //  * @param {int64} destinyMembershipId Destiny membership ID.
-  //  * @param {int32} characterId A valid non-BungieNet membership type.
-  //  * @param {object} queryString The optional querystrings that can be applied.
-  //  * @returns Character information for the supplied character.
-  //  */
-  // GetCharacter(
-  //   membershipType,
-  //   destinyMembershipId,
-  //   characterId,
-  //   queryString = { components: [] },
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   const requestURL = formatQueryStrings(
-  //     `${this.wrapper.config.urls.api}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/`,
-  //     queryString
-  //   );
-  //   return request(
-  //     requestURL,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+  /**
+   * Returns Destiny Profile information for the supplied membership.
+   * @param {int64} membershipType Destiny membership ID.
+   * @param {int32} destinyMembershipId A valid non-BungieNet membership type.
+   * @param {object} queryString The optional querystrings that can be applied.
+   * @returns Destiny Profile information for the supplied membership.
+   */
+  GetProfile(
+    membershipType: MembershipTypes,
+    destinyMembershipId: string,
+    queryString: { components: DestinyComponentType[] },
+    tokens?: Tokens
+  ) {
+    const requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/`,
+      queryString
+    );
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Returns character information for the supplied character.
+   * @param {int64} membershipType ID of the character.
+   * @param {int64} destinyMembershipId Destiny membership ID.
+   * @param {int32} characterId A valid non-BungieNet membership type.
+   * @param {object} queryString The optional querystrings that can be applied.
+   * @returns Character information for the supplied character.
+   */
+  GetCharacter(
+    membershipType: MembershipTypes,
+    destinyMembershipId: string,
+    characterId: string,
+    queryString?: { components: DestinyComponentType[] },
+    tokens?: Tokens
+  ) {
+    const requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/`,
+      queryString
+    );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
 
   // /**
   //  * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
@@ -152,31 +149,28 @@ export default class Destiny {
   //   );
   // }
 
-  // /**
-  //  * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-  //  * @param {int32} membershipType A valid non-BungieNet membership type.
-  //  * @param {int64} destinyMembershipId The membership ID of the destiny profile.
-  //  * @param {int64} itemInstanceId The Instance ID of the destiny item.
-  //  * @param {object} queryString The optional querystrings that can be applied.
-  //  * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-  //  */
-  // GetItem(
-  //   membershipType,
-  //   destinyMembershipId,
-  //   itemInstanceId,
-  //   queryString = { components: [] },
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   const requestURL = formatQueryStrings(
-  //     `${this.wrapper.config.urls.api}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Item/${itemInstanceId}/`,
-  //     queryString
-  //   );
-  //   return request(
-  //     requestURL,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+  /**
+   * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
+   * @param {int32} membershipType A valid non-BungieNet membership type.
+   * @param {int64} destinyMembershipId The membership ID of the destiny profile.
+   * @param {int64} itemInstanceId The Instance ID of the destiny item.
+   * @param {object} queryString The optional querystrings that can be applied.
+   * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
+   */
+  GetItem(
+    membershipType: MembershipTypes,
+    destinyMembershipId: string,
+    itemInstanceId: string,
+    queryString?: { components: DestinyComponentType[] },
+    tokens?: Tokens
+  ) {
+    const requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Item/${itemInstanceId}/`,
+      queryString
+    );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
 
   // /**
   //  * Returns character information for the supplied character.
