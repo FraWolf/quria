@@ -1,26 +1,24 @@
-import { request } from "../../adapters/http-request";
-import { APIResponse, MembershipTypes } from "../../types/api";
+import { request } from "@adapters/http-request";
+import { APIResponse, MembershipTypes } from "@d2types/api";
 import {
   DestinyEntityDefinition,
   DestinyLinkedProfile,
   DestinyPlayerProfile,
-} from "../../types/destiny";
-import { Tokens } from "../../types/general";
-import { Manifest } from "../../types/manifest";
-import { DestinyComponentType } from "../../types/manifest_definition/DestinyComponentType";
+  DestinyProfileResponse,
+} from "@d2types/destiny";
+import { Tokens } from "@d2types/general";
+import { Manifest } from "@d2types/manifest";
+import { DestinyComponentType } from "@d2types/manifest/DestinyComponentType";
 import {
   formatQueryStrings,
   parseAuthenticationHeaders,
-} from "../../adapters/utils";
+} from "@adapters/utils";
 
-export default class Destiny {
-  private url: string;
-  private headers: { [key: string]: string };
-
-  constructor(apiPath: string, headers: { [key: string]: string }) {
-    this.url = apiPath;
-    this.headers = headers;
-  }
+export class Destiny {
+  constructor(
+    private url: string,
+    private headers: { [key: string]: string }
+  ) {}
 
   /**
    * Getting Destiny Manifest
@@ -99,7 +97,7 @@ export default class Destiny {
     destinyMembershipId: string,
     queryString: { components: DestinyComponentType[] },
     tokens?: Tokens
-  ) {
+  ): Promise<APIResponse<DestinyProfileResponse>> {
     const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/`,
       queryString
@@ -133,21 +131,17 @@ export default class Destiny {
     return request(requestURL, true, "GET", authHeaders);
   }
 
-  // /**
-  //  * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-  //  * @param {int64} groupId A valid group id of clan.
-  //  * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-  //  */
-  // GetClanWeeklyRewardState(
-  //   groupId,
-  //   tokens = { access_token: null, refresh_token: null }
-  // ) {
-  //   return request(
-  //     `${this.wrapper.config.urls.api}/Destiny2/Clan/${groupId}/WeeklyRewardState/`,
-  //     "GET",
-  //     parseAuthenticationHeaders(this.wrapper.config.headers, tokens)
-  //   );
-  // }
+  /**
+   * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
+   * @param {int64} groupId A valid group id of clan.
+   * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
+   */
+  GetClanWeeklyRewardState(groupId: number, tokens?: Tokens) {
+    const requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
 
   /**
    * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.

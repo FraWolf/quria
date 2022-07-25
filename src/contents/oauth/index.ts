@@ -1,27 +1,16 @@
-import { request } from "../../adapters/http-request";
-import { TokenError, TokenResponse } from "../../types/oauth";
-import { formatQueryStrings } from "../../adapters/utils";
+import { request } from "@adapters/http-request";
+import { TokenError, TokenResponse } from "@d2types/oauth";
+import { formatQueryStrings } from "@adapters/utils";
 
-export default class OAuth {
-  private authUrl: string;
-  private tokenUrl: string;
-  private headers: { [key: string]: string };
-  private client_id?: string;
-  private client_secret?: string;
-
+export class OAuth {
   constructor(
-    apiPath: string,
-    tokenPath: string,
-    headers: { [key: string]: string },
-    client_id?: string,
-    client_secret?: string
-  ) {
-    this.authUrl = apiPath;
-    this.tokenUrl = tokenPath;
-    this.headers = headers;
-    this.client_id = client_id;
-    this.client_secret = client_secret;
-  }
+    private authUrl: string,
+    private tokenUrl: string,
+    private headers: { [key: string]: string },
+    private client_id?: string,
+    private client_secret?: string
+  ) {}
+
   private encodeCredentials() {
     return btoa(`${this.client_id}:${this.client_secret}`);
   }
@@ -32,7 +21,7 @@ export default class OAuth {
    * @returns Authorization url.
    */
   GenerateAuthorizationURL(state?: string): string {
-    return formatQueryStrings(`${this.authUrl}`, {
+    return formatQueryStrings(this.authUrl, {
       client_id: this.client_id,
       response_type: "code",
       state,
@@ -41,7 +30,7 @@ export default class OAuth {
 
   GetOAuthAccessToken(code: string): Promise<TokenResponse | TokenError> {
     return request(
-      `${this.tokenUrl}`,
+      this.tokenUrl,
       true,
       "POST",
       {
@@ -57,7 +46,7 @@ export default class OAuth {
     refresh_token: string
   ): Promise<TokenResponse | TokenError> {
     return request(
-      `${this.tokenUrl}`,
+      this.tokenUrl,
       true,
       "POST",
       {

@@ -64,3 +64,36 @@ export interface DestinyLinkedProfile {
   bnetMembership: DestinyPlayerProfile;
   profilesWithErrors: ProfileWithErrors[];
 }
+
+export interface DestinyProfileResponse {
+  vendorReceipts?: unknown;
+  profileInventory?: unknown;
+  profileCurrencies?: unknown;
+  profile?: unknown;
+  platformSilver?: unknown;
+  profileKiosks?: unknown;
+  profilePlugSets?: unknown;
+  profileProgression?: unknown;
+  profilePresentationNodes?: unknown;
+  profileRecords?: unknown;
+  profileCollectibles?: unknown;
+  profileTransitoryData?: unknown;
+  metrics?: unknown;
+  profileStringVariables?: unknown;
+  characters?: unknown;
+  characterInventories?: unknown;
+  characterProgressions?: unknown;
+  characterRenderData?: unknown;
+  characterActivities?: unknown;
+  characterEquipment?: unknown;
+  characterKiosks?: unknown;
+  characterPlugSets?: unknown;
+  characterUninstancedItemComponents: unknown;
+  characterPresentationNodes?: unknown;
+  characterRecords?: unknown;
+  characterCollectibles?: unknown;
+  characterStringVariables?: unknown;
+  characterCraftables?: unknown;
+  itemComponents?: unknown;
+  characterCurrencyLookups?: unknown;
+}
