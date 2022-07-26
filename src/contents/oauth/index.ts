@@ -1,6 +1,6 @@
-import { request } from "@adapters/http-request";
-import { TokenError, TokenResponse } from "@d2types/oauth";
-import { formatQueryStrings } from "@adapters/utils";
+import { request } from "../../adapters/http-request";
+import { formatQueryStrings } from "../../adapters/utils";
+import { TokenError, TokenResponse } from "../../types/oauth";
 
 export class OAuth {
   constructor(

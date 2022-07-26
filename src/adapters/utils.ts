@@ -1,4 +1,4 @@
-import { ClientOptions, Options } from "@d2types/general";
+import { ClientOptions, Options } from "../types/general";
 
 export function formatQueryStrings(
   uri: string,

@@ -3,10 +3,6 @@
   "version": "1.0.6",
   "description": "A simple Destiny 2 API Wrapper made with Node.js.",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": [
-    "/lib"
-  ],
   "scripts": {
     "build": "tsc"
   },

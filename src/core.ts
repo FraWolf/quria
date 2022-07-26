@@ -1,7 +1,7 @@
-import { ClientOptions, Options } from "@d2types/general";
-import { generateOptions } from "@adapters/utils";
-import { Destiny } from "@contents/destiny2";
-import { OAuth } from "@contents/oauth";
+import { generateOptions } from "./adapters/utils";
+import { Destiny } from "./contents/destiny2";
+import { OAuth } from "./contents/oauth";
+import { ClientOptions, Options } from "./types/general";
 
 export class Quria {
   private options: ClientOptions;

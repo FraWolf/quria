@@ -4,7 +4,7 @@ export async function request(
   url: string,
   json = false,
   method = "GET",
-  headers = {},
+  headers: RequestInit["headers"],
   body?: RequestInit["body"]
 ) {
   if (!url) throw Error;

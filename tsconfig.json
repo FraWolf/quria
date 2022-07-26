@@ -1,22 +1,14 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES2020",
+    "target": "ESNext",
     "declaration": true,
-    "outDir": "./lib",
-    "rootDir": "./src",
+    "outDir": "lib",
+    "rootDir": "src",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": "./src",
-    "paths": {
-      "@adapters/*": ["adapters/*"],
-      "@contents/*": ["contents/*"],
-      "@helpers/*": ["helpers/*"],
-      "@d2types/*": ["types/*"]
-    }
   },
   "include": [
     "src/**/*"
   ],
-  "exclude": ["node_modules"]
 }
