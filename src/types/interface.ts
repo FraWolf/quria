@@ -138,7 +138,7 @@ export interface Application {
   name: string;
   redirectUrl: string;
   link: string;
-  scope: number;
+  scope: string;
   origin: string;
   status: ApplicationStatus;
   creationDate: string;
@@ -156,7 +156,7 @@ export interface ApplicationDeveloper {
 
 export interface UserMembership {
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -167,7 +167,7 @@ export interface CrossSaveUserMembership {
   applicableMembershipTypes: BungieMembershipType[];
   isPublic: boolean;
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -180,26 +180,26 @@ export interface UserInfoCard {
   applicableMembershipTypes: BungieMembershipType[];
   isPublic: boolean;
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
 }
 
 export interface GeneralUser {
-  membershipId: number;
+  membershipId: string;
   uniqueName: string;
   normalizedName: string;
   displayName: string;
   profilePicture: number;
   profileTheme: number;
   userTitle: number;
-  successMessageFlags: number;
+  successMessageFlags: string;
   isDeleted: boolean;
   about: string;
   firstAccess: string;
   lastUpdate: string;
-  legacyPortalUID: number;
+  legacyPortalUID: string;
   context: UserToUserContext;
   psnDisplayName: string;
   xboxDisplayName: string;
@@ -207,7 +207,7 @@ export interface GeneralUser {
   showActivity: boolean;
   locale: string;
   localeInheritDefault: boolean;
-  lastBanReportId: number;
+  lastBanReportId: string;
   showGroupMessaging: boolean;
   profilePicturePath: string;
   profilePictureWidePath: string;
@@ -239,15 +239,15 @@ export interface GetCredentialTypesForAccountResponse {
 
 export interface UserMembershipData {
   destinyMemberships: GroupUserInfoCard[];
-  primaryMembershipId: number;
+  primaryMembershipId: string;
   bungieNetUser: GeneralUser;
 }
 
 export interface HardLinkedUserMembership {
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   CrossSaveOverriddenType: BungieMembershipType;
-  CrossSaveOverriddenMembershipId: number;
+  CrossSaveOverriddenMembershipId: string;
 }
 
 export interface UserSearchResponse {
@@ -259,7 +259,7 @@ export interface UserSearchResponse {
 export interface UserSearchResponseDetail {
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
-  bungieNetMembershipId: number;
+  bungieNetMembershipId: string;
   destinyMemberships: UserInfoCard[];
 }
 
@@ -288,7 +288,7 @@ export interface EmailOptInDefinition {
 export interface EmailSubscriptionDefinition {
   name: string;
   localization: EMailSettingSubscriptionLocalization;
-  value: number;
+  value: string;
 }
 
 export interface EMailSettingLocalization {
@@ -353,7 +353,7 @@ export interface GroupUserInfoCard {
   applicableMembershipTypes: BungieMembershipType[];
   isPublic: boolean;
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -362,7 +362,7 @@ export interface GroupUserInfoCard {
 export interface GroupResponse {
   detail: GroupV2;
   founder: GroupMember;
-  alliedIds: number[];
+  alliedIds: string[];
   parentGroup: GroupV2;
   allianceStatus: GroupAllianceStatus;
   groupJoinInviteCount: number;
@@ -372,10 +372,10 @@ export interface GroupResponse {
 }
 
 export interface GroupV2 {
-  groupId: number;
+  groupId: string;
   name: string;
   groupType: GroupType;
-  membershipIdCreated: number;
+  membershipIdCreated: string;
   creationDate: string;
   modificationDate: string;
   about: string;
@@ -395,7 +395,7 @@ export interface GroupV2 {
   theme: string;
   bannerPath: string;
   avatarPath: string;
-  conversationId: number;
+  conversationId: string;
   enableInvitationMessagingForAdmins: boolean;
   banExpireDate: string;
   features: GroupFeatures;
@@ -436,7 +436,7 @@ export interface GroupV2ClanInfoAndInvestment {
 }
 
 export interface GroupUserBase {
-  groupId: number;
+  groupId: string;
   destinyUserInfo: GroupUserInfoCard;
   bungieNetUserInfo: UserInfoCard;
   joinDate: string;
@@ -445,8 +445,8 @@ export interface GroupUserBase {
 export interface GroupMember {
   memberType: RuntimeGroupMemberType;
   isOnline: boolean;
-  lastOnlineStatusChange: number;
-  groupId: number;
+  lastOnlineStatusChange: string;
+  groupId: string;
   destinyUserInfo: GroupUserInfoCard;
   bungieNetUserInfo: UserInfoCard;
   joinDate: string;
@@ -454,14 +454,14 @@ export interface GroupMember {
 
 export interface GroupPotentialMember {
   potentialStatus: GroupPotentialMemberStatus;
-  groupId: number;
+  groupId: string;
   destinyUserInfo: GroupUserInfoCard;
   bungieNetUserInfo: UserInfoCard;
   joinDate: string;
 }
 
 export interface GroupV2Card {
-  groupId: number;
+  groupId: string;
   name: string;
   groupType: GroupType;
   creationDate: string;
@@ -504,8 +504,8 @@ export interface GroupNameSearchRequest {
 }
 
 export interface GroupOptionalConversation {
-  groupId: number;
-  conversationId: number;
+  groupId: string;
+  conversationId: string;
   chatEnabled: boolean;
   chatName: string;
   chatSecurity: ChatSecuritySetting;
@@ -560,7 +560,7 @@ export interface GroupBanRequest {
 }
 
 export interface GroupBan {
-  groupId: number;
+  groupId: string;
   lastModifiedBy: UserInfoCard;
   createdBy: UserInfoCard;
   dateBanned: string;
@@ -571,11 +571,11 @@ export interface GroupBan {
 }
 
 export interface GroupMemberApplication {
-  groupId: number;
+  groupId: string;
   creationDate: string;
   resolveState: GroupApplicationResolveState;
   resolveDate: string;
-  resolvedByMembershipId: number;
+  resolvedByMembershipId: string;
   requestMessage: string;
   resolveMessage: string;
   destinyUserInfo: GroupUserInfoCard;
@@ -745,7 +745,7 @@ export interface ContentTypePropertySection {
 }
 
 export interface ContentItemPublicContract {
-  contentId: number;
+  contentId: string;
   cType: string;
   cmsPath: string;
   creationDate: string;
@@ -769,7 +769,7 @@ export interface ContentRepresentation {
 }
 
 export interface CommentSummary {
-  topicId: number;
+  topicId: string;
   commentCount: number;
 }
 
@@ -822,8 +822,8 @@ export interface PostResponse {
   userRating: number;
   userHasRated: boolean;
   userHasMutedPost: boolean;
-  latestReplyPostId: number;
-  latestReplyAuthorId: number;
+  latestReplyPostId: string;
+  latestReplyAuthorId: string;
   ignoreStatus: IgnoreResponse;
   locale: string;
 }
@@ -845,7 +845,7 @@ export interface PostSearchResponse {
 }
 
 export interface PollResponse {
-  topicId: number;
+  topicId: string;
   results: PollResult[];
   totalVotes: number;
 }
@@ -859,16 +859,16 @@ export interface PollResult {
 }
 
 export interface ForumRecruitmentDetail {
-  topicId: number;
+  topicId: string;
   microphoneRequired: boolean;
   intensity: ForumRecruitmentIntensityLabel;
   tone: ForumRecruitmentToneLabel;
   approved: boolean;
-  conversationId: number;
+  conversationId: string;
   playerSlotsTotal: number;
   playerSlotsRemaining: number;
   Fireteam: GeneralUser[];
-  kickedPlayerIds: number[];
+  kickedPlayerIds: string[];
 }
 
 export interface SearchResultOfPostResponse {
@@ -957,7 +957,7 @@ export interface DestinyProgressionStepDefinition {
 
 export interface DestinyItemQuantity {
   itemHash: number;
-  itemInstanceId: number;
+  itemInstanceId: string;
   quantity: number;
   hasConditionalVisibility: boolean;
 }
@@ -1503,7 +1503,7 @@ export interface DestinyVendorItemDefinition {
 
 export interface DestinyVendorItemQuantity {
   itemHash: number;
-  itemInstanceId: number;
+  itemInstanceId: string;
   quantity: number;
   hasConditionalVisibility: boolean;
 }
@@ -2588,7 +2588,7 @@ export interface DestinyProgressionRewardItemQuantity {
   uiDisplayStyle: string;
   claimUnlockDisplayStrings: string[];
   itemHash: number;
-  itemInstanceId: number;
+  itemInstanceId: string;
   quantity: number;
   hasConditionalVisibility: boolean;
 }
@@ -2633,7 +2633,7 @@ export interface DestinyProfileUserInfoCard {
   applicableMembershipTypes: BungieMembershipType[];
   isPublic: boolean;
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -2645,7 +2645,7 @@ export interface DestinyPlatformSilverComponent {
 
 export interface DestinyItemComponent {
   itemHash: number;
-  itemInstanceId: number;
+  itemInstanceId: string;
   quantity: number;
   bindStatus: ItemBindStatus;
   location: ItemLocation;
@@ -2719,10 +2719,10 @@ export interface DestinyVendorReceipt {
   currencyPaid: DestinyItemQuantity[];
   itemReceived: DestinyItemQuantity;
   licenseUnlockHash: number;
-  purchasedByCharacterId: number;
+  purchasedByCharacterId: string;
   refundPolicy: DestinyVendorItemRefundPolicy;
   sequenceNumber: number;
-  timeToExpiration: number;
+  timeToExpiration: string;
   expiresOn: string;
 }
 
@@ -2734,7 +2734,7 @@ export interface DestinyProfileComponent {
   userInfo: UserInfoCard;
   dateLastPlayed: string;
   versionsOwned: DestinyGameVersions;
-  characterIds: number[];
+  characterIds: string[];
   seasonHashes: number[];
   eventCardHashesOwned: number[];
   currentSeasonHash: number;
@@ -2752,7 +2752,7 @@ export interface DestinyEventCardDefinition {
   ticketCurrencyItemHash: number;
   ticketVendorHash: number;
   ticketVendorCategoryHash: number;
-  endTime: number;
+  endTime: string;
   hash: number;
   index: number;
   redacted: boolean;
@@ -2901,7 +2901,7 @@ export interface DestinyProfileTransitoryComponent {
 }
 
 export interface DestinyProfileTransitoryPartyMember {
-  membershipId: number;
+  membershipId: string;
   emblemHash: number;
   displayName: string;
   status: DestinyPartyMemberStates;
@@ -2946,12 +2946,12 @@ export interface DestinyStringVariablesComponent {
 }
 
 export interface DestinyCharacterComponent {
-  membershipId: number;
+  membershipId: string;
   membershipType: BungieMembershipType;
-  characterId: number;
+  characterId: string;
   dateLastPlayed: string;
-  minutesPlayedThisSession: number;
-  minutesPlayedTotal: number;
+  minutesPlayedThisSession: string;
+  minutesPlayedTotal: string;
   light: number;
   stats: object;
   raceHash: number;
@@ -3035,7 +3035,7 @@ export interface DestinyQuestStatus {
   stepHash: number;
   stepObjectives: DestinyObjectiveProgress[];
   tracked: boolean;
-  itemInstanceId: number;
+  itemInstanceId: string;
   completed: boolean;
   redeemed: boolean;
   started: boolean;
@@ -3137,7 +3137,7 @@ export interface DestinyMilestoneQuestRewardItem {
   vendorHash: number;
   vendorItemIndex: number;
   itemHash: number;
-  itemInstanceId: number;
+  itemInstanceId: string;
   quantity: number;
   hasConditionalVisibility: boolean;
 }
@@ -3440,7 +3440,7 @@ export interface DestinyCharacterResponse {
 }
 
 export interface DestinyItemResponse {
-  characterId: number;
+  characterId: string;
   item: SingleComponentResponseOfDestinyItemComponent;
   instance: SingleComponentResponseOfDestinyItemInstanceComponent;
   objectives: SingleComponentResponseOfDestinyItemObjectivesComponent;
@@ -3579,13 +3579,13 @@ export interface DestinyActionRequest {
 }
 
 export interface DestinyCharacterActionRequest {
-  characterId: number;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
 export interface DestinyItemActionRequest {
-  itemId: number;
-  characterId: number;
+  itemId: string;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
@@ -3593,16 +3593,16 @@ export interface DestinyItemTransferRequest {
   itemReferenceHash: number;
   stackSize: number;
   transferToVault: boolean;
-  itemId: number;
-  characterId: number;
+  itemId: string;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
 export interface DestinyPostmasterTransferRequest {
   itemReferenceHash: number;
   stackSize: number;
-  itemId: number;
-  characterId: number;
+  itemId: string;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
@@ -3611,20 +3611,20 @@ export interface DestinyEquipItemResults {
 }
 
 export interface DestinyEquipItemResult {
-  itemInstanceId: number;
+  itemInstanceId: string;
   equipStatus: PlatformErrorCodes;
 }
 
 export interface DestinyItemSetActionRequest {
-  itemIds: number[];
-  characterId: number;
+  itemIds: string[];
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
 export interface DestinyItemStateRequest {
   state: boolean;
-  itemId: number;
-  characterId: number;
+  itemId: string;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
@@ -3641,9 +3641,9 @@ export interface DestinyItemChangeResponse {
 
 export interface DestinyInsertPlugsActionRequest {
   actionToken: string;
-  itemInstanceId: number;
+  itemInstanceId: string;
   plug: DestinyInsertPlugsRequestEntry;
-  characterId: number;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
@@ -3655,8 +3655,8 @@ export interface DestinyInsertPlugsRequestEntry {
 
 export interface DestinyInsertPlugsFreeActionRequest {
   plug: DestinyInsertPlugsRequestEntry;
-  itemId: number;
-  characterId: number;
+  itemId: string;
+  characterId: string;
   membershipType: BungieMembershipType;
 }
 
@@ -3672,7 +3672,7 @@ export interface DestinyPostGameCarnageReportData {
 export interface DestinyHistoricalStatsActivity {
   referenceId: number;
   directorActivityHash: number;
-  instanceId: number;
+  instanceId: string;
   mode: DestinyActivityModeType;
   modes: DestinyActivityModeType[];
   isPrivate: boolean;
@@ -3683,7 +3683,7 @@ export interface DestinyPostGameCarnageReportEntry {
   standing: number;
   score: DestinyHistoricalStatsValue;
   player: DestinyPlayer;
-  characterId: number;
+  characterId: string;
   values: DestinyHistoricalStatsValue;
   extended: DestinyPostGameCarnageReportExtendedData;
 }
@@ -3693,7 +3693,7 @@ export interface DestinyHistoricalStatsValue {
   basic: DestinyHistoricalStatsValuePair;
   pga: DestinyHistoricalStatsValuePair;
   weighted: DestinyHistoricalStatsValuePair;
-  activityId: number;
+  activityId: string;
 }
 
 export interface DestinyHistoricalStatsValuePair {
@@ -3735,7 +3735,7 @@ export interface DestinyPostGameCarnageReportTeamEntry {
 export interface DestinyReportOffensePgcrRequest {
   reasonCategoryHashes: number[];
   reasonHashes: number[];
-  offendingCharacterId: number;
+  offendingCharacterId: string;
 }
 
 export interface DestinyReportReasonCategoryDefinition {
@@ -3784,13 +3784,13 @@ export interface DestinyLeaderboard {
 export interface DestinyLeaderboardEntry {
   rank: number;
   player: DestinyPlayer;
-  characterId: number;
+  characterId: string;
   value: DestinyHistoricalStatsValue;
 }
 
 export interface DestinyLeaderboardResults {
-  focusMembershipId: number;
-  focusCharacterId: number;
+  focusMembershipId: string;
+  focusCharacterId: string;
 }
 
 export interface DestinyClanAggregateStat {
@@ -3842,7 +3842,7 @@ export interface DestinyHistoricalStatsWithMerged {
 }
 
 export interface DestinyHistoricalStatsPerCharacter {
-  characterId: number;
+  characterId: string;
   deleted: boolean;
   results: DestinyHistoricalStatsByPeriod;
   merged: DestinyHistoricalStatsByPeriod;
@@ -3934,9 +3934,9 @@ export interface AwaInitializeResponse {
 
 export interface AwaPermissionRequested {
   type: AwaType;
-  affectedItemId: number;
+  affectedItemId: string;
   membershipType: BungieMembershipType;
-  characterId: number;
+  characterId: string;
 }
 
 export interface AwaUserResponse {
@@ -4024,7 +4024,7 @@ export interface SearchResultOfGroupMemberApplication {
 }
 
 export interface EntityActionResult {
-  entityId: number;
+  entityId: string;
   result: PlatformErrorCodes;
 }
 
@@ -4048,7 +4048,7 @@ export interface SearchResultOfGroupPotentialMembership {
 
 export interface PartnerOfferClaimRequest {
   PartnerOfferId: string;
-  BungieNetMembershipId: number;
+  BungieNetMembershipId: string;
   TransactionId: string;
 }
 
@@ -4064,7 +4064,7 @@ export interface PartnerOfferSkuHistoryResponse {
 
 export interface PartnerOfferHistoryResponse {
   PartnerOfferKey: string;
-  MembershipId: number;
+  MembershipId: string;
   MembershipType: number;
   LocalizedName: string;
   LocalizedDescription: string;
@@ -4737,8 +4737,8 @@ export interface TrendingEntryCommunityCreation {
   media: string;
   title: string;
   author: string;
-  authorMembershipId: number;
-  postId: number;
+  authorMembershipId: string;
+  postId: string;
   body: string;
   upvotes: number;
 }
@@ -4753,13 +4753,13 @@ export interface SearchResultOfTrendingEntry {
 }
 
 export interface FireteamSummary {
-  fireteamId: number;
-  groupId: number;
+  fireteamId: string;
+  groupId: string;
   platform: FireteamPlatform;
   activityType: number;
   isImmediate: boolean;
   scheduledTime: string;
-  ownerMembershipId: number;
+  ownerMembershipId: string;
   playerSlotCount: number;
   alternateSlotCount: number;
   availablePlayerSlotCount: number;
@@ -4783,7 +4783,7 @@ export interface FireteamResponse {
 export interface FireteamMember {
   destinyUserInfo: FireteamUserInfoCard;
   bungieNetUserInfo: UserInfoCard;
-  characterId: number;
+  characterId: string;
   dateJoined: string;
   hasMicrophone: boolean;
   lastPlatformInviteAttemptDate: string;
@@ -4799,7 +4799,7 @@ export interface FireteamUserInfoCard {
   applicableMembershipTypes: BungieMembershipType[];
   isPublic: boolean;
   membershipType: BungieMembershipType;
-  membershipId: number;
+  membershipId: string;
   displayName: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -4828,7 +4828,7 @@ export interface BungieFriendListResponse {
 }
 
 export interface BungieFriend {
-  lastSeenAsMembershipId: number;
+  lastSeenAsMembershipId: string;
   lastSeenAsBungieMembershipType: BungieMembershipType;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
@@ -4853,9 +4853,9 @@ export interface PlatformFriendResponse {
 export interface PlatformFriend {
   platformDisplayName: string;
   friendPlatform: PlatformFriendType;
-  destinyMembershipId: number;
+  destinyMembershipId: string;
   destinyMembershipType: number;
-  bungieNetMembershipId: number;
+  bungieNetMembershipId: string;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number;
 }

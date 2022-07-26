@@ -313,8 +313,8 @@ export class Destiny {
    * @param {uint32} itemReferenceHash
    * @param {int32} stackSize
    * @param {boolean} transferToVault
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
@@ -323,8 +323,8 @@ export class Destiny {
     itemReferenceHash: number,
     stackSize: number,
     transferToVault: boolean,
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
@@ -353,8 +353,8 @@ export class Destiny {
    * Extract an item from the Postmaster, with whatever implications that may entail.
    * @param {uint32} itemReferenceHash
    * @param {int32} stackSize
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
@@ -362,8 +362,8 @@ export class Destiny {
   PullFromPostmaster(
     itemReferenceHash: number,
     stackSize: number,
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
@@ -388,15 +388,15 @@ export class Destiny {
 
   /**
    * Equip an item.
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
    */
   EquipItem(
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
@@ -419,15 +419,15 @@ export class Destiny {
 
   /**
    * Equip a list of items by itemInstanceIds.
-   * @param {array} itemIds
-   * @param {int64} characterId
+   * @param {string[]} itemIds
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
    */
   EquipItems(
-    itemIds: number[],
-    characterId: number,
+    itemIds: string[],
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyEquipItemResults>> {
@@ -451,16 +451,16 @@ export class Destiny {
   /**
    * Set the Lock State for an instanced item.
    * @param {boolean} state
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
    */
   SetItemLockState(
     state: boolean,
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
@@ -485,16 +485,16 @@ export class Destiny {
   /**
    * Set the Tracking State for an instanced item, if that item is a Quest or Bounty.
    * @param {boolean} state
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @param {object} tokens
    * @returns
    */
   SetQuestTrackedState(
     state: boolean,
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
@@ -519,17 +519,17 @@ export class Destiny {
   /**
    * Insert a plug into a socketed item.
    * @param {string} actionToken
-   * @param {int64} itemInstanceId
+   * @param {string} itemInstanceId
    * @param {object} plug
-   * @param {int64} characterId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @returns
    */
   InsertSocketPlug(
     actionToken: string,
-    itemInstanceId: number,
+    itemInstanceId: string,
     plug: DestinyInsertPlugsRequestEntry,
-    characterId: number,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
@@ -555,15 +555,15 @@ export class Destiny {
   /**
    * Insert a 'free' plug into an item's socket.
    * @param {object} plug
-   * @param {int64} itemId
-   * @param {int64} characterId
+   * @param {string} itemId
+   * @param {string} characterId
    * @param {int32} membershipType
    * @returns
    */
   InsertSocketPlugFree(
     plug: DestinyInsertPlugsRequestEntry,
-    itemId: number,
-    characterId: number,
+    itemId: string,
+    characterId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
@@ -603,13 +603,16 @@ export class Destiny {
   /**
    * Report a player that you met in an activity that was engaging in ToS-violating activities.
    * @param activityId The ID of the activity where you ran into the brigand that you're reporting.
-   * @returns
+   * @param reasonCategoryHashes These are hash identifiers that map to DestinyReportReasonCategoryDefinition entries.
+   * @param reasonHashes If applicable, provide a more specific reason(s) within the general category of problems provided by the reasonHash.
+   * @param offendingCharacterId Within the PGCR provided when calling the Reporting endpoint, this should be the character ID of the user that you thought was violating terms of use.
+   * @returns A player that you met in an activity that was engaging in ToS-violating activities.
    */
   ReportOffensivePostGameCarnageReportPlayer(
     activityId: number,
     reasonCategoryHashes: number[],
     reasonHashes: number[],
-    offendingCharacterId: number,
+    offendingCharacterId: string,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
     const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
@@ -908,9 +911,9 @@ export class Destiny {
    */
   AwaInitializeRequest(
     type: number,
-    affectedItemId: number | null,
+    affectedItemId: string | null,
     membershipType: BungieMembershipType,
-    characterId: number,
+    characterId: string,
     tokens?: Tokens
   ): Promise<APIResponse<AwaInitializeResponse>> {
     const requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
