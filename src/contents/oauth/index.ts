@@ -11,8 +11,12 @@ export class OAuth {
     private client_secret?: string
   ) {}
 
+  private btoa(data: string) {
+    return Buffer.from(data).toString("base64");
+  }
+
   private encodeCredentials() {
-    return btoa(`${this.client_id}:${this.client_secret}`);
+    return this.btoa(`${this.client_id}:${this.client_secret}`);
   }
 
   /**
