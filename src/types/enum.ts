@@ -312,17 +312,6 @@ export const enum ForumFlagsEnum {
   CommunityContent = 128,
 }
 
-export const enum BungieMembershipType {
-  None = 0,
-  Leaderboards = 1,
-  Callsign = 2,
-  OptionalConversations = 4,
-  ClanBanner = 8,
-  D2InvestmentData = 16,
-  Tags = 32,
-  Alliances = 64,
-}
-
 export const enum DestinyProgressionRewardItemState {
   None = 0,
   Invisible = 1,
@@ -1157,30 +1146,6 @@ export const enum DestinySocketArrayType {
 }
 
 export const enum DestinyStatsGroupType {
-  None = 0,
-  General = 1,
-  Weapons = 2,
-  Medals = 3,
-  ReservedGroups = 100,
-  Leaderboard = 101,
-  Activity = 102,
-  UniqueWeapon = 103,
-  Internal = 104,
-}
-
-export const enum PeriodType {
-  None = 0,
-  General = 1,
-  Weapons = 2,
-  Medals = 3,
-  ReservedGroups = 100,
-  Leaderboard = 101,
-  Activity = 102,
-  UniqueWeapon = 103,
-  Internal = 104,
-}
-
-export const enum DestinyActivityModeType {
   None = 0,
   General = 1,
   Weapons = 2,
