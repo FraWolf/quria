@@ -44,6 +44,7 @@ import {
   DestinyReportOffensePgcrRequest,
   DestinyVendorResponse,
   DestinyVendorsResponse,
+  ExactSearchRequest,
   UserInfoCard,
 } from "../../types/interface";
 
@@ -62,8 +63,8 @@ export class Destiny {
 
   /**
    * Returns the static definition of an entity of the given Type and hash identifier.
-   * @param {string} entityType The type of entity for whom you would like results.
-   * @param {uint32} hashIdentifier The hash identifier for the specific Entity you want returned.
+   * @param entityType The type of entity for whom you would like results.
+   * @param hashIdentifier The hash identifier for the specific Entity you want returned.
    * @returns The static definition of an entity of the given Type and hash identifier.
    */
   GetDestinyEntityDefinition(
@@ -76,9 +77,8 @@ export class Destiny {
 
   /**
    * Returns a list of Destiny memberships given a full Gamertag or PSN ID.
-   * @param {uint32} membershipType A valid non-BungieNet membership type, or All.
-   * @param {string} displayName The full gamertag or PSN id of the player.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param membershipType A valid non-BungieNet membership type, or All.
+   * @param displayName The full gamertag or PSN id of the player.
    * @returns A list of Destiny memberships given a full Gamertag or PSN ID
    */
   SearchDestinyPlayerByBungieName(
@@ -88,18 +88,24 @@ export class Destiny {
     const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
 
     const [name, code] = displayName.split("#");
-    const searchBody = JSON.stringify({
+    const bodyParams: ExactSearchRequest = {
       displayName: name,
-      displayNameCode: code,
-    });
-    return request(requestURL, true, "POST", this.headers, searchBody);
+      displayNameCode: parseInt(code),
+    };
+    return request(
+      requestURL,
+      true,
+      "POST",
+      this.headers,
+      JSON.stringify(bodyParams)
+    );
   }
 
   /**
    * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
-   * @param {uint32} membershipType Destiny membership ID.
-   * @param {string} membershipId A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param membershipId A valid non-BungieNet membership type.
+   * @param membershipType Destiny membership ID.
+   * @param queryString The optional querystrings that can be applied.
    * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
    */
   GetLinkedProfiles(
@@ -120,9 +126,9 @@ export class Destiny {
 
   /**
    * Returns Destiny Profile information for the supplied membership.
-   * @param {int64} membershipType Destiny membership ID.
-   * @param {int32} destinyMembershipId A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param destinyMembershipId A valid non-BungieNet membership type.
+   * @param membershipType Destiny membership ID.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Destiny Profile information for the supplied membership.
    */
   GetProfile(
@@ -143,10 +149,10 @@ export class Destiny {
 
   /**
    * Returns character information for the supplied character.
-   * @param {int64} membershipType ID of the character.
-   * @param {int64} destinyMembershipId Destiny membership ID.
-   * @param {int32} characterId A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param membershipType ID of the character.
+   * @param destinyMembershipId Destiny membership ID.
+   * @param characterId A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Character information for the supplied character.
    */
   GetCharacter(
@@ -166,7 +172,7 @@ export class Destiny {
 
   /**
    * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-   * @param {string} groupId A valid group id of clan.
+   * @param groupId A valid group id of clan.
    * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
    */
   GetClanWeeklyRewardState(
@@ -192,10 +198,10 @@ export class Destiny {
 
   /**
    * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-   * @param {string} destinyMembershipId The membership ID of the destiny profile.
-   * @param {string} itemInstanceId The Instance ID of the destiny item.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param destinyMembershipId The membership ID of the destiny profile.
+   * @param itemInstanceId The Instance ID of the destiny item.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
    */
   GetItem(
@@ -216,10 +222,10 @@ export class Destiny {
 
   /**
    * Returns character information for the supplied character.
-   * @param {string} characterId ID of the character.
-   * @param {string} destinyMembershipId The membership ID of the destiny profile.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param characterId ID of the character.
+   * @param destinyMembershipId The membership ID of the destiny profile.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Character information for the supplied character.
    */
   GetVendors(
@@ -240,11 +246,11 @@ export class Destiny {
 
   /**
    * Get the details of a specific Vendor.
-   * @param {string} characterId The Destiny Character ID of the character for whom we're getting vendor info.
-   * @param {string} destinyMembershipId Destiny membership ID of another user. You may be denied.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {uint32} vendorHash The Hash identifier of the Vendor to be returned.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param characterId The Destiny Character ID of the character for whom we're getting vendor info.
+   * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param vendorHash The Hash identifier of the Vendor to be returned.
+   * @param queryString The optional querystrings that can be applied.
    * @returns The details of a specific Vendor.
    */
   GetVendor(
@@ -266,7 +272,7 @@ export class Destiny {
 
   /**
    * Get items available from vendors where the vendors have items for sale that are common for everyone.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Items available from vendors where the vendors have items for sale that are common for everyone.
    */
   GetPublicVendors(
@@ -284,11 +290,11 @@ export class Destiny {
 
   /**
    * Given a Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {string} destinyMembershipId Destiny membership ID of another user. You may be denied.
-   * @param {string} characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
-   * @param {uint32} collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
+   * @param collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details
+   * @param queryString The optional querystrings that can be applied.
    * @returns Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
    */
   GetCollectibleNodeDetails(
@@ -310,13 +316,12 @@ export class Destiny {
 
   /**
    * Transfer an item to/from your vault.
-   * @param {uint32} itemReferenceHash
-   * @param {int32} stackSize
-   * @param {boolean} transferToVault
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param itemReferenceHash
+   * @param stackSize
+   * @param transferToVault
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   TransferItem(
@@ -351,12 +356,11 @@ export class Destiny {
 
   /**
    * Extract an item from the Postmaster, with whatever implications that may entail.
-   * @param {uint32} itemReferenceHash
-   * @param {int32} stackSize
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param itemReferenceHash
+   * @param stackSize
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   PullFromPostmaster(
@@ -388,10 +392,9 @@ export class Destiny {
 
   /**
    * Equip an item.
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   EquipItem(
@@ -419,10 +422,9 @@ export class Destiny {
 
   /**
    * Equip a list of items by itemInstanceIds.
-   * @param {string[]} itemIds
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param itemIds
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   EquipItems(
@@ -450,11 +452,10 @@ export class Destiny {
 
   /**
    * Set the Lock State for an instanced item.
-   * @param {boolean} state
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param state
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   SetItemLockState(
@@ -484,11 +485,10 @@ export class Destiny {
 
   /**
    * Set the Tracking State for an instanced item, if that item is a Quest or Bounty.
-   * @param {boolean} state
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
-   * @param {object} tokens
+   * @param state
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   SetQuestTrackedState(
@@ -518,11 +518,11 @@ export class Destiny {
 
   /**
    * Insert a plug into a socketed item.
-   * @param {string} actionToken
-   * @param {string} itemInstanceId
-   * @param {object} plug
-   * @param {string} characterId
-   * @param {int32} membershipType
+   * @param actionToken
+   * @param itemInstanceId
+   * @param plug
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   InsertSocketPlug(
@@ -554,10 +554,10 @@ export class Destiny {
 
   /**
    * Insert a 'free' plug into an item's socket.
-   * @param {object} plug
-   * @param {string} itemId
-   * @param {string} characterId
-   * @param {int32} membershipType
+   * @param plug
+   * @param itemId
+   * @param characterId
+   * @param membershipType
    * @returns
    */
   InsertSocketPlugFree(
@@ -587,7 +587,7 @@ export class Destiny {
 
   /**
    * Gets the available post game carnage report for the activity ID.
-   * @param {string} activityId The ID of the activity whose PGCR is requested.
+   * @param activityId The ID of the activity whose PGCR is requested.
    * @returns The available post game carnage report for the activity ID.
    */
   GetPostGameCarnageReport(
@@ -647,8 +647,8 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {string} groupId Group ID of the clan whose leaderboards you wish to fetch.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetClanLeaderboards(
@@ -667,8 +667,8 @@ export class Destiny {
 
   /**
    * Gets aggregated stats for a clan using the same categories as the clan leaderboards.
-   * @param {string} groupId Group ID of the clan whose leaderboards you wish to fetch.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Aggregated stats for a clan using the same categories as the clan leaderboards.
    */
   GetClanAggregateStats(
@@ -687,9 +687,9 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboards(
@@ -709,10 +709,10 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {string} characterId The specific character to build the leaderboard around for the provided Destiny Membership.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param characterId The specific character to build the leaderboard around for the provided Destiny Membership.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboardsForCharacter(
@@ -733,9 +733,9 @@ export class Destiny {
 
   /**
    * Gets a page list of Destiny items.
-   * @param {string} searchTerm The string to use when searching for Destiny entities.
-   * @param {string} type The type of entity for whom you would like results.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param searchTerm The string to use when searching for Destiny entities.
+   * @param type The type of entity for whom you would like results.
+   * @param queryString The optional querystrings that can be applied.
    * @returns A page list of Destiny items.
    */
   SearchDestinyEntities(
@@ -755,10 +755,10 @@ export class Destiny {
 
   /**
    * Gets historical stats for indicated character.
-   * @param {string} characterId The id of the character to retrieve. You can omit this character ID or set it to 0 to get aggregate stats across all characters.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param characterId The id of the character to retrieve. You can omit this character ID or set it to 0 to get aggregate stats across all characters.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Historical stats for indicated character.
    */
   GetHistoricalStats(
@@ -785,9 +785,9 @@ export class Destiny {
 
   /**
    * Gets aggregate historical stats organized around each character for a given account.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Aggregate historical stats organized around each character for a given account.
    */
   GetHistoricalStatsForAccount(
@@ -809,10 +809,10 @@ export class Destiny {
 
   /**
    * Gets activity history stats for indicated character.
-   * @param {string} characterId The id of the character to retrieve.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {object} queryString The optional querystrings that can be applied.
+   * @param characterId The id of the character to retrieve.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Activity history stats for indicated character.
    */
   GetActivityHistory(
@@ -837,9 +837,9 @@ export class Destiny {
 
   /**
    * Gets details about unique weapon usage, including all exotic weapons.
-   * @param {string} characterId The id of the character to retrieve.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
+   * @param characterId The id of the character to retrieve.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
    * @returns Details about unique weapon usage, including all exotic weapons.
    */
   GetUniqueWeaponHistory(
@@ -856,9 +856,9 @@ export class Destiny {
 
   /**
    * Gets all activities the character has participated in together with aggregate statistics for those activities.
-   * @param {string} characterId The specific character whose activities should be returned.
-   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int32} membershipType A valid non-BungieNet membership type.
+   * @param characterId The specific character whose activities should be returned.
+   * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param membershipType A valid non-BungieNet membership type.
    * @returns All activities the character has participated in together with aggregate statistics for those activities.
    */
   GetDestinyAggregateActivityStats(
@@ -875,7 +875,7 @@ export class Destiny {
 
   /**
    * Gets custom localized content for the milestone of the given hash, if it exists.
-   * @param {uint32} milestoneHash The identifier for the milestone to be returned.
+   * @param milestoneHash The identifier for the milestone to be returned.
    * @returns Custom localized content for the milestone of the given hash, if it exists.
    */
   GetPublicMilestoneContent(
