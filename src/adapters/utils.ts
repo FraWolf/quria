@@ -1,4 +1,4 @@
-import { ClientOptions, Options } from "../types/general";
+import {ClientOptions, Options} from "../types/general";
 
 export function formatQueryStrings(
   uri: string,
@@ -12,7 +12,7 @@ export function formatQueryStrings(
   const allKeys = Object.keys(queryObject);
   const allValues = Object.values(queryObject);
 
-  var formattedQuerystring = "";
+  let formattedQuerystring = "";
 
   allValues.forEach((item, index) => {
     if (item !== null && item !== undefined) {
@@ -22,16 +22,14 @@ export function formatQueryStrings(
     }
   });
 
-  const urlToReturn = `${uri}${formattedQuerystring}`;
-
-  return urlToReturn;
+  return `${uri}${formattedQuerystring}`;
 }
 
 export function parseAuthenticationHeaders(
   headers: object,
   tokens?: { access_token?: string; refresh_token?: string }
 ) {
-  var newObject = {};
+  let newObject = {};
 
   if (tokens && tokens.access_token)
     newObject = { Authorization: `Bearer ${tokens.access_token}` };

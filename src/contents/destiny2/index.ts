@@ -106,6 +106,7 @@ export class Destiny {
    * @param membershipId A valid non-BungieNet membership type.
    * @param membershipType Destiny membership ID.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
    */
   GetLinkedProfiles(
@@ -129,6 +130,7 @@ export class Destiny {
    * @param destinyMembershipId A valid non-BungieNet membership type.
    * @param membershipType Destiny membership ID.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Destiny Profile information for the supplied membership.
    */
   GetProfile(
@@ -153,6 +155,7 @@ export class Destiny {
    * @param destinyMembershipId Destiny membership ID.
    * @param characterId A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Character information for the supplied character.
    */
   GetCharacter(
@@ -173,6 +176,7 @@ export class Destiny {
   /**
    * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
    * @param groupId A valid group id of clan.
+   * @param tokens The optional tokens that can be applied.
    * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
    */
   GetClanWeeklyRewardState(
@@ -202,6 +206,7 @@ export class Destiny {
    * @param itemInstanceId The Instance ID of the destiny item.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
    */
   GetItem(
@@ -226,6 +231,7 @@ export class Destiny {
    * @param destinyMembershipId The membership ID of the destiny profile.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Character information for the supplied character.
    */
   GetVendors(
@@ -251,6 +257,7 @@ export class Destiny {
    * @param membershipType A valid non-BungieNet membership type.
    * @param vendorHash The Hash identifier of the Vendor to be returned.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns The details of a specific Vendor.
    */
   GetVendor(
@@ -273,6 +280,7 @@ export class Destiny {
   /**
    * Get items available from vendors where the vendors have items for sale that are common for everyone.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Items available from vendors where the vendors have items for sale that are common for everyone.
    */
   GetPublicVendors(
@@ -295,6 +303,7 @@ export class Destiny {
    * @param characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
    * @param collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
    */
   GetCollectibleNodeDetails(
@@ -322,6 +331,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   TransferItem(
@@ -361,6 +371,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   PullFromPostmaster(
@@ -395,6 +406,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   EquipItem(
@@ -425,6 +437,7 @@ export class Destiny {
    * @param itemIds
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   EquipItems(
@@ -456,6 +469,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   SetItemLockState(
@@ -489,6 +503,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   SetQuestTrackedState(
@@ -523,6 +538,7 @@ export class Destiny {
    * @param plug
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   InsertSocketPlug(
@@ -558,6 +574,7 @@ export class Destiny {
    * @param itemId
    * @param characterId
    * @param membershipType
+   * @param tokens The optional tokens that can be applied.
    * @returns
    */
   InsertSocketPlugFree(
@@ -588,6 +605,7 @@ export class Destiny {
   /**
    * Gets the available post game carnage report for the activity ID.
    * @param activityId The ID of the activity whose PGCR is requested.
+   * @param tokens The optional tokens that can be applied.
    * @returns The available post game carnage report for the activity ID.
    */
   GetPostGameCarnageReport(
@@ -606,6 +624,7 @@ export class Destiny {
    * @param reasonCategoryHashes These are hash identifiers that map to DestinyReportReasonCategoryDefinition entries.
    * @param reasonHashes If applicable, provide a more specific reason(s) within the general category of problems provided by the reasonHash.
    * @param offendingCharacterId Within the PGCR provided when calling the Reporting endpoint, this should be the character ID of the user that you thought was violating terms of use.
+   * @param tokens The optional tokens that can be applied.
    * @returns A player that you met in an activity that was engaging in ToS-violating activities.
    */
   ReportOffensivePostGameCarnageReportPlayer(
@@ -634,6 +653,7 @@ export class Destiny {
 
   /**
    * Gets historical stats definitions.
+   * @param tokens The optional tokens that can be applied.
    * @returns Historical stats definitions.
    */
   GetHistoricalStatsDefinition(
@@ -649,6 +669,7 @@ export class Destiny {
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetClanLeaderboards(
@@ -669,6 +690,7 @@ export class Destiny {
    * Gets aggregated stats for a clan using the same categories as the clan leaderboards.
    * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Aggregated stats for a clan using the same categories as the clan leaderboards.
    */
   GetClanAggregateStats(
@@ -690,6 +712,7 @@ export class Destiny {
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboards(
@@ -713,6 +736,7 @@ export class Destiny {
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboardsForCharacter(
@@ -736,6 +760,7 @@ export class Destiny {
    * @param searchTerm The string to use when searching for Destiny entities.
    * @param type The type of entity for whom you would like results.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns A page list of Destiny items.
    */
   SearchDestinyEntities(
@@ -759,6 +784,7 @@ export class Destiny {
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Historical stats for indicated character.
    */
   GetHistoricalStats(
@@ -788,6 +814,7 @@ export class Destiny {
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Aggregate historical stats organized around each character for a given account.
    */
   GetHistoricalStatsForAccount(
@@ -813,6 +840,7 @@ export class Destiny {
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
    * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns Activity history stats for indicated character.
    */
   GetActivityHistory(
@@ -840,6 +868,7 @@ export class Destiny {
    * @param characterId The id of the character to retrieve.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
+   * @param tokens The optional tokens that can be applied.
    * @returns Details about unique weapon usage, including all exotic weapons.
    */
   GetUniqueWeaponHistory(
@@ -859,6 +888,7 @@ export class Destiny {
    * @param characterId The specific character whose activities should be returned.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
+   * @param tokens The optional tokens that can be applied.
    * @returns All activities the character has participated in together with aggregate statistics for those activities.
    */
   GetDestinyAggregateActivityStats(
@@ -876,6 +906,7 @@ export class Destiny {
   /**
    * Gets custom localized content for the milestone of the given hash, if it exists.
    * @param milestoneHash The identifier for the milestone to be returned.
+   * @param tokens The optional tokens that can be applied.
    * @returns Custom localized content for the milestone of the given hash, if it exists.
    */
   GetPublicMilestoneContent(
@@ -890,6 +921,7 @@ export class Destiny {
 
   /**
    * Gets public information about currently available Milestones.
+   * @param tokens The optional tokens that can be applied.
    * @returns Public information about currently available Milestones.
    */
   GetPublicMilestones(
@@ -907,6 +939,7 @@ export class Destiny {
    * @param affectedItemId Item instance ID the action shall be applied to.
    * @param membershipType Destiny membership type of the account to modify.
    * @param characterId Destiny character ID, if applicable, that will be affected by the action.
+   * @param tokens The optional tokens that can be applied.
    * @returns A request to perform an advanced write action.
    */
   AwaInitializeRequest(
@@ -939,6 +972,7 @@ export class Destiny {
    * @param selection Indication of the selection the user has made.
    * @param correlationId Correlation ID of the request.
    * @param nonce Secret nonce received via the PUSH notification.
+   * @param tokens The optional tokens that can be applied.
    * @returns The result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
    */
   AwaProvideAuthorizationResult(
@@ -967,6 +1001,7 @@ export class Destiny {
   /**
    * Returns the action token if user approves the request.
    * @param correlationId The identifier for the advanced write action request.
+   * @param tokens The optional tokens that can be applied.
    * @returns The action token if user approves the request.
    */
   AwaGetActionToken(
