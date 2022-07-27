@@ -273,9 +273,9 @@ export interface ExactSearchRequest {
 }
 
 export interface EmailSettings {
-  optInDefinitions: EmailOptInDefinition;
-  subscriptionDefinitions: EmailSubscriptionDefinition;
-  views: EmailViewDefinition;
+  optInDefinitions: { [key: string]: EmailOptInDefinition };
+  subscriptionDefinitions: { [key: string]: EmailSubscriptionDefinition };
+  views: { [key: string]: EmailViewDefinition };
 }
 
 export interface EmailOptInDefinition {
@@ -287,7 +287,7 @@ export interface EmailOptInDefinition {
 
 export interface EmailSubscriptionDefinition {
   name: string;
-  localization: EMailSettingSubscriptionLocalization;
+  localization: { [key: string]: EMailSettingSubscriptionLocalization };
   value: string;
 }
 
@@ -313,7 +313,7 @@ export interface EmailViewDefinition {
 
 export interface EmailViewDefinitionSetting {
   name: string;
-  localization: EMailSettingLocalization;
+  localization: { [key: string]: EMailSettingLocalization };
   setByDefault: boolean;
   optInAggregateValue: OptInFlags;
   subscriptions: EmailSubscriptionDefinition[];
@@ -367,8 +367,8 @@ export interface GroupResponse {
   allianceStatus: GroupAllianceStatus;
   groupJoinInviteCount: number;
   currentUserMembershipsInactiveForDestiny: boolean;
-  currentUserMemberMap: GroupMember;
-  currentUserPotentialMemberMap: GroupPotentialMember;
+  currentUserMemberMap: { [key: string]: GroupMember };
+  currentUserPotentialMemberMap: { [key: string]: GroupPotentialMember };
 }
 
 export interface GroupV2 {
@@ -430,7 +430,7 @@ export interface ClanBanner {
 }
 
 export interface GroupV2ClanInfoAndInvestment {
-  d2ClanProgressions: DestinyProgression;
+  d2ClanProgressions: { [key: string]: DestinyProgression };
   clanCallsign: string;
   clanBannerData: ClanBanner;
 }
@@ -610,7 +610,7 @@ export interface GroupMembershipSearchResponse {
 }
 
 export interface GetGroupsForMemberResponse {
-  areAllMembershipsInactive: object;
+  areAllMembershipsInactive: { [key: string]: boolean };
   results: GroupMembership[];
   totalResults: number;
   hasMore: boolean;
@@ -646,7 +646,7 @@ export interface ContentTypeDescription {
   reminder: string;
   properties: ContentTypeProperty[];
   tagMetadata: TagMetadataDefinition[];
-  tagMetadataItems: TagMetadataItem;
+  tagMetadataItems: { [key: string]: TagMetadataItem };
   usageExamples: string[];
   showInContentEditor: boolean;
   typeOf: string;
@@ -683,12 +683,12 @@ export interface ContentTypeProperty {
   visibleDependency: string;
   visibleOn: string;
   datatype: ContentPropertyDataTypeEnum;
-  attributes: object;
+  attributes: { [key: string]: string };
   childProperties: ContentTypeProperty[];
   contentTypeAllowed: string;
   bindToProperty: string;
   boundRegex: string;
-  representationSelection: object;
+  representationSelection: { [key: string]: string };
   defaultValues: ContentTypeDefaultValue[];
   isExternalAllowed: boolean;
   propertySection: string;
@@ -756,7 +756,7 @@ export interface ContentItemPublicContract {
   ratingImagePath: string;
   author: GeneralUser;
   autoEnglishPropertyFallback: boolean;
-  properties: object;
+  properties: { [key: string]: object };
   representations: ContentRepresentation[];
   tags: string[];
   commentSummary: CommentSummary;
@@ -1210,7 +1210,7 @@ export interface DestinyItemSetBlockEntryDefinition {
 export interface DestinyItemStatBlockDefinition {
   disablePrimaryStatDisplay: boolean;
   statGroupHash: number;
-  stats: DestinyInventoryItemStatDefinition;
+  stats: { [key: string]: DestinyInventoryItemStatDefinition };
   hasDisplayableStats: boolean;
   primaryBaseStatHash: number;
 }
@@ -1237,7 +1237,7 @@ export interface DestinyStatGroupDefinition {
   maximumValue: number;
   uiPosition: number;
   scaledStats: DestinyStatDisplayDefinition[];
-  overrides: DestinyStatOverrideDefinition;
+  overrides: { [key: string]: DestinyStatOverrideDefinition };
   hash: number;
   index: number;
   redacted: boolean;
@@ -1303,8 +1303,8 @@ export interface DestinyGearArtArrangementReference {
 export interface DestinyClassDefinition {
   classType: DestinyClass;
   displayProperties: DestinyDisplayPropertiesDefinition;
-  genderedClassNames: object;
-  genderedClassNamesByGenderHash: object;
+  genderedClassNames: { [key: string]: string };
+  genderedClassNamesByGenderHash: { [key: string]: string };
   mentorVendorHash: number;
   hash: number;
   index: number;
@@ -1762,7 +1762,7 @@ export interface DestinyActivityModeDefinition {
   isAggregateMode: boolean;
   parentHashes: number[];
   friendlyName: string;
-  activityModeMappings: object;
+  activityModeMappings: { [key: string]: number };
   display: boolean;
   order: number;
   hash: number;
@@ -1884,7 +1884,7 @@ export interface DestinyVendorGroupDefinition {
 export interface DestinyFactionDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   progressionHash: number;
-  tokenValues: object;
+  tokenValues: { [key: string]: number };
   rewardItemHash: number;
   rewardVendorHash: number;
   vendors: DestinyFactionVendorDefinition[];
@@ -1916,7 +1916,7 @@ export interface DestinyArrangementRegionFilterDefinition {
   artArrangementRegionHash: number;
   artArrangementRegionIndex: number;
   statHash: number;
-  arrangementIndexByStatValue: object;
+  arrangementIndexByStatValue: { [key: string]: number };
 }
 
 export interface DestinyItemPreviewBlockDefinition {
@@ -2011,7 +2011,7 @@ export interface DestinyItemSourceDefinition {
   maxQuality: number;
   minLevelRequired: number;
   maxLevelRequired: number;
-  computedStats: DestinyInventoryItemStatDefinition;
+  computedStats: { [key: string]: DestinyInventoryItemStatDefinition };
   sourceHashes: number[];
 }
 
@@ -2211,8 +2211,8 @@ export interface DestinyRecordDefinition {
 
 export interface DestinyRecordTitleBlock {
   hasTitle: boolean;
-  titlesByGender: object;
-  titlesByGenderHash: object;
+  titlesByGender: { [key: string]: string };
+  titlesByGenderHash: { [key: string]: string };
   gildingTrackingRecordHash: number;
 }
 
@@ -2424,7 +2424,7 @@ export interface DestinyTalentGridDefinition {
   nodes: DestinyTalentNodeDefinition[];
   exclusiveSets: DestinyTalentNodeExclusiveSetDefinition[];
   independentNodeIndexes: number[];
-  groups: DestinyTalentExclusiveGroup;
+  groups: { [key: string]: DestinyTalentExclusiveGroup };
   nodeCategories: DestinyTalentNodeCategory[];
   hash: number;
   index: number;
@@ -2597,11 +2597,11 @@ export interface DestinyManifest {
   version: string;
   mobileAssetContentPath: string;
   mobileGearAssetDataBases: GearAssetDataBaseDefinition[];
-  mobileWorldContentPaths: object;
-  jsonWorldContentPaths: object;
-  jsonWorldComponentContentPaths: object;
+  mobileWorldContentPaths: { [key: string]: string };
+  jsonWorldContentPaths: { [key: string]: string };
+  jsonWorldComponentContentPaths: { [key: string]: object };
   mobileClanBannerDatabasePath: string;
-  mobileGearCDN: object;
+  mobileGearCDN: { [key: string]: string };
   iconImagePyramidInfo: ImagePyramidEntry[];
 }
 
@@ -2640,7 +2640,7 @@ export interface DestinyProfileUserInfoCard {
 }
 
 export interface DestinyPlatformSilverComponent {
-  platformSilver: DestinyItemComponent;
+  platformSilver: { [key: string]: DestinyItemComponent };
 }
 
 export interface DestinyItemComponent {
@@ -2701,7 +2701,9 @@ export interface DestinyProfileResponse {
   characterEquipment: DictionaryComponentResponseOfint64AndDestinyInventoryComponent;
   characterKiosks: DictionaryComponentResponseOfint64AndDestinyKiosksComponent;
   characterPlugSets: DictionaryComponentResponseOfint64AndDestinyPlugSetsComponent;
-  characterUninstancedItemComponents: DestinyBaseItemComponentSetOfuint32;
+  characterUninstancedItemComponents: {
+    [key: string]: DestinyBaseItemComponentSetOfuint32;
+  };
   characterPresentationNodes: DictionaryComponentResponseOfint64AndDestinyPresentationNodesComponent;
   characterRecords: DictionaryComponentResponseOfint64AndDestinyCharacterRecordsComponent;
   characterCollectibles: DictionaryComponentResponseOfint64AndDestinyCollectiblesComponent;
@@ -2769,7 +2771,7 @@ export interface DestinyEventCardImages {
 }
 
 export interface DestinyKiosksComponent {
-  kioskItems: object;
+  kioskItems: { [key: string]: DestinyKioskItem[] };
 }
 
 export interface DestinyKioskItem {
@@ -2780,7 +2782,7 @@ export interface DestinyKioskItem {
 }
 
 export interface DestinyPlugSetsComponent {
-  plugs: object;
+  plugs: { [key: string]: DestinyItemPlug[] };
 }
 
 export interface DestinyItemPlugBase {
@@ -2801,7 +2803,7 @@ export interface DestinyItemPlug {
 }
 
 export interface DestinyProfileProgressionComponent {
-  checklists: object;
+  checklists: { [key: string]: object };
   seasonalArtifact: DestinyArtifactProfileScoped;
 }
 
@@ -2837,7 +2839,7 @@ export interface DestinyChecklistEntryDefinition {
 }
 
 export interface DestinyPresentationNodesComponent {
-  nodes: DestinyPresentationNodeComponent;
+  nodes: { [key: string]: DestinyPresentationNodeComponent };
 }
 
 export interface DestinyPresentationNodeComponent {
@@ -2849,7 +2851,7 @@ export interface DestinyPresentationNodeComponent {
 }
 
 export interface DestinyRecordsComponent {
-  records: DestinyRecordComponent;
+  records: { [key: string]: DestinyRecordComponent };
   recordCategoriesRootNodeHash: number;
   recordSealsRootNodeHash: number;
 }
@@ -2869,13 +2871,13 @@ export interface DestinyProfileRecordsComponent {
   legacyScore: number;
   lifetimeScore: number;
   trackedRecordHash: number;
-  records: DestinyRecordComponent;
+  records: { [key: string]: DestinyRecordComponent };
   recordCategoriesRootNodeHash: number;
   recordSealsRootNodeHash: number;
 }
 
 export interface DestinyCollectiblesComponent {
-  collectibles: DestinyCollectibleComponent;
+  collectibles: { [key: string]: DestinyCollectibleComponent };
   collectionCategoriesRootNodeHash: number;
   collectionBadgesRootNodeHash: number;
 }
@@ -2887,7 +2889,7 @@ export interface DestinyCollectibleComponent {
 export interface DestinyProfileCollectiblesComponent {
   recentCollectibleHashes: number[];
   newnessFlaggedCollectibleHashes: number[];
-  collectibles: DestinyCollectibleComponent;
+  collectibles: { [key: string]: DestinyCollectibleComponent };
   collectionCategoriesRootNodeHash: number;
   collectionBadgesRootNodeHash: number;
 }
@@ -2932,7 +2934,7 @@ export interface DestinyProfileTransitoryTrackingEntry {
 }
 
 export interface DestinyMetricsComponent {
-  metrics: DestinyMetricComponent;
+  metrics: { [key: string]: DestinyMetricComponent };
   metricsRootNodeHash: number;
 }
 
@@ -2942,7 +2944,7 @@ export interface DestinyMetricComponent {
 }
 
 export interface DestinyStringVariablesComponent {
-  integerValuesByHash: object;
+  integerValuesByHash: { [key: string]: number };
 }
 
 export interface DestinyCharacterComponent {
@@ -2953,7 +2955,7 @@ export interface DestinyCharacterComponent {
   minutesPlayedThisSession: string;
   minutesPlayedTotal: string;
   light: number;
-  stats: object;
+  stats: { [key: string]: number };
   raceHash: number;
   genderHash: number;
   classHash: number;
@@ -2973,21 +2975,21 @@ export interface DestinyCharacterComponent {
 export interface DestinyRaceDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   raceType: DestinyRace;
-  genderedRaceNames: object;
-  genderedRaceNamesByGenderHash: object;
+  genderedRaceNames: { [key: string]: string };
+  genderedRaceNamesByGenderHash: { [key: string]: string };
   hash: number;
   index: number;
   redacted: boolean;
 }
 
 export interface DestinyCharacterProgressionComponent {
-  progressions: DestinyProgression;
-  factions: DestinyFactionProgression;
-  milestones: DestinyMilestone;
+  progressions: { [key: string]: DestinyProgression };
+  factions: { [key: string]: DestinyFactionProgression };
+  milestones: { [key: string]: DestinyMilestone };
   quests: DestinyQuestStatus[];
-  uninstancedItemObjectives: object;
-  uninstancedItemPerks: DestinyItemPerksComponent;
-  checklists: object;
+  uninstancedItemObjectives: { [key: string]: DestinyObjectiveProgress[] };
+  uninstancedItemPerks: { [key: string]: DestinyItemPerksComponent };
+  checklists: { [key: string]: object };
   seasonalArtifact: DestinyArtifactCharacterScoped;
 }
 
@@ -3014,7 +3016,7 @@ export interface DestinyMilestone {
   milestoneHash: number;
   availableQuests: DestinyMilestoneQuest[];
   activities: DestinyMilestoneChallengeActivity[];
-  values: object;
+  values: { [key: string]: number };
   vendorHashes: number[];
   vendors: DestinyMilestoneVendor[];
   rewards: DestinyMilestoneRewardCategory[];
@@ -3075,7 +3077,7 @@ export interface DestinyMilestoneChallengeActivity {
   activityHash: number;
   challenges: DestinyChallengeStatus[];
   modifierHashes: number[];
-  booleanActivityOptions: object;
+  booleanActivityOptions: { [key: string]: boolean };
   loadoutRequirementIndex: number;
   phases: DestinyMilestoneActivityPhase[];
 }
@@ -3107,11 +3109,11 @@ export interface DestinyMilestoneDefinition {
   showInMilestones: boolean;
   explorePrioritizesActivityImage: boolean;
   hasPredictableDates: boolean;
-  quests: DestinyMilestoneQuestDefinition;
-  rewards: DestinyMilestoneRewardCategoryDefinition;
+  quests: { [key: string]: DestinyMilestoneQuestDefinition };
+  rewards: { [key: string]: DestinyMilestoneRewardCategoryDefinition };
   vendorsDisplayTitle: string;
   vendors: DestinyMilestoneVendorDefinition[];
-  values: DestinyMilestoneValueDefinition;
+  values: { [key: string]: DestinyMilestoneValueDefinition };
   isInGameMilestone: boolean;
   activities: DestinyMilestoneChallengeActivityDefinition[];
   defaultOrder: number;
@@ -3125,7 +3127,7 @@ export interface DestinyMilestoneQuestDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   overrideImage: string;
   questRewards: DestinyMilestoneQuestRewardsDefinition;
-  activities: DestinyMilestoneActivityDefinition;
+  activities: { [key: string]: DestinyMilestoneActivityDefinition };
   destinationHash: number;
 }
 
@@ -3144,7 +3146,7 @@ export interface DestinyMilestoneQuestRewardItem {
 
 export interface DestinyMilestoneActivityDefinition {
   conceptualActivityHash: number;
-  variants: DestinyMilestoneActivityVariantDefinition;
+  variants: { [key: string]: DestinyMilestoneActivityVariantDefinition };
 }
 
 export interface DestinyMilestoneActivityVariantDefinition {
@@ -3156,7 +3158,7 @@ export interface DestinyMilestoneRewardCategoryDefinition {
   categoryHash: number;
   categoryIdentifier: string;
   displayProperties: DestinyDisplayPropertiesDefinition;
-  rewardEntries: DestinyMilestoneRewardEntryDefinition;
+  rewardEntries: { [key: string]: DestinyMilestoneRewardEntryDefinition };
   order: number;
 }
 
@@ -3282,7 +3284,7 @@ export interface DestinyActivity {
   difficultyTier: DestinyActivityDifficultyTier;
   challenges: DestinyChallengeStatus[];
   modifierHashes: number[];
-  booleanActivityOptions: object;
+  booleanActivityOptions: { [key: string]: boolean };
   loadoutRequirementIndex: number;
 }
 
@@ -3294,13 +3296,13 @@ export interface DestinyItemObjectivesComponent {
 
 export interface DestinyCharacterRecordsComponent {
   featuredRecordHashes: number[];
-  records: DestinyRecordComponent;
+  records: { [key: string]: DestinyRecordComponent };
   recordCategoriesRootNodeHash: number;
   recordSealsRootNodeHash: number;
 }
 
 export interface DestinyCraftablesComponent {
-  craftables: DestinyCraftableComponent;
+  craftables: { [key: string]: DestinyCraftableComponent };
   craftingRootNodeHash: number;
 }
 
@@ -3358,11 +3360,11 @@ export interface DestinyUnlockDefinition {
 
 export interface DestinyItemRenderComponent {
   useCustomDyes: boolean;
-  artRegions: object;
+  artRegions: { [key: string]: number };
 }
 
 export interface DestinyItemStatsComponent {
-  stats: DestinyStat;
+  stats: { [key: string]: DestinyStat };
 }
 
 export interface DestinyItemSocketsComponent {
@@ -3377,11 +3379,11 @@ export interface DestinyItemSocketState {
 }
 
 export interface DestinyItemReusablePlugsComponent {
-  plugs: object;
+  plugs: { [key: string]: DestinyItemPlugBase[] };
 }
 
 export interface DestinyItemPlugObjectivesComponent {
-  objectivesPerPlug: object;
+  objectivesPerPlug: { [key: string]: DestinyObjectiveProgress[] };
 }
 
 export interface DestinyItemTalentGridComponent {
@@ -3419,7 +3421,7 @@ export interface DestinyItemPlugComponent {
 }
 
 export interface DestinyCurrenciesComponent {
-  itemQuantities: object;
+  itemQuantities: { [key: string]: number };
 }
 
 export interface DestinyCharacterResponse {
@@ -3458,7 +3460,7 @@ export interface DestinyVendorsResponse {
   vendors: DictionaryComponentResponseOfuint32AndDestinyVendorComponent;
   categories: DictionaryComponentResponseOfuint32AndDestinyVendorCategoriesComponent;
   sales: DictionaryComponentResponseOfuint32AndPersonalDestinyVendorSaleItemSetComponent;
-  itemComponents: DestinyItemComponentSetOfint32;
+  itemComponents: { [key: string]: DestinyItemComponentSetOfint32 };
   currencyLookups: SingleComponentResponseOfDestinyCurrenciesComponent;
   stringVariables: SingleComponentResponseOfDestinyStringVariablesComponent;
 }
@@ -3529,7 +3531,7 @@ export interface DestinyUnlockStatus {
 }
 
 export interface PersonalDestinyVendorSaleItemSetComponent {
-  saleItems: DestinyVendorSaleItemComponent;
+  saleItems: { [key: string]: DestinyVendorSaleItemComponent };
 }
 
 export interface DestinyVendorResponse {
@@ -3566,7 +3568,7 @@ export interface DestinyPublicVendorSaleItemComponent {
 }
 
 export interface PublicDestinyVendorSaleItemSetComponent {
-  saleItems: DestinyPublicVendorSaleItemComponent;
+  saleItems: { [key: string]: DestinyPublicVendorSaleItemComponent };
 }
 
 export interface DestinyCollectibleNodeDetailResponse {
@@ -3684,7 +3686,7 @@ export interface DestinyPostGameCarnageReportEntry {
   score: DestinyHistoricalStatsValue;
   player: DestinyPlayer;
   characterId: string;
-  values: DestinyHistoricalStatsValue;
+  values: { [key: string]: DestinyHistoricalStatsValue };
   extended: DestinyPostGameCarnageReportExtendedData;
 }
 
@@ -3717,12 +3719,12 @@ export interface DestinyPlayer {
 
 export interface DestinyPostGameCarnageReportExtendedData {
   weapons: DestinyHistoricalWeaponStats[];
-  values: DestinyHistoricalStatsValue;
+  values: { [key: string]: DestinyHistoricalStatsValue };
 }
 
 export interface DestinyHistoricalWeaponStats {
   referenceId: number;
-  values: DestinyHistoricalStatsValue;
+  values: { [key: string]: DestinyHistoricalStatsValue };
 }
 
 export interface DestinyPostGameCarnageReportTeamEntry {
@@ -3740,7 +3742,7 @@ export interface DestinyReportOffensePgcrRequest {
 
 export interface DestinyReportReasonCategoryDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
-  reasons: DestinyReportReasonDefinition;
+  reasons: { [key: string]: DestinyReportReasonDefinition };
   hash: number;
   index: number;
   redacted: boolean;
@@ -3812,10 +3814,10 @@ export interface DestinyEntitySearchResultItem {
 }
 
 export interface DestinyHistoricalStatsByPeriod {
-  allTime: DestinyHistoricalStatsValue;
-  allTimeTier1: DestinyHistoricalStatsValue;
-  allTimeTier2: DestinyHistoricalStatsValue;
-  allTimeTier3: DestinyHistoricalStatsValue;
+  allTime: { [key: string]: DestinyHistoricalStatsValue };
+  allTimeTier1: { [key: string]: DestinyHistoricalStatsValue };
+  allTimeTier2: { [key: string]: DestinyHistoricalStatsValue };
+  allTimeTier3: { [key: string]: DestinyHistoricalStatsValue };
   daily: DestinyHistoricalStatsPeriodGroup[];
   monthly: DestinyHistoricalStatsPeriodGroup[];
 }
@@ -3823,7 +3825,7 @@ export interface DestinyHistoricalStatsByPeriod {
 export interface DestinyHistoricalStatsPeriodGroup {
   period: string;
   activityDetails: DestinyHistoricalStatsActivity;
-  values: DestinyHistoricalStatsValue;
+  values: { [key: string]: DestinyHistoricalStatsValue };
 }
 
 export interface DestinyHistoricalStatsResults {
@@ -3837,14 +3839,14 @@ export interface DestinyHistoricalStatsAccountResult {
 }
 
 export interface DestinyHistoricalStatsWithMerged {
-  results: DestinyHistoricalStatsByPeriod;
+  results: { [key: string]: DestinyHistoricalStatsByPeriod };
   merged: DestinyHistoricalStatsByPeriod;
 }
 
 export interface DestinyHistoricalStatsPerCharacter {
   characterId: string;
   deleted: boolean;
-  results: DestinyHistoricalStatsByPeriod;
+  results: { [key: string]: DestinyHistoricalStatsByPeriod };
   merged: DestinyHistoricalStatsByPeriod;
 }
 
@@ -3862,7 +3864,7 @@ export interface DestinyAggregateActivityResults {
 
 export interface DestinyAggregateActivityStats {
   activityHash: number;
-  values: DestinyHistoricalStatsValue;
+  values: { [key: string]: DestinyHistoricalStatsValue };
 }
 
 export interface DestinyMilestoneContent {
@@ -3919,7 +3921,7 @@ export interface DestinyPublicMilestoneChallengeActivity {
   modifierHashes: number[];
   loadoutRequirementIndex: number;
   phaseHashes: number[];
-  booleanActivityOptions: object;
+  booleanActivityOptions: { [key: string]: boolean };
 }
 
 export interface DestinyPublicMilestoneVendor {
@@ -4194,43 +4196,43 @@ export interface SingleComponentResponseOfDestinyStringVariablesComponent {
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCharacterComponent {
-  data: DestinyCharacterComponent;
+  data: { [key: string]: DestinyCharacterComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyInventoryComponent {
-  data: DestinyInventoryComponent;
+  data: { [key: string]: DestinyInventoryComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCharacterProgressionComponent {
-  data: DestinyCharacterProgressionComponent;
+  data: { [key: string]: DestinyCharacterProgressionComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCharacterRenderComponent {
-  data: DestinyCharacterRenderComponent;
+  data: { [key: string]: DestinyCharacterRenderComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCharacterActivitiesComponent {
-  data: DestinyCharacterActivitiesComponent;
+  data: { [key: string]: DestinyCharacterActivitiesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyKiosksComponent {
-  data: DestinyKiosksComponent;
+  data: { [key: string]: DestinyKiosksComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyPlugSetsComponent {
-  data: DestinyPlugSetsComponent;
+  data: { [key: string]: DestinyPlugSetsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4241,43 +4243,43 @@ export interface DestinyBaseItemComponentSetOfuint32 {
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemObjectivesComponent {
-  data: DestinyItemObjectivesComponent;
+  data: { [key: string]: DestinyItemObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemPerksComponent {
-  data: DestinyItemPerksComponent;
+  data: { [key: string]: DestinyItemPerksComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyPresentationNodesComponent {
-  data: DestinyPresentationNodesComponent;
+  data: { [key: string]: DestinyPresentationNodesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCharacterRecordsComponent {
-  data: DestinyCharacterRecordsComponent;
+  data: { [key: string]: DestinyCharacterRecordsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCollectiblesComponent {
-  data: DestinyCollectiblesComponent;
+  data: { [key: string]: DestinyCollectiblesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyStringVariablesComponent {
-  data: DestinyStringVariablesComponent;
+  data: { [key: string]: DestinyStringVariablesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCraftablesComponent {
-  data: DestinyCraftablesComponent;
+  data: { [key: string]: DestinyCraftablesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4288,13 +4290,13 @@ export interface DestinyBaseItemComponentSetOfint64 {
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemObjectivesComponent {
-  data: DestinyItemObjectivesComponent;
+  data: { [key: string]: DestinyItemObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemPerksComponent {
-  data: DestinyItemPerksComponent;
+  data: { [key: string]: DestinyItemPerksComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4313,55 +4315,55 @@ export interface DestinyItemComponentSetOfint64 {
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemInstanceComponent {
-  data: DestinyItemInstanceComponent;
+  data: { [key: string]: DestinyItemInstanceComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemRenderComponent {
-  data: DestinyItemRenderComponent;
+  data: { [key: string]: DestinyItemRenderComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemStatsComponent {
-  data: DestinyItemStatsComponent;
+  data: { [key: string]: DestinyItemStatsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemSocketsComponent {
-  data: DestinyItemSocketsComponent;
+  data: { [key: string]: DestinyItemSocketsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemReusablePlugsComponent {
-  data: DestinyItemReusablePlugsComponent;
+  data: { [key: string]: DestinyItemReusablePlugsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemPlugObjectivesComponent {
-  data: DestinyItemPlugObjectivesComponent;
+  data: { [key: string]: DestinyItemPlugObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyItemTalentGridComponent {
-  data: DestinyItemTalentGridComponent;
+  data: { [key: string]: DestinyItemTalentGridComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemPlugComponent {
-  data: DestinyItemPlugComponent;
+  data: { [key: string]: DestinyItemPlugComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint64AndDestinyCurrenciesComponent {
-  data: DestinyCurrenciesComponent;
+  data: { [key: string]: DestinyCurrenciesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4475,23 +4477,23 @@ export interface SingleComponentResponseOfDestinyVendorGroupComponent {
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyVendorComponent {
-  data: DestinyVendorComponent;
+  data: { [key: string]: DestinyVendorComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyVendorCategoriesComponent {
-  data: DestinyVendorCategoriesComponent;
+  data: { [key: string]: DestinyVendorCategoriesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DestinyVendorSaleItemSetComponentOfDestinyVendorSaleItemComponent {
-  saleItems: DestinyVendorSaleItemComponent;
+  saleItems: { [key: string]: DestinyVendorSaleItemComponent };
 }
 
 export interface DictionaryComponentResponseOfuint32AndPersonalDestinyVendorSaleItemSetComponent {
-  data: PersonalDestinyVendorSaleItemSetComponent;
+  data: { [key: string]: PersonalDestinyVendorSaleItemSetComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4502,13 +4504,13 @@ export interface DestinyBaseItemComponentSetOfint32 {
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemObjectivesComponent {
-  data: DestinyItemObjectivesComponent;
+  data: { [key: string]: DestinyItemObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemPerksComponent {
-  data: DestinyItemPerksComponent;
+  data: { [key: string]: DestinyItemPerksComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4527,43 +4529,43 @@ export interface DestinyItemComponentSetOfint32 {
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemInstanceComponent {
-  data: DestinyItemInstanceComponent;
+  data: { [key: string]: DestinyItemInstanceComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemRenderComponent {
-  data: DestinyItemRenderComponent;
+  data: { [key: string]: DestinyItemRenderComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemStatsComponent {
-  data: DestinyItemStatsComponent;
+  data: { [key: string]: DestinyItemStatsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemSocketsComponent {
-  data: DestinyItemSocketsComponent;
+  data: { [key: string]: DestinyItemSocketsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemReusablePlugsComponent {
-  data: DestinyItemReusablePlugsComponent;
+  data: { [key: string]: DestinyItemReusablePlugsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemPlugObjectivesComponent {
-  data: DestinyItemPlugObjectivesComponent;
+  data: { [key: string]: DestinyItemPlugObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemTalentGridComponent {
-  data: DestinyItemTalentGridComponent;
+  data: { [key: string]: DestinyItemTalentGridComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4581,23 +4583,23 @@ export interface SingleComponentResponseOfDestinyVendorCategoriesComponent {
 }
 
 export interface DictionaryComponentResponseOfint32AndDestinyVendorSaleItemComponent {
-  data: DestinyVendorSaleItemComponent;
+  data: { [key: string]: DestinyVendorSaleItemComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyPublicVendorComponent {
-  data: DestinyPublicVendorComponent;
+  data: { [key: string]: DestinyPublicVendorComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DestinyVendorSaleItemSetComponentOfDestinyPublicVendorSaleItemComponent {
-  saleItems: DestinyPublicVendorSaleItemComponent;
+  saleItems: { [key: string]: DestinyPublicVendorSaleItemComponent };
 }
 
 export interface DictionaryComponentResponseOfuint32AndPublicDestinyVendorSaleItemSetComponent {
-  data: PublicDestinyVendorSaleItemSetComponent;
+  data: { [key: string]: PublicDestinyVendorSaleItemSetComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4616,43 +4618,43 @@ export interface DestinyItemComponentSetOfuint32 {
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemInstanceComponent {
-  data: DestinyItemInstanceComponent;
+  data: { [key: string]: DestinyItemInstanceComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemRenderComponent {
-  data: DestinyItemRenderComponent;
+  data: { [key: string]: DestinyItemRenderComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemStatsComponent {
-  data: DestinyItemStatsComponent;
+  data: { [key: string]: DestinyItemStatsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemSocketsComponent {
-  data: DestinyItemSocketsComponent;
+  data: { [key: string]: DestinyItemSocketsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemReusablePlugsComponent {
-  data: DestinyItemReusablePlugsComponent;
+  data: { [key: string]: DestinyItemReusablePlugsComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemPlugObjectivesComponent {
-  data: DestinyItemPlugObjectivesComponent;
+  data: { [key: string]: DestinyItemPlugObjectivesComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
 
 export interface DictionaryComponentResponseOfuint32AndDestinyItemTalentGridComponent {
-  data: DestinyItemTalentGridComponent;
+  data: { [key: string]: DestinyItemTalentGridComponent };
   privacy: ComponentPrivacySetting;
   disabled: boolean;
 }
@@ -4862,7 +4864,7 @@ export interface PlatformFriend {
 
 export interface CoreSettingsConfiguration {
   environment: string;
-  systems: CoreSystem;
+  systems: { [key: string]: CoreSystem };
   ignoreReasons: CoreSetting[];
   forumCategories: CoreSetting[];
   groupAvatars: CoreSetting[];
@@ -4886,7 +4888,7 @@ export interface CoreSettingsConfiguration {
 
 export interface CoreSystem {
   enabled: boolean;
-  parameters: object;
+  parameters: { [key: string]: string };
 }
 
 export interface CoreSetting {
