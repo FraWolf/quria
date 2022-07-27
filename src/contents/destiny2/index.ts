@@ -120,7 +120,6 @@ export class Destiny {
     );
 
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-
     return request(requestURL, true, "GET", authHeaders);
   }
 
