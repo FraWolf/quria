@@ -9,18 +9,20 @@ export async function request(
 ) {
   if (!url) throw Error;
   else {
-    let req;
+    let requestToSend;
     try {
       let options: RequestInit = { method, headers };
       if (method === "POST") options.body = body;
 
-      let req1 = await fetch(url, options);
-      if (!json) req = await req1.text();
-      else if (json) req = await req1.json();
+      let bungieRequest = await fetch(url, options);
+
+      requestToSend = json
+        ? await bungieRequest.json()
+        : await bungieRequest.text();
     } catch (e: any) {
-      return e.message;
+      requestToSend = { error: true, message: e.message };
     }
 
-    return req;
+    return requestToSend;
   }
 }
