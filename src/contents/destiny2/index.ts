@@ -103,7 +103,7 @@ export class Destiny {
    * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
    */
   GetLinkedProfiles(
-    membershipId: number,
+    membershipId: string,
     membershipType: BungieMembershipType,
     queryString?: { getAllMemberships: boolean },
     tokens?: Tokens
@@ -126,7 +126,7 @@ export class Destiny {
    * @returns Destiny Profile information for the supplied membership.
    */
   GetProfile(
-    destinyMembershipId: number,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString: { components: DestinyComponentType[] },
     tokens?: Tokens
@@ -150,8 +150,8 @@ export class Destiny {
    * @returns Character information for the supplied character.
    */
   GetCharacter(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: { components: DestinyComponentType[] },
     tokens?: Tokens
@@ -166,11 +166,11 @@ export class Destiny {
 
   /**
    * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-   * @param {int64} groupId A valid group id of clan.
+   * @param {string} groupId A valid group id of clan.
    * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
    */
   GetClanWeeklyRewardState(
-    groupId: number,
+    groupId: string,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyMilestone>> {
     const requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
@@ -192,15 +192,15 @@ export class Destiny {
 
   /**
    * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-   * @param {int64} destinyMembershipId The membership ID of the destiny profile.
-   * @param {int64} itemInstanceId The Instance ID of the destiny item.
+   * @param {string} destinyMembershipId The membership ID of the destiny profile.
+   * @param {string} itemInstanceId The Instance ID of the destiny item.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
    */
   GetItem(
-    destinyMembershipId: number,
-    itemInstanceId: number,
+    destinyMembershipId: string,
+    itemInstanceId: string,
     membershipType: BungieMembershipType,
     queryString?: { components: DestinyComponentType[] },
     tokens?: Tokens
@@ -216,15 +216,15 @@ export class Destiny {
 
   /**
    * Returns character information for the supplied character.
-   * @param {int64} characterId ID of the character.
-   * @param {int64} destinyMembershipId The membership ID of the destiny profile.
+   * @param {string} characterId ID of the character.
+   * @param {string} destinyMembershipId The membership ID of the destiny profile.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Character information for the supplied character.
    */
   GetVendors(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: { components?: DestinyComponentType[]; filter?: number },
     tokens?: Tokens
@@ -240,16 +240,16 @@ export class Destiny {
 
   /**
    * Get the details of a specific Vendor.
-   * @param {int64} characterId The Destiny Character ID of the character for whom we're getting vendor info.
-   * @param {int64} destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param {string} characterId The Destiny Character ID of the character for whom we're getting vendor info.
+   * @param {string} destinyMembershipId Destiny membership ID of another user. You may be denied.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {uint32} vendorHash The Hash identifier of the Vendor to be returned.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns The details of a specific Vendor.
    */
   GetVendor(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     vendorHash: number,
     queryString?: { components: DestinyComponentType[] },
@@ -285,8 +285,8 @@ export class Destiny {
   /**
    * Given a Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
    * @param {int32} membershipType A valid non-BungieNet membership type.
-   * @param {int64} destinyMembershipId Destiny membership ID of another user. You may be denied.
-   * @param {int64} characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
+   * @param {string} destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param {string} characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
    * @param {uint32} collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
@@ -587,11 +587,11 @@ export class Destiny {
 
   /**
    * Gets the available post game carnage report for the activity ID.
-   * @param {int64} activityId The ID of the activity whose PGCR is requested.
+   * @param {string} activityId The ID of the activity whose PGCR is requested.
    * @returns The available post game carnage report for the activity ID.
    */
   GetPostGameCarnageReport(
-    activityId: number,
+    activityId: string,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
     const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
@@ -609,7 +609,7 @@ export class Destiny {
    * @returns A player that you met in an activity that was engaging in ToS-violating activities.
    */
   ReportOffensivePostGameCarnageReportPlayer(
-    activityId: number,
+    activityId: string,
     reasonCategoryHashes: number[],
     reasonHashes: number[],
     offendingCharacterId: string,
@@ -647,12 +647,12 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {int64} groupId Group ID of the clan whose leaderboards you wish to fetch.
+   * @param {string} groupId Group ID of the clan whose leaderboards you wish to fetch.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetClanLeaderboards(
-    groupId: number,
+    groupId: string,
     queryString?: { maxtop?: number; modes?: string; statid?: string },
     tokens?: Tokens
   ): Promise<APIResponse<object>> {
@@ -667,12 +667,12 @@ export class Destiny {
 
   /**
    * Gets aggregated stats for a clan using the same categories as the clan leaderboards.
-   * @param {int64} groupId Group ID of the clan whose leaderboards you wish to fetch.
+   * @param {string} groupId Group ID of the clan whose leaderboards you wish to fetch.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Aggregated stats for a clan using the same categories as the clan leaderboards.
    */
   GetClanAggregateStats(
-    groupId: number,
+    groupId: string,
     queryString?: { modes?: string },
     tokens?: Tokens
   ): Promise<APIResponse<DestinyClanAggregateStat[]>> {
@@ -687,13 +687,13 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboards(
-    destinyMembershipId: number,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: { maxtop?: number; modes?: string; statid?: string },
     tokens?: Tokens
@@ -709,15 +709,15 @@ export class Destiny {
 
   /**
    * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
-   * @param {int64} characterId The specific character to build the leaderboard around for the provided Destiny Membership.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} characterId The specific character to build the leaderboard around for the provided Destiny Membership.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
    */
   GetLeaderboardsForCharacter(
     characterId: string,
-    destinyMembershipId: number,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: { maxtop?: number; modes?: string; statid?: string },
     tokens?: Tokens
@@ -755,15 +755,15 @@ export class Destiny {
 
   /**
    * Gets historical stats for indicated character.
-   * @param {int64} characterId The id of the character to retrieve. You can omit this character ID or set it to 0 to get aggregate stats across all characters.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} characterId The id of the character to retrieve. You can omit this character ID or set it to 0 to get aggregate stats across all characters.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Historical stats for indicated character.
    */
   GetHistoricalStats(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: {
       dayend?: string;
@@ -785,13 +785,13 @@ export class Destiny {
 
   /**
    * Gets aggregate historical stats organized around each character for a given account.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
-   * @param {int64} membershipType A valid non-BungieNet membership type.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Aggregate historical stats organized around each character for a given account.
    */
   GetHistoricalStatsForAccount(
-    destinyMembershipId: number,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: {
       groups?: number[];
@@ -809,15 +809,15 @@ export class Destiny {
 
   /**
    * Gets activity history stats for indicated character.
-   * @param {int64} characterId The id of the character to retrieve.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} characterId The id of the character to retrieve.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @param {object} queryString The optional querystrings that can be applied.
    * @returns Activity history stats for indicated character.
    */
   GetActivityHistory(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     queryString?: {
       count?: number;
@@ -837,14 +837,14 @@ export class Destiny {
 
   /**
    * Gets details about unique weapon usage, including all exotic weapons.
-   * @param {int64} characterId The id of the character to retrieve.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} characterId The id of the character to retrieve.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @returns Details about unique weapon usage, including all exotic weapons.
    */
   GetUniqueWeaponHistory(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyHistoricalWeaponStatsData>> {
@@ -856,14 +856,14 @@ export class Destiny {
 
   /**
    * Gets all activities the character has participated in together with aggregate statistics for those activities.
-   * @param {int64} characterId The specific character whose activities should be returned.
-   * @param {int64} destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param {string} characterId The specific character whose activities should be returned.
+   * @param {string} destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param {int32} membershipType A valid non-BungieNet membership type.
    * @returns All activities the character has participated in together with aggregate statistics for those activities.
    */
   GetDestinyAggregateActivityStats(
-    characterId: number,
-    destinyMembershipId: number,
+    characterId: string,
+    destinyMembershipId: string,
     membershipType: BungieMembershipType,
     tokens?: Tokens
   ): Promise<APIResponse<DestinyAggregateActivityResults>> {
