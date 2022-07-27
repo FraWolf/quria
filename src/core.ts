@@ -1,11 +1,16 @@
 import { generateOptions } from "./adapters/utils";
+import { App } from "./contents/app";
 import { Destiny } from "./contents/destiny2";
 import { OAuth } from "./contents/oauth";
+import { User } from "./contents/user";
 import { ClientOptions, Options } from "./types/general";
 
 export class Quria {
   private options: ClientOptions;
+
   public oauth: OAuth;
+  public app: App;
+  public user: User;
   public destiny2: Destiny;
 
   constructor(config: Options) {
@@ -21,8 +26,8 @@ export class Quria {
       this.options.app.client_id,
       this.options.app.client_secret
     );
-    // this.app;
-    // this.user = new User(this);
+    this.app = new App(this.options.urls.api, this.options.headers);
+    this.user = new User(this.options.urls.api, this.options.headers);
     // this.content;
     // this.forum;
     // this.groupv2;
