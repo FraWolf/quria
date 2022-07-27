@@ -1,61 +1,56 @@
-# Quria
+<h1 style="text-align: center">Quria</h1>
+<p style="text-align: center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
 
-A simple Destiny 2 API Wrapper made with Node.js.
-<br />
+<p>Quria is a TypeScript library which main purpose is to make it easier to interact with Destiny (1 & 2) API provided by Bungie, obtaining the required information through ready-to-use methods and full support for official types and enums.</p>
 
-### Installation
+<h2>Installation</h2>
 
-**Node.js 14.0.0 or newer is required.**
+<p>To use this library, <b>Node.js 14.17.0</b> or newer are required.</p>
 
-```sh-session
+```sh
 npm install quria
-```
 
-or
-
-```sh-session
 yarn add quria
 ```
 
-### Example usage
+<h2>Examples</h2>
+
+<details>
+  <summary>Basic usage</summary>
 
 ```js
 const QuriaAPI = require("quria");
 const quria = new QuriaAPI({
-  API_KEY: "your-api-key-here",
+    API_KEY: "your-api-key-here",
 });
 
 quria.destiny2
-  .GetDestinyManifest()
-  .then((res) => {
-    console.log(res.data.Response);
-  })
-  .catch((error) => {
-    console.log(error.response.data);
-  });
+    .GetDestinyManifest()
+    .then((res) => {
+        console.log(res.data.Response);
+    })
+    .catch((error) => {
+        console.log(error.response.data);
+    });
 ```
 
-### Documentation
+</details>
+
+
+<h2>Documentation</h2>
 
 You can use the [Bungie API Docs](https://bungie-net.github.io/multi/) as **Quria Documentation** because all of it's methods are the same as the docs says.
 
-### Links
+<h2>Links</h2>
 
 - [Bungie API Docs](https://bungie-net.github.io/multi/)
 - [GitHub](https://github.com/FraWolf/quria/)
 - [NPM](https://www.npmjs.com/package/quria)
 
-### Projects that uses Quria
+<h2>Projects that uses Quria</h2>
 
 Currently no projects uses Quria because it's still in development phase. If you would to include your project here, open an issues with the name, repository/website and a small description.
 
-### To do:
-
-- [x] OAuth2 Integration
-- [ ] Better request function (to avoid api url repeating every time)
-- [ ] Finishing authentication required function
-- [ ] Typescript rewrite (maybe using DIM's api types)
-
-### Contributing
+<h2>Contributing</h2>
 
 If you would contribute to this project, just fork the repository and then send a pull request. We will validate your request and, if it's valid, we will commit into the main branch.
