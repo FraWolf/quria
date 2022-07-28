@@ -1,10 +1,15 @@
 import { request } from "../../adapters/http-request";
 import { parseAuthenticationHeaders } from "../../adapters/utils";
 import { APIResponse } from "../../types/api";
+import { BungieMembershipType } from "../../types/enum";
 import { Tokens } from "../../types/general";
 import {
   GeneralUser,
   GetCredentialTypesForAccountResponse,
+  HardLinkedUserMembership,
+  UserMembershipData,
+  UserSearchPrefixRequest,
+  UserSearchResponse,
   UserTheme,
 } from "../../types/interface";
 
@@ -67,5 +72,92 @@ export class User {
     const requestURL = `${this.url}/User/GetAvailableThemes/`;
 
     return request(requestURL, true, "GET", this.headers);
+  }
+
+  /**
+   * Returns a list of accounts associated with the supplied membership ID and membership type.
+   * @param membershipId The membership ID of the target user.
+   * @param membershipType The types of membership the Accounts system supports.
+   * @returns A list of accounts associated with the supplied membership ID and membership type.
+   */
+  GetMembershipDataById(
+    membershipId: string,
+    membershipType: BungieMembershipType,
+    tokens?: Tokens
+  ): Promise<APIResponse<UserMembershipData>> {
+    const requestURL = `${this.url}/User/GetMembershipsById/${membershipId}/${membershipType}/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Returns a list of accounts associated with signed in user.
+   * @returns A list of accounts associated with signed in user.
+   */
+  GetMembershipDataForCurrentUser(
+    tokens?: Tokens
+  ): Promise<APIResponse<UserMembershipData>> {
+    const requestURL = `${this.url}/User/GetMembershipsForCurrentUser/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Gets any hard linked membership given a credential.
+   * @param credential The credential to look up. Must be a valid SteamID64.
+   * @param crType The credential type. 'SteamId' is the only valid value at present.
+   * @returns Any hard linked membership given a credential.
+   */
+  GetMembershipFromHardLinkedCredential(
+    credential: string,
+    crType: string,
+    tokens?: Tokens
+  ): Promise<APIResponse<HardLinkedUserMembership>> {
+    const requestURL = `${this.url}/User/GetMembershipFromHardLinkedCredential/${crType}/${credential}/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * @deprecated Do not use this to search users, use SearchByGlobalNamePost instead.
+   */
+  SearchByGlobalNamePrefix(
+    displayNamePrefix: string,
+    page: number,
+    tokens?: Tokens
+  ): Promise<APIResponse<UserSearchResponse>> {
+    const requestURL = `${this.url}/User/Search/Prefix/${displayNamePrefix}/${page}/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Given the prefix of a global display name, returns all users who share that name.
+   * @param page The zero-based page of results you desire.
+   * @returns The prefix of a global display name, returns all users who share that name.
+   */
+  SearchByGlobalNamePost(
+    page: number,
+    displayNamePrefix: string,
+    tokens?: Tokens
+  ): Promise<APIResponse<UserSearchResponse>> {
+    const requestURL = `${this.url}/User/Search/GlobalName/${page}/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    const bodyParams: UserSearchPrefixRequest = {
+      displayNamePrefix,
+    };
+
+    return request(
+      requestURL,
+      true,
+      "POST",
+      authHeaders,
+      JSON.stringify(bodyParams)
+    );
   }
 }
