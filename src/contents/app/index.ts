@@ -36,7 +36,7 @@ export class App {
    * Get list of applications created by Bungie.
    * @returns List of applications created by Bungie.
    */
-  GetBungieApplications(): Promise<APIResponse<Application>> {
+  GetBungieApplications(): Promise<APIResponse<Application[]>> {
     const requestURL = `${this.url}/App/FirstParty/`;
 
     return request(requestURL, true, "GET", this.headers);
