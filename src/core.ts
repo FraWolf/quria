@@ -1,5 +1,6 @@
 import { generateOptions } from "./adapters/utils";
 import { App } from "./contents/app";
+import { Content } from "./contents/content";
 import { Destiny } from "./contents/destiny2";
 import { OAuth } from "./contents/oauth";
 import { User } from "./contents/user";
@@ -11,12 +12,11 @@ export class Quria {
   public oauth: OAuth;
   public app: App;
   public user: User;
+  public content: Content;
   public destiny2: Destiny;
 
   constructor(config: Options) {
     this.options = generateOptions(config);
-
-    // this.parameters = require("./helpers/parameters");
 
     // Loads API endpoints paths
     this.oauth = new OAuth(
@@ -28,7 +28,7 @@ export class Quria {
     );
     this.app = new App(this.options.urls.api, this.options.headers);
     this.user = new User(this.options.urls.api, this.options.headers);
-    // this.content;
+    this.content = new Content(this.options.urls.api, this.options.headers);
     // this.forum;
     // this.groupv2;
     // this.tokens;
