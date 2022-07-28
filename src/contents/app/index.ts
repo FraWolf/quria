@@ -16,6 +16,8 @@ export class App {
   /**
    * Get API usage by application for time frame specified.
    * @param applicationId ID of the application to get usage statistics.
+   * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns API usage by application for time frame specified
    */
   GetApplicationApiUsage(

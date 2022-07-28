@@ -22,6 +22,7 @@ export class User {
   /**
    * Loads a bungienet user by membership id.
    * @param id The requested Bungie.net membership id.
+   * @param tokens The optional tokens that can be applied.
    * @returns A bungienet user by membership id.
    */
   GetBungieNetUserById(
@@ -37,6 +38,7 @@ export class User {
   /**
    * Gets a list of all display names linked to this membership id but sanitized.
    * @param membershipId The requested membership id to load.
+   * @param tokens The optional tokens that can be applied.
    * @returns A list of all display names linked to this membership id but sanitized.
    */
   GetSanitizedPlatformDisplayNames(
@@ -52,6 +54,7 @@ export class User {
   /**
    * Returns a list of credential types attached to the requested account.
    * @param membershipId The user's membership id.
+   * @param tokens The optional tokens that can be applied.
    * @returns A list of credential types attached to the requested account.
    */
   GetCredentialTypesForTargetAccount(
@@ -78,6 +81,7 @@ export class User {
    * Returns a list of accounts associated with the supplied membership ID and membership type.
    * @param membershipId The membership ID of the target user.
    * @param membershipType The types of membership the Accounts system supports.
+   * @param tokens The optional tokens that can be applied.
    * @returns A list of accounts associated with the supplied membership ID and membership type.
    */
   GetMembershipDataById(
@@ -108,6 +112,7 @@ export class User {
    * Gets any hard linked membership given a credential.
    * @param credential The credential to look up. Must be a valid SteamID64.
    * @param crType The credential type. 'SteamId' is the only valid value at present.
+   * @param tokens The optional tokens that can be applied.
    * @returns Any hard linked membership given a credential.
    */
   GetMembershipFromHardLinkedCredential(
@@ -138,6 +143,8 @@ export class User {
   /**
    * Given the prefix of a global display name, returns all users who share that name.
    * @param page The zero-based page of results you desire.
+   * @param displayNamePrefix
+   * @param tokens The optional tokens that can be applied.
    * @returns The prefix of a global display name, returns all users who share that name.
    */
   SearchByGlobalNamePost(

@@ -73,6 +73,7 @@ export class GroupV2 {
   /**
    * Gets the state of the user's clan invite preferences for a particular membership type - true if they wish to be invited to clans, false otherwise.
    * @param membershipType The types of membership the Accounts system supports.
+   * @param tokens The optional tokens that can be applied.
    * @returns The state of the user's clan invite preferences for a particular membership type - true if they wish to be invited to clans, false otherwise.
    */
   GetUserClanInviteSetting(
@@ -89,6 +90,7 @@ export class GroupV2 {
    * Gets groups recommended for you based on the groups to whom those you follow belong.
    * @param createDateRange Requested range in which to pull recommended groups
    * @param groupType Type of groups requested
+   * @param tokens The optional tokens that can be applied.
    * @returns Groups recommended for you based on the groups to whom those you follow belong.
    */
   GetRecommendedGroups(
@@ -236,6 +238,7 @@ export class GroupV2 {
    * @param homepage
    * @param enableInvitationMessagingForAdmins
    * @param defaultPublicity
+   * @param tokens The optional tokens that can be applied.
    * @returns Edit an existing group.
    */
   EditGroup(
@@ -299,6 +302,7 @@ export class GroupV2 {
    * @param gonfalonColorId
    * @param gonfalonDetailId
    * @param gonfalonDetailColorId
+   * @param tokens The optional tokens that can be applied.
    * @returns Edit an existing group's clan banner.
    */
   EditClanBanner(
@@ -342,6 +346,7 @@ export class GroupV2 {
    * @param HostGuidedGamePermissionOverride
    * @param UpdateBannerPermissionOverride
    * @param JoinLevel
+   * @param tokens The optional tokens that can be applied.
    * @returns Group options only available to a founder.
    */
   EditFounderOptions(
@@ -378,6 +383,7 @@ export class GroupV2 {
    * @param groupId Group ID of the group to edit.
    * @param chatName
    * @param chatSecurity
+   * @param tokens The optional tokens that can be applied.
    * @returns A new optional conversation/chat channel. Requires admin permissions to the group.
    */
   AddOptionalConversation(
@@ -410,6 +416,7 @@ export class GroupV2 {
    * @param chatEnabled
    * @param chatName
    * @param chatSecurity
+   * @param tokens The optional tokens that can be applied.
    * @returns The settings of an optional conversation/chat channel. Requires admin permissions to the group.
    */
   EditOptionalConversation(
@@ -442,6 +449,8 @@ export class GroupV2 {
    * Get the list of members in a given group.
    * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 items per page.
    * @param groupId The ID of the group.
+   * @param queryString The optional querystrings that can be applied.
+   * @param tokens The optional tokens that can be applied.
    * @returns The list of members in a given group.
    */
   GetMembersOfGroup(
@@ -463,6 +472,7 @@ export class GroupV2 {
    * Get the list of members in a given group who are of admin level or higher.
    * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 items per page.
    * @param groupId The ID of the group.
+   * @param tokens The optional tokens that can be applied.
    * @returns The list of members in a given group who are of admin level or higher.
    */
   GetAdminsAndFounderOfGroup(
@@ -482,6 +492,7 @@ export class GroupV2 {
    * @param membershipId Membership ID to modify.
    * @param membershipType Membership type of the provide membership ID.
    * @param memberType New membertype for the specified member.
+   * @param tokens The optional tokens that can be applied.
    * @returns The membership type of a given member. You must have suitable permissions in the group to perform this operation.
    */
   EditGroupMembership(
@@ -502,6 +513,7 @@ export class GroupV2 {
    * @param groupId Group ID to kick the user from.
    * @param membershipId Membership ID to kick.
    * @param membershipType Membership type of the provided membership ID.
+   * @param tokens The optional tokens that can be applied.
    * @returns A member from the given group, forcing them to reapply if they wish to re-join the group.
    */
   KickMember(
@@ -523,6 +535,7 @@ export class GroupV2 {
    * @param membershipType Membership type of the provided membership ID.
    * @param comment
    * @param length
+   * @param tokens The optional tokens that can be applied.
    * @returns The requested member from the requested group for the specified period of time.
    */
   BanMember(
@@ -555,6 +568,7 @@ export class GroupV2 {
    * @param groupId Group ID that has the member to ban.
    * @param membershipId Membership ID of the member to ban from the group.
    * @param membershipType Membership type of the provided membership ID.
+   * @param tokens The optional tokens that can be applied.
    * @returns The requested member, allowing them to re-apply for membership.
    */
   UnbanMember(
@@ -573,6 +587,7 @@ export class GroupV2 {
    * Get the list of banned members in a given group.
    * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 entries.
    * @param groupId Group ID whose banned members you are fetching
+   * @param tokens The optional tokens that can be applied.
    * @returns The list of banned members in a given group.
    */
   GetBannedMembersOfGroup(
@@ -591,6 +606,7 @@ export class GroupV2 {
    * @param founderIdNew The new founder for this group. Must already be a group admin.
    * @param groupId The target group id.
    * @param membershipType Membership type of the provided founderIdNew.
+   * @param tokens The optional tokens that can be applied.
    * @returns Administrative method to allow the founder of a group or clan to give up their position to another admin permanently.
    */
   AbdicateFoundership(
@@ -609,6 +625,7 @@ export class GroupV2 {
    * Get the list of users who are awaiting a decision on their application to join a given group. Modified to include application info.
    * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 items per page.
    * @param groupId ID of the group.
+   * @param tokens The optional tokens that can be applied.
    * @returns The list of users who are awaiting a decision on their application to join a given group. Modified to include application info.
    */
   GetPendingMemberships(
@@ -626,6 +643,7 @@ export class GroupV2 {
    * Get the list of users who have been invited into the group.
    * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 items per page.
    * @param groupId ID of the group.
+   * @param tokens The optional tokens that can be applied.
    * @returns The list of users who have been invited into the group.
    */
   GetInvitedIndividuals(
@@ -643,6 +661,7 @@ export class GroupV2 {
    * Approve all of the pending users for the given group.
    * @param groupId ID of the group.
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns All of the pending users for the given group.
    */
   ApproveAllPending(
@@ -670,6 +689,7 @@ export class GroupV2 {
    * Deny all of the pending users for the given group.
    * @param groupId ID of the group.
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns All of the pending users for the given group.
    */
   DenyAllPending(
@@ -698,6 +718,7 @@ export class GroupV2 {
    * @param groupId ID of the group.
    * @param memberships
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns All of the pending users for the given group.
    */
   ApprovePendingForList(
@@ -729,6 +750,7 @@ export class GroupV2 {
    * @param membershipId The membership id being approved.
    * @param membershipType Membership type of the supplied membership ID.
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns The given membershipId to join the group/clan as long as they have applied.
    */
   ApprovePending(
@@ -759,6 +781,7 @@ export class GroupV2 {
    * @param groupId ID of the group.
    * @param memberships
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns All of the pending users for the given group that match the passed-in .
    */
   DenyPendingForList(
@@ -790,6 +813,7 @@ export class GroupV2 {
    * @param groupType Type of group the supplied member founded.
    * @param membershipId Membership ID to for which to find founded groups.
    * @param membershipType Membership type of the supplied membership ID.
+   * @param tokens The optional tokens that can be applied.
    * @returns Information about the groups that a given member has joined.
    */
   GetGroupsForMember(
@@ -810,6 +834,7 @@ export class GroupV2 {
    * @param groupType Type of group the supplied member founded.
    * @param membershipId Membership ID to for which to find founded groups.
    * @param membershipType Membership type of the supplied membership ID.
+   * @param tokens The optional tokens that can be applied.
    * @returns A founder to manually recover a group they can see in game but not on bungie.net
    */
   RecoverGroupForFounder(
@@ -830,6 +855,7 @@ export class GroupV2 {
    * @param groupType Type of group the supplied member applied.
    * @param membershipId Membership ID to for which to find applied groups.
    * @param membershipType Membership type of the supplied membership ID.
+   * @param tokens The optional tokens that can be applied.
    * @returns Information about the groups that a given member has applied to or been invited to.
    */
   GetPotentialGroupsForMember(
@@ -851,6 +877,7 @@ export class GroupV2 {
    * @param membershipId Membership id of the account being invited.
    * @param membershipType MembershipType of the account being invited.
    * @param message
+   * @param tokens The optional tokens that can be applied.
    * @returns A user to join this group.
    */
   IndividualGroupInvite(
@@ -881,6 +908,7 @@ export class GroupV2 {
    * @param groupId ID of the group you would like to join.
    * @param membershipId Membership id of the account being cancelled.
    * @param membershipType MembershipType of the account being cancelled.
+   * @param tokens The optional tokens that can be applied.
    * @returns A pending invitation to join a group.
    */
   IndividualGroupInviteCancel(

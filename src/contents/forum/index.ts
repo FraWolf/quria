@@ -17,6 +17,7 @@ export class Forum {
    * @param pageSize Unused
    * @param quickDate A date filter.
    * @param sort The sort mode.
+   * @param queryString The optional querystrings that can be applied.
    * @returns Topics from any forum.
    */
   GetTopicsPaged(
@@ -42,6 +43,7 @@ export class Forum {
    * @param page Zero base page
    * @param quickDate The date filter.
    * @param sort The sort mode.
+   * @param queryString The optional querystrings that can be applied.
    * @returns A listing of all topics marked as part of the core group.
    */
   GetCoreTopicsPaged(
@@ -68,6 +70,7 @@ export class Forum {
    * @param replySize
    * @param rootThreadMode
    * @param sortMode
+   * @param queryString The optional querystrings that can be applied.
    * @returns A thread of posts at the given parent, optionally returning replies to those posts as well as the original parent.
    */
   GetPostsThreadedPaged(
@@ -96,6 +99,7 @@ export class Forum {
    * @param replySize
    * @param rootThreadMode
    * @param sortMode
+   * @param queryString The optional querystrings that can be applied.
    * @returns A thread of posts starting at the topicId of the input childPostId, optionally returning replies to those posts as well as the original parent.
    */
   GetPostsThreadedPagedFromChild(
@@ -118,6 +122,7 @@ export class Forum {
   /**
    * Returns the post specified and its immediate parent.
    * @param childPostId
+   * @param queryString The optional querystrings that can be applied.
    * @returns The post specified and its immediate parent.
    */
   GetPostAndParent(
@@ -135,6 +140,7 @@ export class Forum {
   /**
    * Returns the post specified and its immediate parent of posts that are awaiting approval.
    * @param childPostId
+   * @param queryString The optional querystrings that can be applied.
    * @returns The post specified and its immediate parent of posts that are awaiting approval.
    */
   GetPostAndParentAwaitingApproval(

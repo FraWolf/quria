@@ -29,6 +29,7 @@ export class Content {
    * Returns a content item referenced by id
    * @param id
    * @param locale
+   * @param queryString The optional querystrings that can be applied.
    * @returns A content item referenced by id
    */
   GetContentById(
@@ -49,6 +50,7 @@ export class Content {
    * @param locale
    * @param tag
    * @param type
+   * @param queryString The optional querystrings that can be applied.
    * @returns The newest item that matches a given tag and Content Type.
    */
   GetContentByTagAndType(
@@ -68,6 +70,7 @@ export class Content {
   /**
    * Gets content based on querystring information passed in.
    * @param locale
+   * @param queryString The optional querystrings that can be applied.
    * @returns Content based on querystring information passed in.
    */
   SearchContentWithText(
@@ -94,6 +97,7 @@ export class Content {
    * @param locale
    * @param tag
    * @param type
+   * @param queryString The optional querystrings that can be applied.
    * @returns For Content Items that match the given Tag and Content Type.
    */
   SearchContentByTagAndType(
