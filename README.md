@@ -1,7 +1,6 @@
 <h1 align="center">Quria</h1>
 <p align="center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
 
-
 <p>Quria is a TypeScript library which main purpose is to make it easier to interact with Destiny (1 & 2) API provided by Bungie, obtaining the required information through ready-to-use methods and full support for official types and enums.</p>
 
 <h2>Installation</h2>
@@ -22,21 +21,20 @@ yarn add quria
 ```js
 const QuriaAPI = require("quria");
 const quria = new QuriaAPI({
-    API_KEY: "your-api-key-here",
+  API_KEY: "your-api-key-here",
 });
 
 quria.destiny2
-    .GetDestinyManifest()
-    .then((res) => {
-        console.log(res.data.Response);
-    })
-    .catch((error) => {
-        console.log(error.response.data);
-    });
+  .GetDestinyManifest()
+  .then((res) => {
+    console.log(res.Response);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 ```
 
 </details>
-
 
 <h2>Documentation</h2>
 
