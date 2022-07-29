@@ -7,6 +7,8 @@
     "rootDir": "src",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "sourceMap": true,
+    "declarationMap": true,
   },
   "include": [
     "src/**/*"

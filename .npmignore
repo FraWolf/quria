@@ -4,3 +4,5 @@ src/
 .github/
 
 README.md
+package-lock.json
+yarn.lock
