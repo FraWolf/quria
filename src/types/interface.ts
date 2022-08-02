@@ -2599,7 +2599,7 @@ export interface DestinyManifest {
   mobileGearAssetDataBases: GearAssetDataBaseDefinition[];
   mobileWorldContentPaths: { [key: string]: string };
   jsonWorldContentPaths: { [key: string]: string };
-  jsonWorldComponentContentPaths: { [key: string]: object };
+  jsonWorldComponentContentPaths: { [key: string]: string };
   mobileClanBannerDatabasePath: string;
   mobileGearCDN: { [key: string]: string };
   iconImagePyramidInfo: ImagePyramidEntry[];
@@ -2803,7 +2803,7 @@ export interface DestinyItemPlug {
 }
 
 export interface DestinyProfileProgressionComponent {
-  checklists: { [key: string]: object };
+  checklists: { [key: string]: boolean };
   seasonalArtifact: DestinyArtifactProfileScoped;
 }
 
@@ -2989,7 +2989,7 @@ export interface DestinyCharacterProgressionComponent {
   quests: DestinyQuestStatus[];
   uninstancedItemObjectives: { [key: string]: DestinyObjectiveProgress[] };
   uninstancedItemPerks: { [key: string]: DestinyItemPerksComponent };
-  checklists: { [key: string]: object };
+  checklists: { [key: string]: boolean };
   seasonalArtifact: DestinyArtifactCharacterScoped;
 }
 
