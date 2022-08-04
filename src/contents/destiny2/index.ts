@@ -943,7 +943,7 @@ export class Destiny {
    */
   AwaInitializeRequest(
     type: number,
-    affectedItemId: string | null,
+    affectedItemId: string,
     membershipType: BungieMembershipType,
     characterId: string,
     tokens?: Tokens
