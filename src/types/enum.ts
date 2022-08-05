@@ -1,4 +1,4 @@
-export const enum ApplicationScopes {
+export enum ApplicationScopes {
   ReadBasicUserProfile = 1,
   ReadGroups = 2,
   WriteGroups = 4,
@@ -16,7 +16,7 @@ export const enum ApplicationScopes {
   UserPiiRead = 16384,
 }
 
-export const enum ApplicationStatus {
+export enum ApplicationStatus {
   None = 0,
   Private = 1,
   Public = 2,
@@ -24,13 +24,13 @@ export const enum ApplicationStatus {
   Blocked = 4,
 }
 
-export const enum DeveloperRole {
+export enum DeveloperRole {
   None = 0,
   Owner = 1,
   TeamMember = 2,
 }
 
-export const enum OptInFlags {
+export enum OptInFlags {
   None = 0,
   Newsletter = 1,
   System = 2,
@@ -43,7 +43,7 @@ export const enum OptInFlags {
   Careers = 256,
 }
 
-export const enum BungieMembershipType {
+export enum BungieMembershipType {
   None = 0,
   TigerXbox = 1,
   TigerPsn = 2,
@@ -55,7 +55,7 @@ export const enum BungieMembershipType {
   All = -1,
 }
 
-export const enum IgnoreStatus {
+export enum IgnoreStatus {
   NotIgnored = 0,
   IgnoredUser = 1,
   IgnoredGroup = 2,
@@ -65,7 +65,7 @@ export const enum IgnoreStatus {
   IgnoredGlobal = 32,
 }
 
-export const enum IgnoreLength {
+export enum IgnoreLength {
   None = 0,
   Week = 1,
   TwoWeeks = 2,
@@ -80,7 +80,7 @@ export const enum IgnoreLength {
   ThirtyDays = 11,
 }
 
-export const enum BungieCredentialType {
+export enum BungieCredentialType {
   None = 0,
   Xuid = 1,
   Psnid = 2,
@@ -96,35 +96,35 @@ export const enum BungieCredentialType {
   TwitchId = 18,
 }
 
-export const enum GroupType {
+export enum GroupType {
   General = 0,
   Clan = 1,
 }
 
-export const enum ChatSecuritySetting {
+export enum ChatSecuritySetting {
   Group = 0,
   Admins = 1,
 }
 
-export const enum GroupHomepage {
+export enum GroupHomepage {
   Wall = 0,
   Forum = 1,
   AllianceForum = 2,
 }
 
-export const enum MembershipOption {
+export enum MembershipOption {
   Reviewed = 0,
   Open = 1,
   Closed = 2,
 }
 
-export const enum GroupPostPublicity {
+export enum GroupPostPublicity {
   Public = 0,
   Alliance = 1,
   Private = 2,
 }
 
-export const enum Capabilities {
+export enum Capabilities {
   None = 0,
   Leaderboards = 1,
   Callsign = 2,
@@ -135,13 +135,13 @@ export const enum Capabilities {
   Alliances = 64,
 }
 
-export const enum HostGuidedGamesPermissionLevel {
+export enum HostGuidedGamesPermissionLevel {
   None = 0,
   Beginner = 1,
   Member = 2,
 }
 
-export const enum RuntimeGroupMemberType {
+export enum RuntimeGroupMemberType {
   None = 0,
   Beginner = 1,
   Member = 2,
@@ -150,19 +150,19 @@ export const enum RuntimeGroupMemberType {
   Founder = 5,
 }
 
-export const enum GroupAllianceStatus {
+export enum GroupAllianceStatus {
   Unallied = 0,
   Parent = 1,
   Child = 2,
 }
 
-export const enum GroupPotentialMemberStatus {
+export enum GroupPotentialMemberStatus {
   None = 0,
   Applicant = 1,
   Invitee = 2,
 }
 
-export const enum GroupDateRange {
+export enum GroupDateRange {
   All = 0,
   PastDay = 1,
   PastWeek = 2,
@@ -170,34 +170,34 @@ export const enum GroupDateRange {
   PastYear = 4,
 }
 
-export const enum GroupSortBy {
+export enum GroupSortBy {
   Name = 0,
   Date = 1,
   Popularity = 2,
   Id = 3,
 }
 
-export const enum GroupMemberCountFilter {
+export enum GroupMemberCountFilter {
   All = 0,
   OneToTen = 1,
   ElevenToOneHundred = 2,
   GreaterThanOneHundred = 3,
 }
 
-export const enum GroupApplicationResolveState {
+export enum GroupApplicationResolveState {
   Unresolved = 0,
   Accepted = 1,
   Denied = 2,
   Rescinded = 3,
 }
 
-export const enum GroupsForMemberFilter {
+export enum GroupsForMemberFilter {
   All = 0,
   Founded = 1,
   NonFounded = 2,
 }
 
-export const enum ContentPropertyDataTypeEnum {
+export enum ContentPropertyDataTypeEnum {
   None = 0,
   Plaintext = 1,
   Html = 2,
@@ -215,7 +215,7 @@ export const enum ContentPropertyDataTypeEnum {
   Color = 14,
 }
 
-export const enum ForumTopicsCategoryFiltersEnum {
+export enum ForumTopicsCategoryFiltersEnum {
   None = 0,
   Links = 1,
   Questions = 2,
@@ -227,7 +227,7 @@ export const enum ForumTopicsCategoryFiltersEnum {
   Polls = 128,
 }
 
-export const enum ForumTopicsQuickDateEnum {
+export enum ForumTopicsQuickDateEnum {
   All = 0,
   LastYear = 1,
   LastMonth = 2,
@@ -235,7 +235,7 @@ export const enum ForumTopicsQuickDateEnum {
   LastDay = 4,
 }
 
-export const enum ForumTopicsSortEnum {
+export enum ForumTopicsSortEnum {
   Default = 0,
   LastReplied = 1,
   MostReplied = 2,
@@ -246,14 +246,14 @@ export const enum ForumTopicsSortEnum {
   MostUpvoted = 7,
 }
 
-export const enum ForumMediaType {
+export enum ForumMediaType {
   None = 0,
   Image = 1,
   Video = 2,
   Youtube = 3,
 }
 
-export const enum ForumPostPopularity {
+export enum ForumPostPopularity {
   Empty = 0,
   Default = 1,
   Discussed = 2,
@@ -262,30 +262,30 @@ export const enum ForumPostPopularity {
   Hot = 5,
 }
 
-export const enum ForumRecruitmentIntensityLabel {
+export enum ForumRecruitmentIntensityLabel {
   None = 0,
   Casual = 1,
   Professional = 2,
 }
 
-export const enum ForumRecruitmentToneLabel {
+export enum ForumRecruitmentToneLabel {
   None = 0,
   FamilyFriendly = 1,
   Rowdy = 2,
 }
 
-export const enum ForumPostSortEnum {
+export enum ForumPostSortEnum {
   Default = 0,
   OldestFirst = 1,
 }
 
-export const enum CommunityContentSortMode {
+export enum CommunityContentSortMode {
   Trending = 0,
   Latest = 1,
   HighestRated = 2,
 }
 
-export const enum ForumPostCategoryEnums {
+export enum ForumPostCategoryEnums {
   None = 0,
   TextOnly = 1,
   Media = 2,
@@ -300,7 +300,7 @@ export const enum ForumPostCategoryEnums {
   Recruitment = 1024,
 }
 
-export const enum ForumFlagsEnum {
+export enum ForumFlagsEnum {
   None = 0,
   BungieStaffPost = 1,
   ForumNinjaPost = 2,
@@ -312,7 +312,7 @@ export const enum ForumFlagsEnum {
   CommunityContent = 128,
 }
 
-export const enum DestinyProgressionRewardItemState {
+export enum DestinyProgressionRewardItemState {
   None = 0,
   Invisible = 1,
   Earned = 2,
@@ -320,7 +320,7 @@ export const enum DestinyProgressionRewardItemState {
   ClaimAllowed = 8,
 }
 
-export const enum DestinyProgressionScope {
+export enum DestinyProgressionScope {
   Account = 0,
   Character = 1,
   Clan = 2,
@@ -332,26 +332,26 @@ export const enum DestinyProgressionScope {
   MappedUnlockValue = 8,
 }
 
-export const enum DestinyProgressionStepDisplayEffect {
+export enum DestinyProgressionStepDisplayEffect {
   None = 0,
   Character = 1,
   Item = 2,
 }
 
-export const enum SocketTypeActionType {
+export enum SocketTypeActionType {
   InsertPlug = 0,
   InfuseItem = 1,
   ReinitializeSocket = 2,
 }
 
-export const enum DestinySocketVisibility {
+export enum DestinySocketVisibility {
   Visible = 0,
   Hidden = 1,
   HiddenWhenEmpty = 2,
   HiddenIfNoPlugsAvailable = 3,
 }
 
-export const enum DestinySocketCategoryStyle {
+export enum DestinySocketCategoryStyle {
   Unknown = 0,
   Reusable = 1,
   Consumable = 2,
@@ -363,7 +363,7 @@ export const enum DestinySocketCategoryStyle {
   Supers = 8,
 }
 
-export const enum TierType {
+export enum TierType {
   Unknown = 0,
   Currency = 1,
   Basic = 2,
@@ -373,12 +373,12 @@ export const enum TierType {
   Exotic = 6,
 }
 
-export const enum BucketScope {
+export enum BucketScope {
   Character = 0,
   Account = 1,
 }
 
-export const enum BucketCategory {
+export enum BucketCategory {
   Invisible = 0,
   Item = 1,
   Currency = 2,
@@ -386,7 +386,7 @@ export const enum BucketCategory {
   Ignored = 4,
 }
 
-export const enum ItemLocation {
+export enum ItemLocation {
   Unknown = 0,
   Inventory = 1,
   Vault = 2,
@@ -394,25 +394,25 @@ export const enum ItemLocation {
   Postmaster = 4,
 }
 
-export const enum DestinyStatAggregationType {
+export enum DestinyStatAggregationType {
   CharacterAverage = 0,
   Character = 1,
   Item = 2,
 }
 
-export const enum DestinyStatCategory {
+export enum DestinyStatCategory {
   Gameplay = 0,
   Weapon = 1,
   Defense = 2,
   Primary = 3,
 }
 
-export const enum EquippingItemBlockAttributes {
+export enum EquippingItemBlockAttributes {
   None = 0,
   EquipOnAcquire = 1,
 }
 
-export const enum DestinyAmmunitionType {
+export enum DestinyAmmunitionType {
   None = 0,
   Primary = 1,
   Special = 2,
@@ -420,43 +420,43 @@ export const enum DestinyAmmunitionType {
   Unknown = 4,
 }
 
-export const enum DestinyClass {
+export enum DestinyClass {
   Titan = 0,
   Hunter = 1,
   Warlock = 2,
   Unknown = 3,
 }
 
-export const enum DestinyGender {
+export enum DestinyGender {
   Male = 0,
   Female = 1,
   Unknown = 2,
 }
 
-export const enum DestinyVendorProgressionType {
+export enum DestinyVendorProgressionType {
   Default = 0,
   Ritual = 1,
   NoSeasonalRefresh = 2,
 }
 
-export const enum VendorDisplayCategorySortOrder {
+export enum VendorDisplayCategorySortOrder {
   Default = 0,
   SortByTier = 1,
 }
 
-export const enum DestinyVendorInteractionRewardSelection {
+export enum DestinyVendorInteractionRewardSelection {
   None = 0,
   One = 1,
   All = 2,
 }
 
-export const enum DestinyVendorReplyType {
+export enum DestinyVendorReplyType {
   Accept = 0,
   Decline = 1,
   Complete = 2,
 }
 
-export const enum VendorInteractionType {
+export enum VendorInteractionType {
   Unknown = 0,
   Undefined = 1,
   QuestComplete = 2,
@@ -470,19 +470,19 @@ export const enum VendorInteractionType {
   Start = 10,
 }
 
-export const enum DestinyItemSortType {
+export enum DestinyItemSortType {
   ItemId = 0,
   Timestamp = 1,
   StackSize = 2,
 }
 
-export const enum DestinyVendorItemRefundPolicy {
+export enum DestinyVendorItemRefundPolicy {
   NotRefundable = 0,
   DeletesItem = 1,
   RevokesLicense = 2,
 }
 
-export const enum DestinyGatingScope {
+export enum DestinyGatingScope {
   None = 0,
   Global = 1,
   Clan = 2,
@@ -492,7 +492,7 @@ export const enum DestinyGatingScope {
   AssumedWorstCase = 6,
 }
 
-export const enum ActivityGraphNodeHighlightType {
+export enum ActivityGraphNodeHighlightType {
   None = 0,
   Normal = 1,
   Hyper = 2,
@@ -500,7 +500,7 @@ export const enum ActivityGraphNodeHighlightType {
   RiseOfIron = 4,
 }
 
-export const enum DestinyUnlockValueUIStyle {
+export enum DestinyUnlockValueUIStyle {
   Automatic = 0,
   Fraction = 1,
   Checkbox = 2,
@@ -518,13 +518,13 @@ export const enum DestinyUnlockValueUIStyle {
   LevelAndReward = 14,
 }
 
-export const enum DestinyObjectiveGrantStyle {
+export enum DestinyObjectiveGrantStyle {
   WhenIncomplete = 0,
   WhenComplete = 1,
   Always = 2,
 }
 
-export const enum DamageType {
+export enum DamageType {
   None = 0,
   Kinetic = 1,
   Arc = 2,
@@ -534,7 +534,7 @@ export const enum DamageType {
   Stasis = 6,
 }
 
-export const enum DestinyTalentNodeStepWeaponPerformances {
+export enum DestinyTalentNodeStepWeaponPerformances {
   None = 0,
   RateOfFire = 1,
   Damage = 2,
@@ -552,7 +552,7 @@ export const enum DestinyTalentNodeStepWeaponPerformances {
   All = 8191,
 }
 
-export const enum DestinyTalentNodeStepImpactEffects {
+export enum DestinyTalentNodeStepImpactEffects {
   None = 0,
   ArmorPiercing = 1,
   Ricochet = 2,
@@ -563,7 +563,7 @@ export const enum DestinyTalentNodeStepImpactEffects {
   All = 63,
 }
 
-export const enum DestinyTalentNodeStepGuardianAttributes {
+export enum DestinyTalentNodeStepGuardianAttributes {
   None = 0,
   Stats = 1,
   Shields = 2,
@@ -576,7 +576,7 @@ export const enum DestinyTalentNodeStepGuardianAttributes {
   All = 255,
 }
 
-export const enum DestinyTalentNodeStepLightAbilities {
+export enum DestinyTalentNodeStepLightAbilities {
   None = 0,
   Grenades = 1,
   Melee = 2,
@@ -587,7 +587,7 @@ export const enum DestinyTalentNodeStepLightAbilities {
   All = 63,
 }
 
-export const enum DestinyTalentNodeStepDamageTypes {
+export enum DestinyTalentNodeStepDamageTypes {
   None = 0,
   Kinetic = 1,
   Arc = 2,
@@ -596,7 +596,7 @@ export const enum DestinyTalentNodeStepDamageTypes {
   All = 15,
 }
 
-export const enum DestinyObjectiveUiStyle {
+export enum DestinyObjectiveUiStyle {
   None = 0,
   Highlighted = 1,
   CraftingWeaponLevel = 2,
@@ -606,7 +606,7 @@ export const enum DestinyObjectiveUiStyle {
   CraftingMementoTitle = 6,
 }
 
-export const enum DestinyActivityNavPointType {
+export enum DestinyActivityNavPointType {
   Inactive = 0,
   PrimaryObjective = 1,
   SecondaryObjective = 2,
@@ -626,7 +626,7 @@ export const enum DestinyActivityNavPointType {
   TrackedQuest = 16,
 }
 
-export const enum DestinyActivityModeType {
+export enum DestinyActivityModeType {
   None = 0,
   Story = 2,
   Strike = 3,
@@ -712,14 +712,14 @@ export const enum DestinyActivityModeType {
   IronBannerRift = 90,
 }
 
-export const enum DestinyActivityModeCategory {
+export enum DestinyActivityModeCategory {
   None = 0,
   PvE = 1,
   PvP = 2,
   PvECompetitive = 3,
 }
 
-export const enum DestinyItemSubType {
+export enum DestinyItemSubType {
   None = 0,
   Crucible = 1,
   Vanguard = 2,
@@ -753,7 +753,7 @@ export const enum DestinyItemSubType {
   Glaive = 33,
 }
 
-export const enum DestinyGraphNodeState {
+export enum DestinyGraphNodeState {
   Hidden = 0,
   Visible = 1,
   Teaser = 2,
@@ -761,14 +761,14 @@ export const enum DestinyGraphNodeState {
   Completed = 4,
 }
 
-export const enum DestinyRewardSourceCategory {
+export enum DestinyRewardSourceCategory {
   None = 0,
   Activity = 1,
   Vendor = 2,
   Aggregate = 3,
 }
 
-export const enum DestinyPresentationNodeType {
+export enum DestinyPresentationNodeType {
   Default = 0,
   Category = 1,
   Collectibles = 2,
@@ -777,12 +777,12 @@ export const enum DestinyPresentationNodeType {
   Craftable = 5,
 }
 
-export const enum DestinyScope {
+export enum DestinyScope {
   Profile = 0,
   Character = 1,
 }
 
-export const enum DestinyPresentationDisplayStyle {
+export enum DestinyPresentationDisplayStyle {
   Category = 0,
   Badge = 1,
   Medals = 2,
@@ -790,7 +790,7 @@ export const enum DestinyPresentationDisplayStyle {
   Record = 4,
 }
 
-export const enum DestinyRecordValueStyle {
+export enum DestinyRecordValueStyle {
   Integer = 0,
   Percentage = 1,
   Milliseconds = 2,
@@ -798,7 +798,7 @@ export const enum DestinyRecordValueStyle {
   Decimal = 4,
 }
 
-export const enum DestinyRecordToastStyle {
+export enum DestinyRecordToastStyle {
   None = 0,
   Record = 1,
   Lore = 2,
@@ -810,24 +810,24 @@ export const enum DestinyRecordToastStyle {
   CraftingRecipeUnlocked = 8,
 }
 
-export const enum DestinyPresentationScreenStyle {
+export enum DestinyPresentationScreenStyle {
   Default = 0,
   CategorySets = 1,
   Badge = 2,
 }
 
-export const enum PlugUiStyles {
+export enum PlugUiStyles {
   None = 0,
   Masterwork = 1,
 }
 
-export const enum PlugAvailabilityMode {
+export enum PlugAvailabilityMode {
   Normal = 0,
   UnavailableIfSocketContainsMatchingPlugCategory = 1,
   AvailableIfSocketContainsMatchingPlugCategory = 2,
 }
 
-export const enum DestinyEnergyType {
+export enum DestinyEnergyType {
   Any = 0,
   Arc = 1,
   Thermal = 2,
@@ -837,7 +837,7 @@ export const enum DestinyEnergyType {
   Stasis = 6,
 }
 
-export const enum SocketPlugSources {
+export enum SocketPlugSources {
   None = 0,
   InventorySourced = 1,
   ReusablePlugItems = 2,
@@ -845,13 +845,13 @@ export const enum SocketPlugSources {
   CharacterPlugSet = 8,
 }
 
-export const enum ItemPerkVisibility {
+export enum ItemPerkVisibility {
   Visible = 0,
   Disabled = 1,
   Hidden = 2,
 }
 
-export const enum SpecialItemType {
+export enum SpecialItemType {
   None = 0,
   SpecialCurrency = 1,
   Armor = 8,
@@ -863,7 +863,7 @@ export const enum SpecialItemType {
   Currency = 29,
 }
 
-export const enum DestinyItemType {
+export enum DestinyItemType {
   None = 0,
   Currency = 1,
   Armor = 2,
@@ -894,33 +894,33 @@ export const enum DestinyItemType {
   Pattern = 30,
 }
 
-export const enum DestinyBreakerType {
+export enum DestinyBreakerType {
   None = 0,
   ShieldPiercing = 1,
   Disruption = 2,
   Stagger = 3,
 }
 
-export const enum DestinyProgressionRewardItemAcquisitionBehavior {
+export enum DestinyProgressionRewardItemAcquisitionBehavior {
   Instant = 0,
   PlayerClaimRequired = 1,
 }
 
-export const enum ItemBindStatus {
+export enum ItemBindStatus {
   NotBound = 0,
   BoundToCharacter = 1,
   BoundToAccount = 2,
   BoundToGuild = 3,
 }
 
-export const enum TransferStatuses {
+export enum TransferStatuses {
   CanTransfer = 0,
   ItemIsEquipped = 1,
   NotTransferrable = 2,
   NoRoomInDestination = 4,
 }
 
-export const enum ItemState {
+export enum ItemState {
   None = 0,
   Locked = 1,
   Tracked = 2,
@@ -929,7 +929,7 @@ export const enum ItemState {
   HighlightedObjective = 16,
 }
 
-export const enum DestinyGameVersions {
+export enum DestinyGameVersions {
   None = 0,
   Destiny2 = 1,
   DLC1 = 2,
@@ -942,7 +942,7 @@ export const enum DestinyGameVersions {
   TheWitchQueen = 256,
 }
 
-export const enum DestinyComponentType {
+export enum DestinyComponentType {
   None = 0,
   Profiles = 100,
   VendorReceipts = 101,
@@ -981,13 +981,13 @@ export const enum DestinyComponentType {
   Craftables = 1300,
 }
 
-export const enum DestinyPresentationNodeState {
+export enum DestinyPresentationNodeState {
   None = 0,
   Invisible = 1,
   Obscured = 2,
 }
 
-export const enum DestinyRecordState {
+export enum DestinyRecordState {
   None = 0,
   RecordRedeemed = 1,
   RewardUnavailable = 2,
@@ -998,7 +998,7 @@ export const enum DestinyRecordState {
   CanEquipTitle = 64,
 }
 
-export const enum DestinyCollectibleState {
+export enum DestinyCollectibleState {
   None = 0,
   NotAcquired = 1,
   Obscured = 2,
@@ -1009,7 +1009,7 @@ export const enum DestinyCollectibleState {
   PurchaseDisabled = 64,
 }
 
-export const enum DestinyPartyMemberStates {
+export enum DestinyPartyMemberStates {
   None = 0,
   FireteamMember = 1,
   PosseMember = 2,
@@ -1017,7 +1017,7 @@ export const enum DestinyPartyMemberStates {
   PartyLeader = 8,
 }
 
-export const enum DestinyGamePrivacySetting {
+export enum DestinyGamePrivacySetting {
   Open = 0,
   ClanAndFriendsOnly = 1,
   FriendsOnly = 2,
@@ -1025,7 +1025,7 @@ export const enum DestinyGamePrivacySetting {
   Closed = 4,
 }
 
-export const enum DestinyJoinClosedReasons {
+export enum DestinyJoinClosedReasons {
   None = 0,
   InMatchmaking = 1,
   Loading = 2,
@@ -1035,20 +1035,20 @@ export const enum DestinyJoinClosedReasons {
   Offline = 32768,
 }
 
-export const enum DestinyRace {
+export enum DestinyRace {
   Human = 0,
   Awoken = 1,
   Exo = 2,
   Unknown = 3,
 }
 
-export const enum DestinyMilestoneDisplayPreference {
+export enum DestinyMilestoneDisplayPreference {
   MilestoneDefinition = 0,
   CurrentQuestSteps = 1,
   CurrentActivityChallenges = 2,
 }
 
-export const enum DestinyMilestoneType {
+export enum DestinyMilestoneType {
   Unknown = 0,
   Tutorial = 1,
   OneTime = 2,
@@ -1057,7 +1057,7 @@ export const enum DestinyMilestoneType {
   Special = 5,
 }
 
-export const enum DestinyActivityDifficultyTier {
+export enum DestinyActivityDifficultyTier {
   Trivial = 0,
   Easy = 1,
   Normal = 2,
@@ -1068,7 +1068,7 @@ export const enum DestinyActivityDifficultyTier {
   Impossible = 7,
 }
 
-export const enum EquipFailureReason {
+export enum EquipFailureReason {
   None = 0,
   ItemUnequippable = 1,
   ItemUniqueEquipRestricted = 2,
@@ -1077,7 +1077,7 @@ export const enum EquipFailureReason {
   ItemNotOnCharacter = 16,
 }
 
-export const enum DestinyTalentNodeState {
+export enum DestinyTalentNodeState {
   Invalid = 0,
   CanUpgrade = 1,
   NoPoints = 2,
@@ -1094,12 +1094,12 @@ export const enum DestinyTalentNodeState {
   Hidden = 13,
 }
 
-export const enum DestinyVendorFilter {
+export enum DestinyVendorFilter {
   None = 0,
   ApiPurchasable = 1,
 }
 
-export const enum VendorItemStatus {
+export enum VendorItemStatus {
   Success = 0,
   NoInventorySpace = 1,
   NoFunds = 2,
@@ -1117,7 +1117,7 @@ export const enum VendorItemStatus {
   DisplayOnly = 8192,
 }
 
-export const enum DestinyVendorItemState {
+export enum DestinyVendorItemState {
   None = 0,
   Incomplete = 1,
   RewardAvailable = 2,
@@ -1140,12 +1140,12 @@ export const enum DestinyVendorItemState {
   Locked = 262144,
 }
 
-export const enum DestinySocketArrayType {
+export enum DestinySocketArrayType {
   Default = 0,
   Intrinsic = 1,
 }
 
-export const enum DestinyStatsGroupType {
+export enum DestinyStatsGroupType {
   None = 0,
   General = 1,
   Weapons = 2,
@@ -1157,7 +1157,7 @@ export const enum DestinyStatsGroupType {
   Internal = 104,
 }
 
-export const enum DestinyStatsCategoryType {
+export enum DestinyStatsCategoryType {
   None = 0,
   Kills = 1,
   Assists = 2,
@@ -1176,7 +1176,7 @@ export const enum DestinyStatsCategoryType {
   MedalAbilities = 15,
 }
 
-export const enum UnitType {
+export enum UnitType {
   None = 0,
   Count = 1,
   PerGame = 2,
@@ -1193,38 +1193,38 @@ export const enum UnitType {
   CompletionReason = 13,
 }
 
-export const enum DestinyStatsMergeMethod {
+export enum DestinyStatsMergeMethod {
   Add = 0,
   Min = 1,
   Max = 2,
 }
 
-export const enum PeriodType {
+export enum PeriodType {
   None = 0,
   Daily = 1,
   AllTime = 2,
   Activity = 3,
 }
 
-export const enum AwaType {
+export enum AwaType {
   None = 0,
   InsertPlugs = 1,
 }
 
-export const enum AwaUserSelection {
+export enum AwaUserSelection {
   None = 0,
   Rejected = 1,
   Approved = 2,
 }
 
-export const enum AwaResponseReason {
+export enum AwaResponseReason {
   None = 0,
   Answered = 1,
   TimedOut = 2,
   Replaced = 3,
 }
 
-export const enum PlatformErrorCodes {
+export enum PlatformErrorCodes {
   None = 0,
   Success = 1,
   TransportException = 2,
@@ -2051,13 +2051,13 @@ export const enum PlatformErrorCodes {
   ErrorBungieBlockListFull = 3911,
 }
 
-export const enum ComponentPrivacySetting {
+export enum ComponentPrivacySetting {
   None = 0,
   Public = 1,
   Private = 2,
 }
 
-export const enum TrendingEntryType {
+export enum TrendingEntryType {
   News = 0,
   DestinyItem = 1,
   DestinyActivity = 2,
@@ -2072,7 +2072,7 @@ export const enum TrendingEntryType {
   Release = 11,
 }
 
-export const enum FireteamDateRange {
+export enum FireteamDateRange {
   All = 0,
   Now = 1,
   TwentyFourHours = 2,
@@ -2080,7 +2080,7 @@ export const enum FireteamDateRange {
   ThisWeek = 4,
 }
 
-export const enum FireteamPlatform {
+export enum FireteamPlatform {
   Any = 0,
   Playstation4 = 1,
   XboxOne = 2,
@@ -2089,19 +2089,19 @@ export const enum FireteamPlatform {
   Stadia = 5,
 }
 
-export const enum FireteamPublicSearchOption {
+export enum FireteamPublicSearchOption {
   PublicAndPrivate = 0,
   PublicOnly = 1,
   PrivateOnly = 2,
 }
 
-export const enum FireteamSlotSearch {
+export enum FireteamSlotSearch {
   NoSlotRestriction = 0,
   HasOpenPlayerSlots = 1,
   HasOpenPlayerOrAltSlots = 2,
 }
 
-export const enum FireteamPlatformInviteResult {
+export enum FireteamPlatformInviteResult {
   None = 0,
   Success = 1,
   AlreadyInFireteam = 2,
@@ -2109,39 +2109,39 @@ export const enum FireteamPlatformInviteResult {
   ServiceError = 4,
 }
 
-export const enum PresenceStatus {
+export enum PresenceStatus {
   OfflineOrUnknown = 0,
   Online = 1,
 }
 
-export const enum PresenceOnlineStateFlags {
+export enum PresenceOnlineStateFlags {
   None = 0,
   Destiny1 = 1,
   Destiny2 = 2,
 }
 
-export const enum FriendRelationshipState {
+export enum FriendRelationshipState {
   Unknown = 0,
   Friend = 1,
   IncomingRequest = 2,
   OutgoingRequest = 3,
 }
 
-export const enum PlatformFriendType {
+export enum PlatformFriendType {
   Unknown = 0,
   Xbox = 1,
   PSN = 2,
   Steam = 3,
 }
 
-export const enum GlobalAlertLevel {
+export enum GlobalAlertLevel {
   Unknown = 0,
   Blue = 1,
   Yellow = 2,
   Red = 3,
 }
 
-export const enum GlobalAlertType {
+export enum GlobalAlertType {
   GlobalAlert = 0,
   StreamingAlert = 1,
 }

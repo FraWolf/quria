@@ -2,15 +2,21 @@ import { ClientOptions, Options } from "../types/general";
 
 export function formatQueryStrings(
   uri: string,
-  queryObject: {
-    [key: string]: string | string[] | number | number[] | boolean | boolean[];
+  queryObject?: {
+    [key: string]:
+      | string
+      | string[]
+      | number
+      | number[]
+      | boolean
+      | boolean[]
+      | undefined;
   }
-) {
+): string {
   // Querystring example : { "components": components }
-  // console.log(queryObject);
 
-  const allKeys = Object.keys(queryObject);
-  const allValues = Object.values(queryObject);
+  const allKeys = Object.keys(queryObject || {});
+  const allValues = Object.values(queryObject || {});
 
   let formattedQuerystring = "";
 
