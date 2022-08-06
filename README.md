@@ -4,6 +4,14 @@
 
 <h1 align="center">Quria</h1>
 <p align="center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
+<p align="center">
+    <a href="https://opensource.org/licenses/MIT">
+        <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License MIT"/>
+    </a>
+    <a href="https://www.npmjs.com/package/quria">
+        <img alt="npm" src="https://img.shields.io/npm/v/quria" />
+    </a>
+</p>
 
 <p>Quria is a TypeScript library which main purpose is to make it easier to interact with Destiny (1 & 2) API provided by Bungie, obtaining the required information through ready-to-use methods and full support for official types and enums.</p>
 
