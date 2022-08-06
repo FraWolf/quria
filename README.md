@@ -1,3 +1,7 @@
+<p align="center">
+    <img  alt="Quria" src="https://cdn.discordapp.com/attachments/1005391416047960134/1005395699887783986/quriats.min.png">
+</p>
+
 <h1 align="center">Quria</h1>
 <p align="center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
 
