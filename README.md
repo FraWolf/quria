@@ -1,5 +1,5 @@
 <p align="center">
-    <img  alt="Quria" src="https://cdn.discordapp.com/attachments/1005391416047960134/1005395699887783986/quriats.min.png">
+    <img  alt="Quria" src="https://cdn.discordapp.com/attachments/1005391416047960134/1005421991320363128/quria.min.png">
 </p>
 
 <h1 align="center">Quria</h1>
