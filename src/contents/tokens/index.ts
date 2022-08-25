@@ -7,6 +7,7 @@ import {
   BungieRewardDisplay,
   PartnerOfferClaimRequest,
   PartnerOfferSkuHistoryResponse,
+  PartnerRewardHistoryResponse,
 } from "../../types/interface";
 
 export class Tokens {
@@ -14,6 +15,16 @@ export class Tokens {
     private url: string,
     private headers: { [key: string]: string }
   ) {}
+
+  /**
+   * Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
+   */
+  ForceDropsRepair(tokens?: TokensQuery): Promise<APIResponse<boolean>> {
+    const requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "POST", authHeaders);
+  }
 
   /**
    * Claim a partner offer as the authenticated user.
@@ -61,6 +72,23 @@ export class Tokens {
 
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     return request(requestURL, true, "POST", authHeaders);
+  }
+
+  /**
+   * Returns the partner rewards history of the targeted user, both partner offers and Twitch drops.
+   * @param partnerApplicationId The partner application identifier.
+   * @param targetBnetMembershipId The bungie.net user to return reward history for.
+   * @param tokens
+   */
+  GetPartnerRewardHistory(
+    partnerApplicationId: number,
+    targetBnetMembershipId: string,
+    tokens?: TokensQuery
+  ): Promise<APIResponse<PartnerRewardHistoryResponse>> {
+    const requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
+
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**

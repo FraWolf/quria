@@ -50,6 +50,7 @@ export enum BungieMembershipType {
   TigerSteam = 3,
   TigerBlizzard = 4,
   TigerStadia = 5,
+  TigerEgs = 6,
   TigerDemon = 10,
   BungieNext = 254,
   All = -1,
@@ -94,6 +95,7 @@ export enum BungieCredentialType {
   BattleNetId = 14,
   StadiaId = 16,
   TwitchId = 18,
+  EgsId = 20,
 }
 
 export enum GroupType {
@@ -1520,6 +1522,7 @@ export enum PlatformErrorCodes {
   ForumUserBannedFromThisTopic = 593,
   ForumRecruitmentFireteamMembersOnly = 594,
   ForumRequiresDestiny2Progress = 595,
+  ForumRequiresDestiny2EntitlementPurchase = 596,
   GroupMembershipApplicationAlreadyResolved = 601,
   GroupMembershipAlreadyApplied = 602,
   GroupMembershipInsufficientPrivileges = 603,
@@ -1926,6 +1929,8 @@ export enum PlatformErrorCodes {
   TwitchCouldNotUnregisterUser = 2504,
   TwitchRequiresRelinking = 2505,
   TwitchNoPlatformChosen = 2506,
+  TwitchDropHistoryPermissionFailure = 2507,
+  TwitchDropsRepairPartialFailure = 2508,
   TrendingCategoryNotFound = 2600,
   TrendingEntryTypeNotSupported = 2601,
   ReportOffenderNotInPgcr = 2700,
@@ -2049,6 +2054,22 @@ export enum PlatformErrorCodes {
   ErrorBungieBlockSelf = 3908,
   ErrorBungieFriendsListFull = 3910,
   ErrorBungieBlockListFull = 3911,
+  ErrorEgsUnknown = 4000,
+  ErrorEgsBadRequest = 4001,
+  ErrorEgsNotAuthorized = 4002,
+  ErrorEgsForbidden = 4003,
+  ErrorEgsAccountNotFound = 4004,
+  ErrorEgsWebException = 4005,
+  ErrorEgsUnavailable = 4006,
+  ErrorEgsJwksMissing = 4007,
+  ErrorEgsJwtMalformedHeader = 4008,
+  ErrorEgsJwtMalformedPayload = 4009,
+}
+
+export enum DropStateEnum {
+  Claimed = 0,
+  Applied = 1,
+  Fulfilled = 2,
 }
 
 export enum ComponentPrivacySetting {
@@ -2087,6 +2108,7 @@ export enum FireteamPlatform {
   Blizzard = 3,
   Steam = 4,
   Stadia = 5,
+  Egs = 6,
 }
 
 export enum FireteamPublicSearchOption {
@@ -2132,6 +2154,7 @@ export enum PlatformFriendType {
   Xbox = 1,
   PSN = 2,
   Steam = 3,
+  Egs = 4,
 }
 
 export enum GlobalAlertLevel {

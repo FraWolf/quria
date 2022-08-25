@@ -222,6 +222,7 @@ export interface GeneralUser {
   twitchDisplayName: string;
   cachedBungieGlobalDisplayName: string;
   cachedBungieGlobalDisplayNameCode: number;
+  egsDisplayName: string;
 }
 
 export interface UserToUserContext {
@@ -4075,6 +4076,18 @@ export interface PartnerOfferHistoryResponse {
   ApplyDate: string;
 }
 
+export interface PartnerRewardHistoryResponse {
+  PartnerOffers: PartnerOfferSkuHistoryResponse[];
+  TwitchDrops: TwitchDropHistoryResponse[];
+}
+
+export interface TwitchDropHistoryResponse {
+  Title: string;
+  Description: string;
+  CreatedAt: string;
+  ClaimState: number;
+}
+
 export interface BungieRewardDisplay {
   UserRewardAvailabilityModel: UserRewardAvailabilityModel;
   ObjectiveDisplayProperties: RewardDisplayProperties;
@@ -4868,6 +4881,7 @@ export interface CoreSettingsConfiguration {
   ignoreReasons: CoreSetting[];
   forumCategories: CoreSetting[];
   groupAvatars: CoreSetting[];
+  defaultGroupTheme: CoreSetting;
   destinyMembershipTypes: CoreSetting[];
   recruitmentPlatformTags: CoreSetting[];
   recruitmentMiscTags: CoreSetting[];
