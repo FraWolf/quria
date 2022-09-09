@@ -20,7 +20,14 @@ export async function request(
         ? await bungieRequest.json()
         : await bungieRequest.text();
     } catch (e: any) {
-      requestToSend = { error: true, message: e.message };
+      requestToSend = {
+        Response: {},
+        ErrorCode: -1,
+        ThrottleSeconds: 0,
+        ErrorStatus: "Error",
+        Message: "Quria request failed",
+        MessageData: {},
+      };
     }
 
     return requestToSend;
