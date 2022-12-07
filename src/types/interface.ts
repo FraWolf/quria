@@ -779,6 +779,7 @@ export interface NewsArticleRssResponse {
   CurrentPaginationToken: number;
   NextPaginationToken: number;
   ResultCountThisPage: number;
+  CategoryFilter: string;
 }
 
 export interface NewsArticleRssItem {
@@ -787,6 +788,9 @@ export interface NewsArticleRssItem {
   PubDate: string;
   UniqueIdentifier: string;
   Description: string;
+  HtmlContent: string;
+  ImagePath: string;
+  OptionalMobileImagePath: string;
 }
 
 export interface SearchResult {
@@ -2680,6 +2684,8 @@ export interface DestinyErrorProfile {
 }
 
 export interface DestinyProfileResponse {
+  responseMintedTimestamp: string;
+  secondaryComponentsMintedTimestamp: string;
   vendorReceipts: SingleComponentResponseOfDestinyVendorReceiptsComponent;
   profileInventory: SingleComponentResponseOfDestinyInventoryComponent;
   profileCurrencies: SingleComponentResponseOfDestinyInventoryComponent;

@@ -712,6 +712,7 @@ export enum DestinyActivityModeType {
   Rift = 88,
   ZoneControl = 89,
   IronBannerRift = 90,
+  IronBannerZoneControl = 91,
 }
 
 export enum DestinyActivityModeCategory {
@@ -942,6 +943,7 @@ export enum DestinyGameVersions {
   BeyondLight = 64,
   Anniversary30th = 128,
   TheWitchQueen = 256,
+  Lightfall = 512,
 }
 
 export enum DestinyComponentType {
@@ -1076,7 +1078,10 @@ export enum EquipFailureReason {
   ItemUniqueEquipRestricted = 2,
   ItemFailedUnlockCheck = 4,
   ItemFailedLevelCheck = 8,
-  ItemNotOnCharacter = 16,
+  ItemWrapped = 16,
+  ItemNotLoaded = 32,
+  ItemEquipBlocklisted = 64,
+  ItemLoadoutRequirementNotMet = 128,
 }
 
 export enum DestinyTalentNodeState {
@@ -1140,6 +1145,8 @@ export enum DestinyVendorItemState {
   Popular = 65536,
   Free = 131072,
   Locked = 262144,
+  Paracausal = 524288,
+  Cryptarch = 1048576,
 }
 
 export enum DestinySocketArrayType {
@@ -1421,6 +1428,9 @@ export enum PlatformErrorCodes {
   ErrorDatabaseGlobalName = 239,
   ErrorNoAvailableNameChanges = 240,
   ErrorNameAlreadySetToInput = 241,
+  UserDisplayNameLessThanMinLength = 242,
+  UserDisplayNameGreaterThanMaxLength = 243,
+  UserDisplayNameContainsUnacceptableOrInvalidContent = 244,
   MessagingUnknownError = 300,
   MessagingSelfError = 301,
   MessagingSendThrottle = 302,
@@ -1631,6 +1641,8 @@ export enum PlatformErrorCodes {
   ClanNameRestricted = 751,
   ClanCreationBan = 752,
   ClanCreationTenureRequirementsNotMet = 753,
+  ClanFieldContainsReservedTerms = 754,
+  ClanFieldContainsInappropriateContent = 755,
   ItemAlreadyFollowed = 801,
   ItemNotFollowed = 802,
   CannotFollowSelf = 803,
@@ -1931,6 +1943,8 @@ export enum PlatformErrorCodes {
   TwitchNoPlatformChosen = 2506,
   TwitchDropHistoryPermissionFailure = 2507,
   TwitchDropsRepairPartialFailure = 2508,
+  TwitchNotAuthorized = 2509,
+  TwitchUnknownAuthorizationFailure = 2510,
   TrendingCategoryNotFound = 2600,
   TrendingEntryTypeNotSupported = 2601,
   ReportOffenderNotInPgcr = 2700,
