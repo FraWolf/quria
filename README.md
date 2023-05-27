@@ -1,7 +1,19 @@
+<img align="right" alt="Quria" src="https://cdn.discordapp.com/attachments/1005391416047960134/1005423400963035187/quria.png" width="350">
 <h1 align="center">Quria</h1>
 <p align="center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
+<p align="center">
+    <a href="https://opensource.org/licenses/MIT">
+        <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License MIT"/>
+    </a>
+    <a href="https://www.npmjs.com/package/quria">
+        <img alt="npm" src="https://img.shields.io/npm/v/quria" />
+    </a>
+</p>
 
 <p>Quria is a TypeScript library which main purpose is to make it easier to interact with Destiny (1 & 2) API provided by Bungie, obtaining the required information through ready-to-use methods and full support for official types and enums.</p>
+
+ <br />
+ <br />
 
 <h2>Installation</h2>
 
@@ -19,8 +31,9 @@ yarn add quria
   <summary>Basic usage</summary>
 
 ```js
-const QuriaAPI = require("quria");
-const quria = new QuriaAPI({
+import {Quria} from 'quria';
+
+const quria = new Quria({
   API_KEY: "your-api-key-here",
 });
 

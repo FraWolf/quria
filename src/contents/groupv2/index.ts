@@ -123,7 +123,7 @@ export class GroupV2 {
     groupType: GroupType,
     creationDate: number,
     sortBy: number,
-    groupMemberCountFilter: GroupMemberCountFilter | null,
+    groupMemberCountFilter: GroupMemberCountFilter,
     localeFilter: string,
     tagText: string,
     itemsPerPage: number,
@@ -247,18 +247,18 @@ export class GroupV2 {
     about: string,
     motto: string,
     theme: string,
-    avatarImageIndex: number | null,
+    avatarImageIndex: number,
     tags: string,
-    isPublic: boolean | null,
+    isPublic: boolean,
     membershipOption: MembershipOption,
-    isPublicTopicAdminOnly: boolean | null,
-    allowChat: boolean | null,
-    chatSecurity: ChatSecuritySetting | null,
+    isPublicTopicAdminOnly: boolean,
+    allowChat: boolean,
+    chatSecurity: ChatSecuritySetting,
     callsign: string,
     locale: string,
-    homepage: GroupHomepage | null,
-    enableInvitationMessagingForAdmins: boolean | null,
-    defaultPublicity: GroupPostPublicity | null,
+    homepage: GroupHomepage,
+    enableInvitationMessagingForAdmins: boolean,
+    defaultPublicity: GroupPostPublicity,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/Edit/`;
@@ -351,11 +351,11 @@ export class GroupV2 {
    */
   EditFounderOptions(
     groupId: string,
-    InvitePermissionOverride: boolean | null,
-    UpdateCulturePermissionOverride: boolean | null,
-    HostGuidedGamePermissionOverride: HostGuidedGamesPermissionLevel | null,
-    UpdateBannerPermissionOverride: boolean | null,
-    JoinLevel: RuntimeGroupMemberType | null,
+    InvitePermissionOverride: boolean,
+    UpdateCulturePermissionOverride: boolean,
+    HostGuidedGamePermissionOverride: HostGuidedGamesPermissionLevel,
+    UpdateBannerPermissionOverride: boolean,
+    JoinLevel: RuntimeGroupMemberType,
     tokens?: Tokens
   ): Promise<APIResponse<number>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/EditFounderOptions/`;
@@ -422,9 +422,9 @@ export class GroupV2 {
   EditOptionalConversation(
     conversationId: string,
     groupId: string,
-    chatEnabled: boolean | null,
+    chatEnabled: boolean,
     chatName: string,
-    chatSecurity: ChatSecuritySetting | null,
+    chatSecurity: ChatSecuritySetting,
     tokens?: Tokens
   ): Promise<APIResponse<string>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Edit/${conversationId}/`;

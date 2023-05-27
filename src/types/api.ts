@@ -1,6 +1,6 @@
 export interface APIResponse<T> {
   Response: T;
-  ErroreCode: number;
+  ErrorCode: number;
   ThrottleSeconds: number;
   ErrorStatus: string;
   Message: string;
