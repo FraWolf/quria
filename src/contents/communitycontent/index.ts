@@ -1,26 +1,22 @@
 import { request } from "../../adapters/http-request";
-import { APIResponse } from "../../types/api";
-import { PostSearchResponse } from "../../types/interface";
+import { ForumTopicsCategoryFiltersEnum, CommunityContentSortMode, APIResponse, PostSearchResponse } from "../../types";
 
 export class CommunityContent {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
    * Returns community content.
    * @param mediaFilter The type of media to get
    * @param page Zero based page
    * @param sort The sort mode.
-   * @returns Community content.
+   * @returns Returns community content.
    */
-  GetCommunityContent(
-    mediaFilter: number,
+  public GetCommunityContent(
+    mediaFilter: ForumTopicsCategoryFiltersEnum,
     page: number,
-    sort: string
+    sort: CommunityContentSortMode
   ): Promise<APIResponse<PostSearchResponse>> {
-    const requestURL = `${this.url}/CommunityContent/Get/${sort}/${mediaFilter}/${page}/`;
+    var requestURL = `${this.url}/CommunityContent/Get/${sort}/${mediaFilter}/${page}/`;
 
     return request(requestURL, true, "GET", this.headers);
   }

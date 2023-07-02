@@ -1,35 +1,29 @@
 import { request } from "../../adapters/http-request";
+import { parseAuthenticationHeaders, formatQueryStrings } from "../../adapters/utils";
 import {
-  formatQueryStrings,
-  parseAuthenticationHeaders,
-} from "../../adapters/utils";
-import { APIResponse } from "../../types/api";
-import { DestinyActivityModeType } from "../../types/enum";
-import { Tokens } from "../../types/general";
-import {
-  FireteamResponse,
-  SearchResultOfFireteamResponse,
+  ITokens,
+  APIResponse,
+  FireteamDateRange,
+  FireteamPlatform,
+  FireteamPublicSearchOption,
+  FireteamSlotSearch,
   SearchResultOfFireteamSummary,
-} from "../../types/interface";
+  SearchResultOfFireteamResponse,
+  FireteamResponse,
+} from "../../types";
 
 export class Fireteam {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
    * Gets a count of all active non-public fireteams for the specified clan. Maximum value returned is 25.
    * @param groupId The group id of the clan.
-   * @returns A count of all active non-public fireteams for the specified clan. Maximum value returned is 25.
+   * @returns Gets a count of all active non-public fireteams for the specified clan. Maximum value returned is 25.
    */
-  GetActivePrivateClanFireteamCount(
-    groupId: string,
-    tokens?: Tokens
-  ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Fireteam/Clan/${groupId}/ActiveCount/`;
-
+  public GetActivePrivateClanFireteamCount(groupId: string, tokens: ITokens): Promise<APIResponse<number>> {
+    var requestURL = `${this.url}/Fireteam/Clan/${groupId}/ActiveCount/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
@@ -37,82 +31,97 @@ export class Fireteam {
    * Gets a listing of all of this clan's fireteams that are have available slots. Caller is not checked for join criteria so caching is maximized.
    * @param activityType The activity type to filter by.
    * @param dateRange The date range to grab available fireteams.
+   * @param excludeImmediate If you wish the result to exclude immediate fireteams, set this to true. Immediate-only can be forced using the dateRange enum.
    * @param groupId The group id of the clan.
+   * @param langFilter An optional language filter.
    * @param page Zero based page
    * @param platform The platform filter.
    * @param publicOnly Determines public/private filtering.
    * @param slotFilter Filters based on available slots
-   * @returns A listing of all of this clan's fireteams that are have available slots. Caller is not checked for join criteria so caching is maximized.
+   * @returns Gets a listing of all of this clan's fireteams that are have available slots. Caller is not checked for join criteria so caching is maximized.
    */
-  GetAvailableClanFireteams(
-    activityType: DestinyActivityModeType,
-    dateRange: string,
+  public GetAvailableClanFireteams(
+    activityType: number,
+    dateRange: FireteamDateRange,
     groupId: string,
     page: number,
-    platform: string,
-    publicOnly: string,
-    slotFilter: string,
-    queryString?: { langFilter: string },
-    tokens?: Tokens
+    platform: FireteamPlatform,
+    publicOnly: FireteamPublicSearchOption,
+    slotFilter: FireteamSlotSearch,
+    queryString: {
+      excludeImmediate?: boolean;
+      langFilter?: string;
+    } | null,
+    tokens: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamSummary>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Clan/${groupId}/Available/${platform}/${activityType}/${dateRange}/${slotFilter}/${publicOnly}/${page}/`,
       queryString
     );
-
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
-   * Gets a listing of all public fireteams starting now with open slots.
+   * Gets a listing of all public fireteams starting now with open slots. Caller is not checked for join criteria so caching is maximized.
    * @param activityType The activity type to filter by.
    * @param dateRange The date range to grab available fireteams.
+   * @param excludeImmediate If you wish the result to exclude immediate fireteams, set this to true. Immediate-only can be forced using the dateRange enum.
+   * @param langFilter An optional language filter.
    * @param page Zero based page
    * @param platform The platform filter.
-   * @param slotFilter The platform filter.
-   * @returns A listing of all public fireteams starting now with open slots.
+   * @param slotFilter Filters based on available slots
+   * @returns Gets a listing of all public fireteams starting now with open slots. Caller is not checked for join criteria so caching is maximized.
    */
-  SearchPublicAvailableClanFireteams(
-    activityType: DestinyActivityModeType,
-    dateRange: string,
+  public SearchPublicAvailableClanFireteams(
+    activityType: number,
+    dateRange: FireteamDateRange,
     page: number,
-    platform: string,
-    slotFilter: string,
-    queryString?: { langFilter: string },
-    tokens?: Tokens
+    platform: FireteamPlatform,
+    slotFilter: FireteamSlotSearch,
+    queryString: {
+      excludeImmediate?: boolean;
+      langFilter?: string;
+    } | null,
+    tokens: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamSummary>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Search/Available/${platform}/${activityType}/${dateRange}/${slotFilter}/${page}/`,
       queryString
     );
-
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
    * Gets a listing of all fireteams that caller is an applicant, a member, or an alternate of.
+   * @param groupFilter If true, filter by clan. Otherwise, ignore the clan and show all of the user's fireteams.
    * @param groupId The group id of the clan. (This parameter is ignored unless the optional query parameter groupFilter is true).
    * @param includeClosed If true, return fireteams that have been closed.
+   * @param langFilter An optional language filter.
    * @param page Deprecated parameter, ignored.
    * @param platform The platform filter.
-   * @returns A listing of all fireteams that caller is an applicant, a member, or an alternate of.
+   * @returns Gets a listing of all fireteams that caller is an applicant, a member, or an alternate of.
    */
-  GetMyClanFireteams(
+  public GetMyClanFireteams(
     groupId: string,
     includeClosed: boolean,
     page: number,
-    platform: string,
-    queryString?: { groupFilter?: boolean; langFilter?: string },
-    tokens?: Tokens
+    platform: FireteamPlatform,
+    queryString: {
+      groupFilter?: boolean;
+      langFilter?: string;
+    } | null,
+    tokens: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Clan/${groupId}/My/${platform}/${includeClosed}/${page}/`,
       queryString
     );
-
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
@@ -122,14 +131,10 @@ export class Fireteam {
    * @param groupId The group id of the clan.
    * @returns Gets a specific fireteam.
    */
-  GetClanFireteam(
-    fireteamId: string,
-    groupId: string,
-    tokens?: Tokens
-  ): Promise<APIResponse<FireteamResponse>> {
-    const requestURL = `${this.url}/Fireteam/Clan/${groupId}/Summary/${fireteamId}/`;
-
+  public GetClanFireteam(fireteamId: string, groupId: string, tokens: ITokens): Promise<APIResponse<FireteamResponse>> {
+    var requestURL = `${this.url}/Fireteam/Clan/${groupId}/Summary/${fireteamId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 }
