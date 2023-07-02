@@ -1,5 +1,11 @@
-import { request } from "../../adapters/http-request";
-import { ForumTopicsCategoryFiltersEnum, CommunityContentSortMode, APIResponse, PostSearchResponse } from "../../types";
+import { parseAuthenticationHeaders, request } from "../../adapters";
+import {
+  ForumTopicsCategoryFiltersEnum,
+  CommunityContentSortMode,
+  ITokens,
+  APIResponse,
+  PostSearchResponse,
+} from "../../types";
 
 export class CommunityContent {
   constructor(private url: string, private headers: Record<string, string>) {}
@@ -14,10 +20,12 @@ export class CommunityContent {
   public GetCommunityContent(
     mediaFilter: ForumTopicsCategoryFiltersEnum,
     page: number,
-    sort: CommunityContentSortMode
+    sort: CommunityContentSortMode,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = `${this.url}/CommunityContent/Get/${sort}/${mediaFilter}/${page}/`;
+    const requestURL = `${this.url}/CommunityContent/Get/${sort}/${mediaFilter}/${page}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }

@@ -1,5 +1,4 @@
-import { request } from "../../adapters/http-request";
-import { parseAuthenticationHeaders } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -18,8 +17,8 @@ export class Tokens {
    
     * @returns Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
    */
-  public ForceDropsRepair(tokens: ITokens): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
+  public ForceDropsRepair(tokens?: ITokens): Promise<APIResponse<boolean>> {
+    const requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -34,9 +33,9 @@ export class Tokens {
     PartnerOfferId: string,
     BungieNetMembershipId: string,
     TransactionId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/Tokens/Partner/ClaimOffer/`;
+    const requestURL = `${this.url}/Tokens/Partner/ClaimOffer/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: PartnerOfferClaimRequest = { PartnerOfferId, BungieNetMembershipId, TransactionId };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -51,9 +50,9 @@ export class Tokens {
   public ApplyMissingPartnerOffersWithoutClaim(
     partnerApplicationId: number,
     targetBnetMembershipId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/Tokens/Partner/ApplyMissingOffers/${partnerApplicationId}/${targetBnetMembershipId}/`;
+    const requestURL = `${this.url}/Tokens/Partner/ApplyMissingOffers/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -68,9 +67,9 @@ export class Tokens {
   public GetPartnerOfferSkuHistory(
     partnerApplicationId: number,
     targetBnetMembershipId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<PartnerOfferSkuHistoryResponse[]>> {
-    var requestURL = `${this.url}/Tokens/Partner/History/${partnerApplicationId}/${targetBnetMembershipId}/`;
+    const requestURL = `${this.url}/Tokens/Partner/History/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -85,9 +84,9 @@ export class Tokens {
   public GetPartnerRewardHistory(
     partnerApplicationId: number,
     targetBnetMembershipId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<PartnerRewardHistoryResponse>> {
-    var requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
+    const requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -100,9 +99,9 @@ export class Tokens {
    */
   public GetBungieRewardsForUser(
     membershipId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
-    var requestURL = `${this.url}/Tokens/Rewards/GetRewardsForUser/${membershipId}/`;
+    const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForUser/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -117,9 +116,9 @@ export class Tokens {
   public GetBungieRewardsForPlatformUser(
     membershipId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
-    var requestURL = `${this.url}/Tokens/Rewards/GetRewardsForPlatformUser/${membershipId}/${membershipType}/`;
+    const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForPlatformUser/${membershipId}/${membershipType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -130,9 +129,10 @@ export class Tokens {
    
     * @returns Returns a list of the current bungie rewards
    */
-  public GetBungieRewardsList(): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
-    var requestURL = `${this.url}/Tokens/Rewards/BungieRewards/`;
+  public GetBungieRewardsList(tokens?: ITokens): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
+    const requestURL = `${this.url}/Tokens/Rewards/BungieRewards/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }

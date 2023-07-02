@@ -1,6 +1,6 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings, parseAuthenticationHeaders } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
 import {
+  ITokens,
   APIResponse,
   DestinyManifest,
   DestinyDefinition,
@@ -19,7 +19,6 @@ import {
   DestinyVendorResponse,
   DestinyPublicVendorsResponse,
   DestinyCollectibleNodeDetailResponse,
-  ITokens,
   DestinyItemTransferRequest,
   DestinyPostmasterTransferRequest,
   DestinyItemActionRequest,
@@ -64,10 +63,11 @@ export class Destiny2 {
    
     * @returns Returns the current version of the manifest as a json object.
    */
-  public GetDestinyManifest(): Promise<APIResponse<DestinyManifest>> {
-    var requestURL = `${this.url}/Destiny2/Manifest/`;
+  public GetDestinyManifest(tokens?: ITokens): Promise<APIResponse<DestinyManifest>> {
+    const requestURL = `${this.url}/Destiny2/Manifest/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -76,10 +76,15 @@ export class Destiny2 {
    * @param hashIdentifier The hash identifier for the specific Entity you want returned.
    * @returns Returns the static definition of an entity of the given Type and hash identifier. Examine the API Documentation for the Type Names of entities that have their own definitions. Note that the return type will always *inherit from* DestinyDefinition, but the specific type returned will be the requested entity type if it can be found. Please don't use this as a chatty alternative to the Manifest database if you require large sets of data, but for simple and one-off accesses this should be handy.
    */
-  public GetDestinyEntityDefinition(entityType: string, hashIdentifier: number): Promise<APIResponse<DestinyDefinition>> {
-    var requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
+  public GetDestinyEntityDefinition(
+    entityType: string,
+    hashIdentifier: number,
+    tokens?: ITokens
+  ): Promise<APIResponse<DestinyDefinition>> {
+    const requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -90,12 +95,13 @@ export class Destiny2 {
   public SearchDestinyPlayerByBungieName(
     membershipType: BungieMembershipType,
     displayName: string,
-    displayNameCode: number
+    displayNameCode: number,
+    tokens?: ITokens
   ): Promise<APIResponse<UserInfoCard[]>> {
-    var requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
-
+    const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: ExactSearchRequest = { displayName, displayNameCode };
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -110,14 +116,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       getAllMemberships?: boolean;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyLinkedProfilesResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${membershipId}/LinkedProfiles/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -132,14 +140,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyProfileResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -156,14 +166,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyCharacterResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -171,10 +183,11 @@ export class Destiny2 {
    * @param groupId A valid group id of clan.
    * @returns Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
    */
-  public GetClanWeeklyRewardState(groupId: string): Promise<APIResponse<DestinyMilestone>> {
-    var requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
+  public GetClanWeeklyRewardState(groupId: string, tokens?: ITokens): Promise<APIResponse<DestinyMilestone>> {
+    const requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -182,10 +195,11 @@ export class Destiny2 {
    
     * @returns Returns the dictionary of values for the Clan Banner
    */
-  public GetClanBannerSource(): Promise<APIResponse<ClanBannerSource>> {
-    var requestURL = `${this.url}/Destiny2/Clan/ClanBannerDictionary/`;
+  public GetClanBannerSource(tokens?: ITokens): Promise<APIResponse<ClanBannerSource>> {
+    const requestURL = `${this.url}/Destiny2/Clan/ClanBannerDictionary/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -202,14 +216,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyItemResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Item/${itemInstanceId}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -228,14 +244,16 @@ export class Destiny2 {
     queryString: {
       components?: DestinyComponentType[];
       filter?: DestinyVendorFilter;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyVendorsResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Vendors/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -254,14 +272,16 @@ export class Destiny2 {
     vendorHash: number,
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyVendorResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Vendors/${vendorHash}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -272,11 +292,13 @@ export class Destiny2 {
   public GetPublicVendors(
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyPublicVendorsResponse>> {
-    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Vendors/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Destiny2/Vendors/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -295,14 +317,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       components?: DestinyComponentType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyCollectibleNodeDetailResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Collectibles/${collectiblePresentationNodeHash}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -317,9 +341,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/TransferItem/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/TransferItem/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemTransferRequest = {
       itemReferenceHash,
@@ -343,9 +367,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/PullFromPostmaster/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/PullFromPostmaster/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyPostmasterTransferRequest = {
       itemReferenceHash,
@@ -366,9 +390,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/EquipItem/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItem/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemActionRequest = { itemId, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -383,9 +407,9 @@ export class Destiny2 {
     itemIds: string[],
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyEquipItemResults>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/EquipItems/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItems/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemSetActionRequest = { itemIds, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -400,9 +424,9 @@ export class Destiny2 {
     loadoutIndex: number,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/EquipLoadout/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Loadouts/EquipLoadout/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -420,9 +444,9 @@ export class Destiny2 {
     loadoutIndex: number,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/SnapshotLoadout/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Loadouts/SnapshotLoadout/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutUpdateActionRequest = {
       colorHash,
@@ -447,9 +471,9 @@ export class Destiny2 {
     loadoutIndex: number,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/UpdateLoadoutIdentifiers/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Loadouts/UpdateLoadoutIdentifiers/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutUpdateActionRequest = {
       colorHash,
@@ -471,9 +495,9 @@ export class Destiny2 {
     loadoutIndex: number,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/ClearLoadout/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Loadouts/ClearLoadout/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -489,9 +513,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/SetLockState/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/SetLockState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -507,9 +531,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/SetTrackedState/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/SetTrackedState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -526,9 +550,9 @@ export class Destiny2 {
     plug: DestinyInsertPlugsRequestEntry,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlug/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlug/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyInsertPlugsActionRequest = { actionToken, itemInstanceId, plug, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -544,9 +568,9 @@ export class Destiny2 {
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
-    var requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlugFree/`;
+    const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlugFree/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyInsertPlugsFreeActionRequest = { plug, itemId, characterId, membershipType };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -557,10 +581,14 @@ export class Destiny2 {
    * @param activityId The ID of the activity whose PGCR is requested.
    * @returns Gets the available post game carnage report for the activity ID.
    */
-  public GetPostGameCarnageReport(activityId: string): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
-    var requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
+  public GetPostGameCarnageReport(
+    activityId: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
+    const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -573,9 +601,9 @@ export class Destiny2 {
     reasonCategoryHashes: number[],
     reasonHashes: number[],
     offendingCharacterId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
+    const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyReportOffensePgcrRequest = { reasonCategoryHashes, reasonHashes, offendingCharacterId };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -586,10 +614,13 @@ export class Destiny2 {
    
     * @returns Gets historical stats definitions.
    */
-  public GetHistoricalStatsDefinition(): Promise<APIResponse<Record<string, DestinyHistoricalStatsDefinition>>> {
-    var requestURL = `${this.url}/Destiny2/Stats/Definition/`;
+  public GetHistoricalStatsDefinition(
+    tokens?: ITokens
+  ): Promise<APIResponse<Record<string, DestinyHistoricalStatsDefinition>>> {
+    const requestURL = `${this.url}/Destiny2/Stats/Definition/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -606,11 +637,13 @@ export class Destiny2 {
       maxtop?: number;
       modes?: string;
       statid?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
-    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/Leaderboards/Clans/${groupId}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/Leaderboards/Clans/${groupId}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -623,11 +656,13 @@ export class Destiny2 {
     groupId: string,
     queryString: {
       modes?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyClanAggregateStat[]>> {
-    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/AggregateClanStats/${groupId}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/AggregateClanStats/${groupId}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -646,14 +681,16 @@ export class Destiny2 {
       maxtop?: number;
       modes?: string;
       statid?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Stats/Leaderboards/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -674,14 +711,16 @@ export class Destiny2 {
       maxtop?: number;
       modes?: string;
       statid?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/Stats/Leaderboards/${membershipType}/${destinyMembershipId}/${characterId}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -696,11 +735,13 @@ export class Destiny2 {
     type: string,
     queryString: {
       page?: number;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyEntitySearchResult>> {
-    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Armory/Search/${type}/${searchTerm}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Destiny2/Armory/Search/${type}/${searchTerm}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -725,14 +766,16 @@ export class Destiny2 {
       groups?: DestinyStatsGroupType[];
       modes?: DestinyActivityModeType[];
       periodType?: PeriodType;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<Record<string, DestinyHistoricalStatsByPeriod>>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -747,14 +790,16 @@ export class Destiny2 {
     membershipType: BungieMembershipType,
     queryString: {
       groups?: DestinyStatsGroupType[];
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyHistoricalStatsAccountResult>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Stats/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -775,14 +820,16 @@ export class Destiny2 {
       count?: number;
       mode?: DestinyActivityModeType;
       page?: number;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyActivityHistoryResults>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/Activities/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -795,11 +842,13 @@ export class Destiny2 {
   public GetUniqueWeaponHistory(
     characterId: string,
     destinyMembershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyHistoricalWeaponStatsData>> {
-    var requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/UniqueWeapons/`;
+    const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/UniqueWeapons/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -812,11 +861,13 @@ export class Destiny2 {
   public GetDestinyAggregateActivityStats(
     characterId: string,
     destinyMembershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<DestinyAggregateActivityResults>> {
-    var requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/AggregateActivityStats/`;
+    const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/AggregateActivityStats/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -824,10 +875,11 @@ export class Destiny2 {
    * @param milestoneHash The identifier for the milestone to be returned.
    * @returns Gets custom localized content for the milestone of the given hash, if it exists.
    */
-  public GetPublicMilestoneContent(milestoneHash: number): Promise<APIResponse<DestinyMilestoneContent>> {
-    var requestURL = `${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`;
+  public GetPublicMilestoneContent(milestoneHash: number, tokens?: ITokens): Promise<APIResponse<DestinyMilestoneContent>> {
+    const requestURL = `${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -835,10 +887,11 @@ export class Destiny2 {
    
     * @returns Gets public information about currently available Milestones.
    */
-  public GetPublicMilestones(): Promise<APIResponse<Record<number, DestinyPublicMilestone>>> {
-    var requestURL = `${this.url}/Destiny2/Milestones/`;
+  public GetPublicMilestones(tokens?: ITokens): Promise<APIResponse<Record<number, DestinyPublicMilestone>>> {
+    const requestURL = `${this.url}/Destiny2/Milestones/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -851,9 +904,9 @@ export class Destiny2 {
     affectedItemId: string | null,
     membershipType: BungieMembershipType,
     characterId: string | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<AwaInitializeResponse>> {
-    var requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
+    const requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: AwaPermissionRequested = { type, affectedItemId, membershipType, characterId };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -867,12 +920,13 @@ export class Destiny2 {
   public AwaProvideAuthorizationResult(
     selection: AwaUserSelection,
     correlationId: string,
-    nonce: string[]
+    nonce: string[],
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Destiny2/Awa/AwaProvideAuthorizationResult/`;
-
+    const requestURL = `${this.url}/Destiny2/Awa/AwaProvideAuthorizationResult/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: AwaUserResponse = { selection, correlationId, nonce };
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -880,8 +934,8 @@ export class Destiny2 {
    * @param correlationId The identifier for the advanced write action request.
    * @returns Returns the action token if user approves the request.
    */
-  public AwaGetActionToken(correlationId: string, tokens: ITokens): Promise<APIResponse<AwaAuthorizationResult>> {
-    var requestURL = `${this.url}/Destiny2/Awa/GetActionToken/${correlationId}/`;
+  public AwaGetActionToken(correlationId: string, tokens?: ITokens): Promise<APIResponse<AwaAuthorizationResult>> {
+    const requestURL = `${this.url}/Destiny2/Awa/GetActionToken/${correlationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);

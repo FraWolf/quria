@@ -1,6 +1,6 @@
-import { request } from "../../adapters/http-request";
-import { parseAuthenticationHeaders } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request } from "../../adapters";
 import {
+  ITokens,
   APIResponse,
   GeneralUser,
   BungieCredentialType,
@@ -8,7 +8,6 @@ import {
   UserTheme,
   BungieMembershipType,
   UserMembershipData,
-  ITokens,
   HardLinkedUserMembership,
   UserSearchResponse,
   UserSearchPrefixRequest,
@@ -22,10 +21,11 @@ export class User {
    * @param id The requested Bungie.net membership id.
    * @returns Loads a bungienet user by membership id.
    */
-  public GetBungieNetUserById(id: string): Promise<APIResponse<GeneralUser>> {
-    var requestURL = `${this.url}/User/GetBungieNetUserById/${id}/`;
+  public GetBungieNetUserById(id: string, tokens?: ITokens): Promise<APIResponse<GeneralUser>> {
+    const requestURL = `${this.url}/User/GetBungieNetUserById/${id}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -33,10 +33,14 @@ export class User {
    * @param membershipId The requested membership id to load.
    * @returns Gets a list of all display names linked to this membership id but sanitized (profanity filtered). Obeys all visibility rules of calling user and is heavily cached.
    */
-  public GetSanitizedPlatformDisplayNames(membershipId: string): Promise<APIResponse<Record<BungieCredentialType, string>>> {
-    var requestURL = `${this.url}/User/GetSanitizedPlatformDisplayNames/${membershipId}/`;
+  public GetSanitizedPlatformDisplayNames(
+    membershipId: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<Record<BungieCredentialType, string>>> {
+    const requestURL = `${this.url}/User/GetSanitizedPlatformDisplayNames/${membershipId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -45,11 +49,13 @@ export class User {
    * @returns Returns a list of credential types attached to the requested account
    */
   public GetCredentialTypesForTargetAccount(
-    membershipId: string
+    membershipId: string,
+    tokens?: ITokens
   ): Promise<APIResponse<GetCredentialTypesForAccountResponse[]>> {
-    var requestURL = `${this.url}/User/GetCredentialTypesForTargetAccount/${membershipId}/`;
+    const requestURL = `${this.url}/User/GetCredentialTypesForTargetAccount/${membershipId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -57,10 +63,11 @@ export class User {
    
     * @returns Returns a list of all available user themes.
    */
-  public GetAvailableThemes(): Promise<APIResponse<UserTheme[]>> {
-    var requestURL = `${this.url}/User/GetAvailableThemes/`;
+  public GetAvailableThemes(tokens?: ITokens): Promise<APIResponse<UserTheme[]>> {
+    const requestURL = `${this.url}/User/GetAvailableThemes/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -71,11 +78,13 @@ export class User {
    */
   public GetMembershipDataById(
     membershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<UserMembershipData>> {
-    var requestURL = `${this.url}/User/GetMembershipsById/${membershipId}/${membershipType}/`;
+    const requestURL = `${this.url}/User/GetMembershipsById/${membershipId}/${membershipType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -83,8 +92,8 @@ export class User {
    
     * @returns Returns a list of accounts associated with signed in user. This is useful for OAuth implementations that do not give you access to the token response.
    */
-  public GetMembershipDataForCurrentUser(tokens: ITokens): Promise<APIResponse<UserMembershipData>> {
-    var requestURL = `${this.url}/User/GetMembershipsForCurrentUser/`;
+  public GetMembershipDataForCurrentUser(tokens?: ITokens): Promise<APIResponse<UserMembershipData>> {
+    const requestURL = `${this.url}/User/GetMembershipsForCurrentUser/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -98,11 +107,13 @@ export class User {
    */
   public GetMembershipFromHardLinkedCredential(
     credential: string,
-    crType: BungieCredentialType
+    crType: BungieCredentialType,
+    tokens?: ITokens
   ): Promise<APIResponse<HardLinkedUserMembership>> {
-    var requestURL = `${this.url}/User/GetMembershipFromHardLinkedCredential/${crType}/${credential}/`;
+    const requestURL = `${this.url}/User/GetMembershipFromHardLinkedCredential/${crType}/${credential}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -111,10 +122,15 @@ export class User {
    * @param page The zero-based page of results you desire.
    * @returns [OBSOLETE] Do not use this to search users, use SearchByGlobalNamePost instead.
    */
-  public SearchByGlobalNamePrefix(displayNamePrefix: string, page: number): Promise<APIResponse<UserSearchResponse>> {
-    var requestURL = `${this.url}/User/Search/Prefix/${displayNamePrefix}/${page}/`;
+  public SearchByGlobalNamePrefix(
+    displayNamePrefix: string,
+    page: number,
+    tokens?: ITokens
+  ): Promise<APIResponse<UserSearchResponse>> {
+    const requestURL = `${this.url}/User/Search/Prefix/${displayNamePrefix}/${page}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -122,10 +138,14 @@ export class User {
    * @param page The zero-based page of results you desire.
    * @returns Given the prefix of a global display name, returns all users who share that name.
    */
-  public SearchByGlobalNamePost(page: number, displayNamePrefix: string): Promise<APIResponse<UserSearchResponse>> {
-    var requestURL = `${this.url}/User/Search/GlobalName/${page}/`;
-
+  public SearchByGlobalNamePost(
+    page: number,
+    displayNamePrefix: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<UserSearchResponse>> {
+    const requestURL = `${this.url}/User/Search/GlobalName/${page}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: UserSearchPrefixRequest = { displayNamePrefix };
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 }

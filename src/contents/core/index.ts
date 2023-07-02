@@ -1,6 +1,5 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings } from "../../adapters/utils";
-import { APIResponse, CoreSettingsConfiguration, CoreSystem, GlobalAlert } from "../../types";
+import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { ITokens, APIResponse, CoreSettingsConfiguration, CoreSystem, GlobalAlert } from "../../types";
 
 export class Core {
   constructor(private url: string, private headers: Record<string, string>) {}
@@ -10,10 +9,11 @@ export class Core {
    
     * @returns List of available localization cultures
    */
-  public GetAvailableLocales(): Promise<APIResponse<Record<string, string>>> {
-    var requestURL = `${this.url}/GetAvailableLocales/`;
+  public GetAvailableLocales(tokens?: ITokens): Promise<APIResponse<Record<string, string>>> {
+    const requestURL = `${this.url}/GetAvailableLocales/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -21,10 +21,11 @@ export class Core {
    
     * @returns Get the common settings used by the Bungie.Net environment.
    */
-  public GetCommonSettings(): Promise<APIResponse<CoreSettingsConfiguration>> {
-    var requestURL = `${this.url}/Settings/`;
+  public GetCommonSettings(tokens?: ITokens): Promise<APIResponse<CoreSettingsConfiguration>> {
+    const requestURL = `${this.url}/Settings/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -32,10 +33,11 @@ export class Core {
    
     * @returns Get the user-specific system overrides that should be respected alongside common systems.
    */
-  public GetUserSystemOverrides(): Promise<APIResponse<Record<string, CoreSystem>>> {
-    var requestURL = `${this.url}/UserSystemOverrides/`;
+  public GetUserSystemOverrides(tokens?: ITokens): Promise<APIResponse<Record<string, CoreSystem>>> {
+    const requestURL = `${this.url}/UserSystemOverrides/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -46,10 +48,12 @@ export class Core {
   public GetGlobalAlerts(
     queryString: {
       includestreaming?: boolean;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<GlobalAlert[]>> {
-    var requestURL = formatQueryStrings(`${this.url}/GlobalAlerts/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/GlobalAlerts/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }

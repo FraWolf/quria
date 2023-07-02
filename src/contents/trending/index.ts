@@ -1,5 +1,6 @@
-import { request } from "../../adapters/http-request";
+import { parseAuthenticationHeaders, request } from "../../adapters";
 import {
+  ITokens,
   APIResponse,
   TrendingCategories,
   SearchResultOfTrendingEntry,
@@ -15,10 +16,11 @@ export class Trending {
    
     * @returns Returns trending items for Bungie.net, collapsed into the first page of items per category. For pagination within a category, call GetTrendingCategory.
    */
-  public GetTrendingCategories(): Promise<APIResponse<TrendingCategories>> {
-    var requestURL = `${this.url}/Trending/Categories/`;
+  public GetTrendingCategories(tokens?: ITokens): Promise<APIResponse<TrendingCategories>> {
+    const requestURL = `${this.url}/Trending/Categories/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -27,10 +29,15 @@ export class Trending {
    * @param pageNumber The page # of results to return.
    * @returns Returns paginated lists of trending items for a category.
    */
-  public GetTrendingCategory(categoryId: string, pageNumber: number): Promise<APIResponse<SearchResultOfTrendingEntry>> {
-    var requestURL = `${this.url}/Trending/Categories/${categoryId}/${pageNumber}/`;
+  public GetTrendingCategory(
+    categoryId: string,
+    pageNumber: number,
+    tokens?: ITokens
+  ): Promise<APIResponse<SearchResultOfTrendingEntry>> {
+    const requestURL = `${this.url}/Trending/Categories/${categoryId}/${pageNumber}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -41,10 +48,12 @@ export class Trending {
    */
   public GetTrendingEntryDetail(
     identifier: string,
-    trendingEntryType: TrendingEntryType
+    trendingEntryType: TrendingEntryType,
+    tokens?: ITokens
   ): Promise<APIResponse<TrendingDetail>> {
-    var requestURL = `${this.url}/Trending/Details/${trendingEntryType}/${identifier}/`;
+    const requestURL = `${this.url}/Trending/Details/${trendingEntryType}/${identifier}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }

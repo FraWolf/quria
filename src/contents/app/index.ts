@@ -1,5 +1,4 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings, parseAuthenticationHeaders } from "../../adapters/utils";
+import { formatQueryStrings, parseAuthenticationHeaders, request } from "../../adapters";
 import { ITokens, APIResponse, ApiUsage, Application } from "../../types";
 
 export class App {
@@ -18,9 +17,9 @@ export class App {
       end?: string;
       start?: string;
     } | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<ApiUsage>> {
-    var requestURL = formatQueryStrings(`${this.url}/App/ApiUsage/${applicationId}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/App/ApiUsage/${applicationId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -31,9 +30,10 @@ export class App {
    
     * @returns Get list of applications created by Bungie.
    */
-  public GetBungieApplications(): Promise<APIResponse<Application[]>> {
-    var requestURL = `${this.url}/App/FirstParty/`;
+  public GetBungieApplications(tokens?: ITokens): Promise<APIResponse<Application[]>> {
+    const requestURL = `${this.url}/App/FirstParty/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }
