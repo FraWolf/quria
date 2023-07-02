@@ -1,4 +1,4 @@
-import { ClientOptions, Options, ITokens } from "../types/general";
+import { ClientOptions, Options, ITokens } from "../types";
 
 export function formatQueryStrings(
   uri: string,
