@@ -1,45 +1,38 @@
 import { request } from "../../adapters/http-request";
-import {
-  formatQueryStrings,
-  parseAuthenticationHeaders,
-} from "../../adapters/utils";
-import { APIResponse } from "../../types/api";
-import { Tokens } from "../../types/general";
-import { ApiUsage, Application } from "../../types/interface";
+import { formatQueryStrings, parseAuthenticationHeaders } from "../../adapters/utils";
+import { ITokens, APIResponse, ApiUsage, Application } from "../../types";
 
 export class App {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
-   * Get API usage by application for time frame specified.
+   * Get API usage by application for time frame specified. You can go as far back as 30 days ago, and can ask for up to a 48 hour window of time in a single request. You must be authenticated with at least the ReadUserData permission to access this endpoint.
    * @param applicationId ID of the application to get usage statistics.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns API usage by application for time frame specified
+   * @param end End time for query. Goes to now if not specified.
+   * @param start Start time for query. Goes to 24 hours ago if not specified.
+   * @returns Get API usage by application for time frame specified. You can go as far back as 30 days ago, and can ask for up to a 48 hour window of time in a single request. You must be authenticated with at least the ReadUserData permission to access this endpoint.
    */
-  GetApplicationApiUsage(
+  public GetApplicationApiUsage(
     applicationId: number,
-    queryString?: { end?: string; start?: string },
-    tokens?: Tokens
+    queryString: {
+      end?: string;
+      start?: string;
+    } | null,
+    tokens: ITokens
   ): Promise<APIResponse<ApiUsage>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/App/ApiUsage/${applicationId}/`,
-      queryString
-    );
-
+    var requestURL = formatQueryStrings(`${this.url}/App/ApiUsage/${applicationId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
    * Get list of applications created by Bungie.
-   * @returns List of applications created by Bungie.
+   
+    * @returns Get list of applications created by Bungie.
    */
-  GetBungieApplications(): Promise<APIResponse<Application[]>> {
-    const requestURL = `${this.url}/App/FirstParty/`;
+  public GetBungieApplications(): Promise<APIResponse<Application[]>> {
+    var requestURL = `${this.url}/App/FirstParty/`;
 
     return request(requestURL, true, "GET", this.headers);
   }

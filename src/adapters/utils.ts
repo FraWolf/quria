@@ -1,17 +1,10 @@
-import { ClientOptions, Options } from "../types/general";
+import { ClientOptions, Options, ITokens } from "../types/general";
 
 export function formatQueryStrings(
   uri: string,
-  queryObject?: {
-    [key: string]:
-      | string
-      | string[]
-      | number
-      | number[]
-      | boolean
-      | boolean[]
-      | undefined;
-  }
+  queryObject: {
+    [key: string]: string | string[] | number | number[] | boolean | boolean[] | undefined;
+  } | null
 ): string {
   // Querystring example : { "components": components }
 
@@ -31,14 +24,10 @@ export function formatQueryStrings(
   return `${uri}${formattedQuerystring}`;
 }
 
-export function parseAuthenticationHeaders(
-  headers: object,
-  tokens?: { access_token?: string; refresh_token?: string }
-) {
+export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
   let newObject = {};
 
-  if (tokens && tokens.access_token)
-    newObject = { Authorization: `Bearer ${tokens.access_token}` };
+  if (tokens && tokens.access_token) newObject = { Authorization: `Bearer ${tokens.access_token}` };
 
   return { ...headers, ...newObject };
 }

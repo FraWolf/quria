@@ -1,116 +1,115 @@
 import { request } from "../../adapters/http-request";
 import { formatQueryStrings } from "../../adapters/utils";
-import { APIResponse } from "../../types/api";
 import {
-  ContentItemPublicContract,
+  APIResponse,
   ContentTypeDescription,
-  NewsArticleRssResponse,
+  ContentItemPublicContract,
   SearchResultOfContentItemPublicContract,
-} from "../../types/interface";
+  NewsArticleRssResponse,
+} from "../../types";
 
 export class Content {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
    * Gets an object describing a particular variant of content.
    * @param type
-   * @returns An object describing a particular variant of content.
+   * @returns Gets an object describing a particular variant of content.
    */
-  GetContentType(type: string): Promise<APIResponse<ContentTypeDescription>> {
-    const requestURL = `${this.url}/Content/GetContentType/${type}/`;
+  public GetContentType(type: string): Promise<APIResponse<ContentTypeDescription>> {
+    var requestURL = `${this.url}/Content/GetContentType/${type}/`;
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Returns a content item referenced by id
+   * @param head false
    * @param id
    * @param locale
-   * @param queryString The optional querystrings that can be applied.
-   * @returns A content item referenced by id
+   * @returns Returns a content item referenced by id
    */
-  GetContentById(
+  public GetContentById(
     id: string,
     locale: string,
-    queryString?: { head: boolean }
+    queryString: {
+      head?: boolean;
+    } | null
   ): Promise<APIResponse<ContentItemPublicContract>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Content/GetContentById/${id}/${locale}/`,
-      queryString
-    );
+    var requestURL = formatQueryStrings(`${this.url}/Content/GetContentById/${id}/${locale}/`, queryString);
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Returns the newest item that matches a given tag and Content Type.
+   * @param head Not used.
    * @param locale
    * @param tag
    * @param type
-   * @param queryString The optional querystrings that can be applied.
-   * @returns The newest item that matches a given tag and Content Type.
+   * @returns Returns the newest item that matches a given tag and Content Type.
    */
-  GetContentByTagAndType(
+  public GetContentByTagAndType(
     locale: string,
     tag: string,
     type: string,
-    queryString?: { head: boolean }
+    queryString: {
+      head?: boolean;
+    } | null
   ): Promise<APIResponse<ContentItemPublicContract>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Content/GetContentByTagAndType/${tag}/${type}/${locale}/`,
-      queryString
-    );
+    var requestURL = formatQueryStrings(`${this.url}/Content/GetContentByTagAndType/${tag}/${type}/${locale}/`, queryString);
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Gets content based on querystring information passed in.
+   * Gets content based on querystring information passed in. Provides basic search and text search capabilities.
+   * @param ctype Content type tag: Help, News, etc. Supply multiple ctypes separated by space.
+   * @param currentpage Page number for the search results, starting with page 1.
+   * @param head Not used.
    * @param locale
-   * @param queryString The optional querystrings that can be applied.
-   * @returns Content based on querystring information passed in.
+   * @param searchtext Word or phrase for the search.
+   * @param source For analytics, hint at the part of the app that triggered the search. Optional.
+   * @param tag Tag used on the content to be searched.
+   * @returns Gets content based on querystring information passed in. Provides basic search and text search capabilities.
    */
-  SearchContentWithText(
+  public SearchContentWithText(
     locale: string,
-    queryString?: {
+    queryString: {
       ctype?: string;
       currentpage?: number;
       head?: boolean;
       searchtext?: string;
       source?: string;
       tag?: string;
-    }
+    } | null
   ): Promise<APIResponse<SearchResultOfContentItemPublicContract>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Content/Search/${locale}/`,
-      queryString
-    );
+    var requestURL = formatQueryStrings(`${this.url}/Content/Search/${locale}/`, queryString);
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Searches for Content Items that match the given Tag and Content Type.
+   * @param currentpage Page number for the search results starting with page 1.
+   * @param head Not used.
+   * @param itemsperpage Not used.
    * @param locale
    * @param tag
    * @param type
-   * @param queryString The optional querystrings that can be applied.
-   * @returns For Content Items that match the given Tag and Content Type.
+   * @returns Searches for Content Items that match the given Tag and Content Type.
    */
-  SearchContentByTagAndType(
+  public SearchContentByTagAndType(
     locale: string,
     tag: string,
     type: string,
-    queryString?: {
+    queryString: {
       currentpage?: number;
       head?: boolean;
       itemsperpage?: number;
-    }
+    } | null
   ): Promise<APIResponse<SearchResultOfContentItemPublicContract>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Content/SearchContentByTagAndType/${tag}/${type}/${locale}/`,
       queryString
     );
@@ -122,26 +121,29 @@ export class Content {
    * Search for Help Articles.
    * @param searchtext
    * @param size
-   * @returns Help Articles.
+   * @returns Search for Help Articles.
    */
-  SearchHelpArticles(
-    searchtext: string,
-    size: string
-  ): Promise<APIResponse<object>> {
-    const requestURL = `${this.url}/Content/SearchHelpArticles/${searchtext}/${size}/`;
+  public SearchHelpArticles(searchtext: string, size: string): Promise<APIResponse<object>> {
+    var requestURL = `${this.url}/Content/SearchHelpArticles/${searchtext}/${size}/`;
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Returns a JSON string response that is the RSS feed for news articles.
+   * @param categoryfilter Optionally filter response to only include news items in a certain category.
+   * @param includebody Optionally include full content body for each news item.
    * @param pageToken Zero-based pagination token for paging through result sets.
-   * @returns A JSON string response that is the RSS feed for news articles.
+   * @returns Returns a JSON string response that is the RSS feed for news articles.
    */
-  RssNewsArticles(
-    pageToken: string
+  public RssNewsArticles(
+    pageToken: string,
+    queryString: {
+      categoryfilter?: string;
+      includebody?: boolean;
+    } | null
   ): Promise<APIResponse<NewsArticleRssResponse>> {
-    const requestURL = `${this.url}/Content/Rss/NewsArticles/${pageToken}/`;
+    var requestURL = formatQueryStrings(`${this.url}/Content/Rss/NewsArticles/${pageToken}/`, queryString);
 
     return request(requestURL, true, "GET", this.headers);
   }
