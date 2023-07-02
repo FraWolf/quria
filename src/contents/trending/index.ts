@@ -1,24 +1,22 @@
 import { request } from "../../adapters/http-request";
-import { APIResponse } from "../../types/api";
-import { TrendingEntryType } from "../../types/enum";
 import {
-  SearchResultOfTrendingEntry,
+  APIResponse,
   TrendingCategories,
+  SearchResultOfTrendingEntry,
+  TrendingEntryType,
   TrendingDetail,
-} from "../../types/interface";
+} from "../../types";
 
 export class Trending {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
    * Returns trending items for Bungie.net, collapsed into the first page of items per category. For pagination within a category, call GetTrendingCategory.
-   * @returns Trending items for Bungie.net, collapsed into the first page of items per category. For pagination within a category, call GetTrendingCategory.
+   
+    * @returns Returns trending items for Bungie.net, collapsed into the first page of items per category. For pagination within a category, call GetTrendingCategory.
    */
-  GetTrendingCategories(): Promise<APIResponse<TrendingCategories>> {
-    const requestURL = `${this.url}/Trending/Categories/`;
+  public GetTrendingCategories(): Promise<APIResponse<TrendingCategories>> {
+    var requestURL = `${this.url}/Trending/Categories/`;
 
     return request(requestURL, true, "GET", this.headers);
   }
@@ -27,28 +25,25 @@ export class Trending {
    * Returns paginated lists of trending items for a category.
    * @param categoryId The ID of the category for whom you want additional results.
    * @param pageNumber The page # of results to return.
-   * @returns Paginated lists of trending items for a category.
+   * @returns Returns paginated lists of trending items for a category.
    */
-  GetTrendingCategory(
-    categoryId: string,
-    pageNumber: number
-  ): Promise<APIResponse<SearchResultOfTrendingEntry>> {
-    const requestURL = `${this.url}/Trending/Categories/${categoryId}/${pageNumber}/`;
+  public GetTrendingCategory(categoryId: string, pageNumber: number): Promise<APIResponse<SearchResultOfTrendingEntry>> {
+    var requestURL = `${this.url}/Trending/Categories/${categoryId}/${pageNumber}/`;
 
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Returns the detailed results for a specific trending entry.
+   * Returns the detailed results for a specific trending entry. Note that trending entries are uniquely identified by a combination of *both* the TrendingEntryType *and* the identifier: the identifier alone is not guaranteed to be globally unique.
    * @param identifier The identifier for the entity to be returned.
    * @param trendingEntryType The type of entity to be returned.
-   * @returns The detailed results for a specific trending entry.
+   * @returns Returns the detailed results for a specific trending entry. Note that trending entries are uniquely identified by a combination of *both* the TrendingEntryType *and* the identifier: the identifier alone is not guaranteed to be globally unique.
    */
-  GetTrendingEntryDetail(
+  public GetTrendingEntryDetail(
     identifier: string,
     trendingEntryType: TrendingEntryType
   ): Promise<APIResponse<TrendingDetail>> {
-    const requestURL = `${this.url}/Trending/Details/${trendingEntryType}/${identifier}/`;
+    var requestURL = `${this.url}/Trending/Details/${trendingEntryType}/${identifier}/`;
 
     return request(requestURL, true, "GET", this.headers);
   }

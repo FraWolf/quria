@@ -1,349 +1,325 @@
 import { request } from "../../adapters/http-request";
+import { formatQueryStrings, parseAuthenticationHeaders } from "../../adapters/utils";
 import {
-  formatQueryStrings,
-  parseAuthenticationHeaders,
-} from "../../adapters/utils";
-import { APIResponse } from "../../types/api";
-import { Tokens } from "../../types/general";
-import { BungieMembershipType, DestinyComponentType } from "../../types/enum";
-import {
-  AwaAuthorizationResult,
-  AwaInitializeResponse,
-  AwaPermissionRequested,
-  AwaUserResponse,
-  ClanBannerSource,
-  DestinyActivityHistoryResults,
-  DestinyAggregateActivityResults,
-  DestinyCharacterResponse,
-  DestinyClanAggregateStat,
-  DestinyCollectibleNodeDetailResponse,
+  APIResponse,
+  DestinyManifest,
   DestinyDefinition,
-  DestinyEntitySearchResult,
+  BungieMembershipType,
+  UserInfoCard,
+  ExactSearchRequest,
+  DestinyLinkedProfilesResponse,
+  DestinyComponentType,
+  DestinyProfileResponse,
+  DestinyCharacterResponse,
+  DestinyMilestone,
+  ClanBannerSource,
+  DestinyItemResponse,
+  DestinyVendorFilter,
+  DestinyVendorsResponse,
+  DestinyVendorResponse,
+  DestinyPublicVendorsResponse,
+  DestinyCollectibleNodeDetailResponse,
+  ITokens,
+  DestinyItemTransferRequest,
+  DestinyPostmasterTransferRequest,
+  DestinyItemActionRequest,
   DestinyEquipItemResults,
-  DestinyHistoricalStatsAccountResult,
-  DestinyHistoricalStatsByPeriod,
-  DestinyHistoricalStatsDefinition,
-  DestinyHistoricalWeaponStatsData,
+  DestinyItemSetActionRequest,
+  DestinyLoadoutActionRequest,
+  DestinyLoadoutUpdateActionRequest,
+  DestinyItemStateRequest,
+  DestinyInsertPlugsRequestEntry,
+  DestinyItemChangeResponse,
   DestinyInsertPlugsActionRequest,
   DestinyInsertPlugsFreeActionRequest,
-  DestinyInsertPlugsRequestEntry,
-  DestinyItemActionRequest,
-  DestinyItemChangeResponse,
-  DestinyItemResponse,
-  DestinyItemSetActionRequest,
-  DestinyItemStateRequest,
-  DestinyItemTransferRequest,
-  DestinyLinkedProfilesResponse,
-  DestinyManifest,
-  DestinyMilestone,
-  DestinyMilestoneContent,
   DestinyPostGameCarnageReportData,
-  DestinyPostmasterTransferRequest,
-  DestinyProfileResponse,
-  DestinyPublicMilestone,
   DestinyReportOffensePgcrRequest,
-  DestinyVendorResponse,
-  DestinyVendorsResponse,
-  ExactSearchRequest,
-  UserInfoCard,
-} from "../../types/interface";
+  DestinyHistoricalStatsDefinition,
+  DestinyLeaderboard,
+  DestinyClanAggregateStat,
+  DestinyEntitySearchResult,
+  DestinyStatsGroupType,
+  DestinyActivityModeType,
+  PeriodType,
+  DestinyHistoricalStatsByPeriod,
+  DestinyHistoricalStatsAccountResult,
+  DestinyActivityHistoryResults,
+  DestinyHistoricalWeaponStatsData,
+  DestinyAggregateActivityResults,
+  DestinyMilestoneContent,
+  DestinyPublicMilestone,
+  AwaType,
+  AwaInitializeResponse,
+  AwaPermissionRequested,
+  AwaUserSelection,
+  AwaUserResponse,
+  AwaAuthorizationResult,
+} from "../../types";
 
-export class Destiny {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+export class Destiny2 {
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
-   * Getting Destiny Manifest
+   * Returns the current version of the manifest as a json object.
+   
+    * @returns Returns the current version of the manifest as a json object.
    */
-  GetDestinyManifest(): Promise<APIResponse<DestinyManifest>> {
-    return request(`${this.url}/Destiny2/Manifest/`, true, "GET", this.headers);
-  }
+  public GetDestinyManifest(): Promise<APIResponse<DestinyManifest>> {
+    var requestURL = `${this.url}/Destiny2/Manifest/`;
 
-  /**
-   * Returns the static definition of an entity of the given Type and hash identifier.
-   * @param entityType The type of entity for whom you would like results.
-   * @param hashIdentifier The hash identifier for the specific Entity you want returned.
-   * @returns The static definition of an entity of the given Type and hash identifier.
-   */
-  GetDestinyEntityDefinition(
-    entityType: string,
-    hashIdentifier: number
-  ): Promise<APIResponse<DestinyDefinition>> {
-    const requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
     return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Returns a list of Destiny memberships given a full Gamertag or PSN ID.
-   * @param membershipType A valid non-BungieNet membership type, or All.
-   * @param displayName The full gamertag or PSN id of the player.
-   * @returns A list of Destiny memberships given a full Gamertag or PSN ID
+   * Returns the static definition of an entity of the given Type and hash identifier. Examine the API Documentation for the Type Names of entities that have their own definitions. Note that the return type will always *inherit from* DestinyDefinition, but the specific type returned will be the requested entity type if it can be found. Please don't use this as a chatty alternative to the Manifest database if you require large sets of data, but for simple and one-off accesses this should be handy.
+   * @param entityType The type of entity for whom you would like results. These correspond to the entity's definition contract name. For instance, if you are looking for items, this property should be 'DestinyInventoryItemDefinition'. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is tentatively in final form, but there may be bugs that prevent desirable operation.
+   * @param hashIdentifier The hash identifier for the specific Entity you want returned.
+   * @returns Returns the static definition of an entity of the given Type and hash identifier. Examine the API Documentation for the Type Names of entities that have their own definitions. Note that the return type will always *inherit from* DestinyDefinition, but the specific type returned will be the requested entity type if it can be found. Please don't use this as a chatty alternative to the Manifest database if you require large sets of data, but for simple and one-off accesses this should be handy.
    */
-  SearchDestinyPlayerByBungieName(
-    membershipType: BungieMembershipType,
-    displayName: string
-  ): Promise<APIResponse<UserInfoCard[]>> {
-    const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
+  public GetDestinyEntityDefinition(entityType: string, hashIdentifier: number): Promise<APIResponse<DestinyDefinition>> {
+    var requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
 
-    const [name, code] = displayName.split("#");
-    const bodyParams: ExactSearchRequest = {
-      displayName: name,
-      displayNameCode: parseInt(code),
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      this.headers,
-      JSON.stringify(bodyParams)
-    );
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
-   * @param membershipId A valid non-BungieNet membership type.
-   * @param membershipType Destiny membership ID.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns A summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information.
+   * Returns a list of Destiny memberships given a global Bungie Display Name. This method will hide overridden memberships due to cross save.
+   * @param membershipType A valid non-BungieNet membership type, or All. Indicates which memberships to return. You probably want this set to All.
+   * @returns Returns a list of Destiny memberships given a global Bungie Display Name. This method will hide overridden memberships due to cross save.
    */
-  GetLinkedProfiles(
+  public SearchDestinyPlayerByBungieName(
+    membershipType: BungieMembershipType,
+    displayName: string,
+    displayNameCode: number
+  ): Promise<APIResponse<UserInfoCard[]>> {
+    var requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
+
+    const bodyParams: ExactSearchRequest = { displayName, displayNameCode };
+    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+  }
+
+  /**
+   * Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information. The passed-in Membership Type/Membership ID may be a Bungie.Net membership or a Destiny membership. It only returns the minimal amount of data to begin making more substantive requests, but will hopefully serve as a useful alternative to UserServices for people who just care about Destiny data. Note that it will only return linked accounts whose linkages you are allowed to view.
+   * @param getAllMemberships (optional) if set to 'true', all memberships regardless of whether they're obscured by overrides will be returned. Normal privacy restrictions on account linking will still apply no matter what.
+   * @param membershipId The ID of the membership whose linked Destiny accounts you want returned. Make sure your membership ID matches its Membership Type: don't pass us a PSN membership ID and the XBox membership type, it's not going to work!
+   * @param membershipType The type for the membership whose linked Destiny accounts you want returned.
+   * @returns Returns a summary information about all profiles linked to the requesting membership type/membership ID that have valid Destiny information. The passed-in Membership Type/Membership ID may be a Bungie.Net membership or a Destiny membership. It only returns the minimal amount of data to begin making more substantive requests, but will hopefully serve as a useful alternative to UserServices for people who just care about Destiny data. Note that it will only return linked accounts whose linkages you are allowed to view.
+   */
+  public GetLinkedProfiles(
     membershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: { getAllMemberships: boolean },
-    tokens?: Tokens
+    queryString: {
+      getAllMemberships?: boolean;
+    } | null
   ): Promise<APIResponse<DestinyLinkedProfilesResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${membershipId}/LinkedProfiles/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Returns Destiny Profile information for the supplied membership.
-   * @param destinyMembershipId A valid non-BungieNet membership type.
-   * @param membershipType Destiny membership ID.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Destiny Profile information for the supplied membership.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @param destinyMembershipId Destiny membership ID.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @returns Returns Destiny Profile information for the supplied membership.
    */
-  GetProfile(
+  public GetProfile(
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString: { components: DestinyComponentType[] },
-    tokens?: Tokens
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
   ): Promise<APIResponse<DestinyProfileResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-
-    return request(requestURL, true, "GET", authHeaders);
-  }
-
-  /**
-   * Returns character information for the supplied character.
-   * @param membershipType ID of the character.
-   * @param destinyMembershipId Destiny membership ID.
-   * @param characterId A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Character information for the supplied character.
-   */
-  GetCharacter(
-    characterId: string,
-    destinyMembershipId: string,
-    membershipType: BungieMembershipType,
-    queryString?: { components: DestinyComponentType[] },
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyCharacterResponse>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/`,
-      queryString
-    );
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
-  }
-
-  /**
-   * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-   * @param groupId A valid group id of clan.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
-   */
-  GetClanWeeklyRewardState(
-    groupId: string,
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyMilestone>> {
-    const requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
-
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
-  }
-
-  /**
-   * Returns the dictionary of values for the Clan Banner
-   * @returns Returns the dictionary of values for the Clan Banner
-   */
-  GetClanBannerSource(tokens?: Tokens): Promise<APIResponse<ClanBannerSource>> {
-    const requestURL = `${this.url}/Destiny2/Clan/ClanBannerDictionary/`;
-
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
-  }
-
-  /**
-   * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-   * @param destinyMembershipId The membership ID of the destiny profile.
-   * @param itemInstanceId The Instance ID of the destiny item.
-   * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns The details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId.
-   */
-  GetItem(
-    destinyMembershipId: string,
-    itemInstanceId: string,
-    membershipType: BungieMembershipType,
-    queryString?: { components: DestinyComponentType[] },
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyItemResponse>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Item/${itemInstanceId}/`,
-      queryString
-    );
-
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Returns character information for the supplied character.
    * @param characterId ID of the character.
-   * @param destinyMembershipId The membership ID of the destiny profile.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @param destinyMembershipId Destiny membership ID.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Character information for the supplied character.
+   * @returns Returns character information for the supplied character.
    */
-  GetVendors(
+  public GetCharacter(
     characterId: string,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: { components?: DestinyComponentType[]; filter?: number },
-    tokens?: Tokens
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
+  ): Promise<APIResponse<DestinyCharacterResponse>> {
+    var requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/`,
+      queryString
+    );
+
+    return request(requestURL, true, "GET", this.headers);
+  }
+
+  /**
+   * Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
+   * @param groupId A valid group id of clan.
+   * @returns Returns information on the weekly clan rewards and if the clan has earned them or not. Note that this will always report rewards as not redeemed.
+   */
+  public GetClanWeeklyRewardState(groupId: string): Promise<APIResponse<DestinyMilestone>> {
+    var requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
+
+    return request(requestURL, true, "GET", this.headers);
+  }
+
+  /**
+   * Returns the dictionary of values for the Clan Banner
+   
+    * @returns Returns the dictionary of values for the Clan Banner
+   */
+  public GetClanBannerSource(): Promise<APIResponse<ClanBannerSource>> {
+    var requestURL = `${this.url}/Destiny2/Clan/ClanBannerDictionary/`;
+
+    return request(requestURL, true, "GET", this.headers);
+  }
+
+  /**
+   * Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId. Non-instanced items, such as materials, have no useful instance-specific details and thus are not queryable here.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @param destinyMembershipId The membership ID of the destiny profile.
+   * @param itemInstanceId The Instance ID of the destiny item.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @returns Retrieve the details of an instanced Destiny Item. An instanced Destiny item is one with an ItemInstanceId. Non-instanced items, such as materials, have no useful instance-specific details and thus are not queryable here.
+   */
+  public GetItem(
+    destinyMembershipId: string,
+    itemInstanceId: string,
+    membershipType: BungieMembershipType,
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
+  ): Promise<APIResponse<DestinyItemResponse>> {
+    var requestURL = formatQueryStrings(
+      `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Item/${itemInstanceId}/`,
+      queryString
+    );
+
+    return request(requestURL, true, "GET", this.headers);
+  }
+
+  /**
+   * Get currently available vendors from the list of vendors that can possibly have rotating inventory. Note that this does not include things like preview vendors and vendors-as-kiosks, neither of whom have rotating/dynamic inventories. Use their definitions as-is for those.
+   * @param characterId The Destiny Character ID of the character for whom we're getting vendor info.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param filter The filter of what vendors and items to return, if any.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @returns Get currently available vendors from the list of vendors that can possibly have rotating inventory. Note that this does not include things like preview vendors and vendors-as-kiosks, neither of whom have rotating/dynamic inventories. Use their definitions as-is for those.
+   */
+  public GetVendors(
+    characterId: string,
+    destinyMembershipId: string,
+    membershipType: BungieMembershipType,
+    queryString: {
+      components?: DestinyComponentType[];
+      filter?: DestinyVendorFilter;
+    } | null
   ): Promise<APIResponse<DestinyVendorsResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Vendors/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Get the details of a specific Vendor.
    * @param characterId The Destiny Character ID of the character for whom we're getting vendor info.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
    * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
    * @param membershipType A valid non-BungieNet membership type.
    * @param vendorHash The Hash identifier of the Vendor to be returned.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns The details of a specific Vendor.
+   * @returns Get the details of a specific Vendor.
    */
-  GetVendor(
+  public GetVendor(
     characterId: string,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
     vendorHash: number,
-    queryString?: { components: DestinyComponentType[] },
-    tokens?: Tokens
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
   ): Promise<APIResponse<DestinyVendorResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Vendors/${vendorHash}/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Get items available from vendors where the vendors have items for sale that are common for everyone.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Items available from vendors where the vendors have items for sale that are common for everyone.
+   * Get items available from vendors where the vendors have items for sale that are common for everyone. If any portion of the Vendor's available inventory is character or account specific, we will be unable to return their data from this endpoint due to the way that available inventory is computed. As I am often guilty of saying: 'It's a long story...'
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @returns Get items available from vendors where the vendors have items for sale that are common for everyone. If any portion of the Vendor's available inventory is character or account specific, we will be unable to return their data from this endpoint due to the way that available inventory is computed. As I am often guilty of saying: 'It's a long story...'
    */
-  GetPublicVendors(
-    queryString?: { components: DestinyComponentType[] },
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyVendorsResponse>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/Vendors/`,
-      queryString
-    );
+  public GetPublicVendors(
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
+  ): Promise<APIResponse<DestinyPublicVendorsResponse>> {
+    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Vendors/`, queryString);
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Given a Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
-   * @param membershipType A valid non-BungieNet membership type.
-   * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
    * @param characterId The Destiny Character ID of the character for whom we're getting collectible detail info.
-   * @param collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
+   * @param collectiblePresentationNodeHash The hash identifier of the Presentation Node for whom we should return collectible details. Details will only be returned for collectibles that are direct descendants of this node.
+   * @param components A comma separated list of components to return (as strings or numeric values). See the DestinyComponentType enum for valid components to request. You must request at least one component to receive results.
+   * @param destinyMembershipId Destiny membership ID of another user. You may be denied.
+   * @param membershipType A valid non-BungieNet membership type.
+   * @returns Given a Presentation Node that has Collectibles as direct descendants, this will return item details about those descendants in the context of the requesting character.
    */
-  GetCollectibleNodeDetails(
+  public GetCollectibleNodeDetails(
     characterId: string,
-    collectiblePresentationNodeHash: string,
+    collectiblePresentationNodeHash: number,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: { components: DestinyComponentType[] },
-    tokens?: Tokens
+    queryString: {
+      components?: DestinyComponentType[];
+    } | null
   ): Promise<APIResponse<DestinyCollectibleNodeDetailResponse>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Profile/${destinyMembershipId}/Character/${characterId}/Collectibles/${collectiblePresentationNodeHash}/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Transfer an item to/from your vault.
-   * @param itemReferenceHash
-   * @param stackSize
-   * @param transferToVault
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Transfer an item to/from your vault. You must have a valid Destiny account. You must also pass BOTH a reference AND an instance ID if it's an instanced item. itshappening.gif
+   
+    * @returns Transfer an item to/from your vault. You must have a valid Destiny account. You must also pass BOTH a reference AND an instance ID if it's an instanced item. itshappening.gif
    */
-  TransferItem(
+  public TransferItem(
     itemReferenceHash: number,
     stackSize: number,
     transferToVault: boolean,
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/TransferItem/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/TransferItem/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemTransferRequest = {
       itemReferenceHash,
@@ -353,36 +329,23 @@ export class Destiny {
       characterId,
       membershipType,
     };
-
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Extract an item from the Postmaster, with whatever implications that may entail.
-   * @param itemReferenceHash
-   * @param stackSize
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Extract an item from the Postmaster, with whatever implications that may entail. You must have a valid Destiny account. You must also pass BOTH a reference AND an instance ID if it's an instanced item.
+   
+    * @returns Extract an item from the Postmaster, with whatever implications that may entail. You must have a valid Destiny account. You must also pass BOTH a reference AND an instance ID if it's an instanced item.
    */
-  PullFromPostmaster(
+  public PullFromPostmaster(
     itemReferenceHash: number,
     stackSize: number,
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/PullFromPostmaster/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/PullFromPostmaster/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyPostmasterTransferRequest = {
       itemReferenceHash,
@@ -391,475 +354,435 @@ export class Destiny {
       characterId,
       membershipType,
     };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Equip an item.
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Equip an item. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline.
+   
+    * @returns Equip an item. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline.
    */
-  EquipItem(
+  public EquipItem(
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItem/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/EquipItem/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyItemActionRequest = {
-      itemId,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyItemActionRequest = { itemId, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Equip a list of items by itemInstanceIds.
-   * @param itemIds
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Equip a list of items by itemInstanceIds. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline. Any items not found on your character will be ignored.
+   
+    * @returns Equip a list of items by itemInstanceIds. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline. Any items not found on your character will be ignored.
    */
-  EquipItems(
+  public EquipItems(
     itemIds: string[],
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<DestinyEquipItemResults>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItems/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/EquipItems/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyItemSetActionRequest = {
-      itemIds,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyItemSetActionRequest = { itemIds, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Set the Lock State for an instanced item.
-   * @param state
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Equip a loadout. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline.
+   
+    * @returns Equip a loadout. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline.
    */
-  SetItemLockState(
+  public EquipLoadout(
+    loadoutIndex: number,
+    characterId: string,
+    membershipType: BungieMembershipType,
+    tokens: ITokens
+  ): Promise<APIResponse<number>> {
+    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/EquipLoadout/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+  }
+
+  /**
+   * Snapshot a loadout with the currently equipped items.
+   
+    * @returns Snapshot a loadout with the currently equipped items.
+   */
+  public SnapshotLoadout(
+    colorHash: number | null,
+    iconHash: number | null,
+    nameHash: number | null,
+    loadoutIndex: number,
+    characterId: string,
+    membershipType: BungieMembershipType,
+    tokens: ITokens
+  ): Promise<APIResponse<number>> {
+    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/SnapshotLoadout/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    const bodyParams: DestinyLoadoutUpdateActionRequest = {
+      colorHash,
+      iconHash,
+      nameHash,
+      loadoutIndex,
+      characterId,
+      membershipType,
+    };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+  }
+
+  /**
+   * Update the color, icon, and name of a loadout.
+   
+    * @returns Update the color, icon, and name of a loadout.
+   */
+  public UpdateLoadoutIdentifiers(
+    colorHash: number | null,
+    iconHash: number | null,
+    nameHash: number | null,
+    loadoutIndex: number,
+    characterId: string,
+    membershipType: BungieMembershipType,
+    tokens: ITokens
+  ): Promise<APIResponse<number>> {
+    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/UpdateLoadoutIdentifiers/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    const bodyParams: DestinyLoadoutUpdateActionRequest = {
+      colorHash,
+      iconHash,
+      nameHash,
+      loadoutIndex,
+      characterId,
+      membershipType,
+    };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+  }
+
+  /**
+   * Clear the identifiers and items of a loadout.
+   
+    * @returns Clear the identifiers and items of a loadout.
+   */
+  public ClearLoadout(
+    loadoutIndex: number,
+    characterId: string,
+    membershipType: BungieMembershipType,
+    tokens: ITokens
+  ): Promise<APIResponse<number>> {
+    var requestURL = `${this.url}/Destiny2/Actions/Loadouts/ClearLoadout/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+    const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+  }
+
+  /**
+   * Set the Lock State for an instanced item. You must have a valid Destiny Account.
+   
+    * @returns Set the Lock State for an instanced item. You must have a valid Destiny Account.
+   */
+  public SetItemLockState(
     state: boolean,
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/SetLockState/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/SetLockState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyItemStateRequest = {
-      state,
-      itemId,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Set the Tracking State for an instanced item, if that item is a Quest or Bounty.
-   * @param state
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Set the Tracking State for an instanced item, if that item is a Quest or Bounty. You must have a valid Destiny Account. Yeah, it's an item.
+   
+    * @returns Set the Tracking State for an instanced item, if that item is a Quest or Bounty. You must have a valid Destiny Account. Yeah, it's an item.
    */
-  SetQuestTrackedState(
+  public SetQuestTrackedState(
     state: boolean,
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/SetTrackedState/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/SetTrackedState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyItemStateRequest = {
-      state,
-      itemId,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Insert a plug into a socketed item.
-   * @param actionToken
-   * @param itemInstanceId
-   * @param plug
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Insert a plug into a socketed item. I know how it sounds, but I assure you it's much more G-rated than you might be guessing. We haven't decided yet whether this will be able to insert plugs that have side effects, but if we do it will require special scope permission for an application attempting to do so. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline. Request must include proof of permission for 'InsertPlugs' from the account owner.
+   
+    * @returns Insert a plug into a socketed item. I know how it sounds, but I assure you it's much more G-rated than you might be guessing. We haven't decided yet whether this will be able to insert plugs that have side effects, but if we do it will require special scope permission for an application attempting to do so. You must have a valid Destiny Account, and either be in a social space, in orbit, or offline. Request must include proof of permission for 'InsertPlugs' from the account owner.
    */
-  InsertSocketPlug(
+  public InsertSocketPlug(
     actionToken: string,
     itemInstanceId: string,
     plug: DestinyInsertPlugsRequestEntry,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlug/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlug/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyInsertPlugsActionRequest = {
-      actionToken,
-      itemInstanceId,
-      plug,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyInsertPlugsActionRequest = { actionToken, itemInstanceId, plug, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
-   * Insert a 'free' plug into an item's socket.
-   * @param plug
-   * @param itemId
-   * @param characterId
-   * @param membershipType
-   * @param tokens The optional tokens that can be applied.
-   * @returns
+   * Insert a 'free' plug into an item's socket. This does not require 'Advanced Write Action' authorization and is available to 3rd-party apps, but will only work on 'free and reversible' socket actions (Perks, Armor Mods, Shaders, Ornaments, etc.). You must have a valid Destiny Account, and the character must either be in a social space, in orbit, or offline.
+   
+    * @returns Insert a 'free' plug into an item's socket. This does not require 'Advanced Write Action' authorization and is available to 3rd-party apps, but will only work on 'free and reversible' socket actions (Perks, Armor Mods, Shaders, Ornaments, etc.). You must have a valid Destiny Account, and the character must either be in a social space, in orbit, or offline.
    */
-  InsertSocketPlugFree(
+  public InsertSocketPlugFree(
     plug: DestinyInsertPlugsRequestEntry,
     itemId: string,
     characterId: string,
     membershipType: BungieMembershipType,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<DestinyItemChangeResponse>> {
-    const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlugFree/`;
-
+    var requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlugFree/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyInsertPlugsFreeActionRequest = {
-      plug,
-      itemId,
-      characterId,
-      membershipType,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyInsertPlugsFreeActionRequest = { plug, itemId, characterId, membershipType };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
    * Gets the available post game carnage report for the activity ID.
    * @param activityId The ID of the activity whose PGCR is requested.
-   * @param tokens The optional tokens that can be applied.
-   * @returns The available post game carnage report for the activity ID.
+   * @returns Gets the available post game carnage report for the activity ID.
    */
-  GetPostGameCarnageReport(
-    activityId: string,
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
-    const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
+  public GetPostGameCarnageReport(activityId: string): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
+    var requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Report a player that you met in an activity that was engaging in ToS-violating activities.
+   * Report a player that you met in an activity that was engaging in ToS-violating activities. Both you and the offending player must have played in the activityId passed in. Please use this judiciously and only when you have strong suspicions of violation, pretty please.
    * @param activityId The ID of the activity where you ran into the brigand that you're reporting.
-   * @param reasonCategoryHashes These are hash identifiers that map to DestinyReportReasonCategoryDefinition entries.
-   * @param reasonHashes If applicable, provide a more specific reason(s) within the general category of problems provided by the reasonHash.
-   * @param offendingCharacterId Within the PGCR provided when calling the Reporting endpoint, this should be the character ID of the user that you thought was violating terms of use.
-   * @param tokens The optional tokens that can be applied.
-   * @returns A player that you met in an activity that was engaging in ToS-violating activities.
+   * @returns Report a player that you met in an activity that was engaging in ToS-violating activities. Both you and the offending player must have played in the activityId passed in. Please use this judiciously and only when you have strong suspicions of violation, pretty please.
    */
-  ReportOffensivePostGameCarnageReportPlayer(
+  public ReportOffensivePostGameCarnageReportPlayer(
     activityId: string,
     reasonCategoryHashes: number[],
     reasonHashes: number[],
     offendingCharacterId: string,
-    tokens?: Tokens
+    tokens: ITokens
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
-
+    var requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: DestinyReportOffensePgcrRequest = {
-      reasonCategoryHashes,
-      reasonHashes,
-      offendingCharacterId,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: DestinyReportOffensePgcrRequest = { reasonCategoryHashes, reasonHashes, offendingCharacterId };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
    * Gets historical stats definitions.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Historical stats definitions.
+   
+    * @returns Gets historical stats definitions.
    */
-  GetHistoricalStatsDefinition(
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyHistoricalStatsDefinition>> {
-    const requestURL = `${this.url}/Destiny2/Stats/Definition/`;
+  public GetHistoricalStatsDefinition(): Promise<APIResponse<Record<string, DestinyHistoricalStatsDefinition>>> {
+    var requestURL = `${this.url}/Destiny2/Stats/Definition/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * @param maxtop Maximum number of top players to return. Use a large number to get entire leaderboard.
+   * @param modes List of game modes for which to get leaderboards. See the documentation for DestinyActivityModeType for valid values, and pass in string representation, comma delimited.
+   * @param statid ID of stat to return rather than returning all Leaderboard stats.
+   * @returns Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    */
-  GetClanLeaderboards(
+  public GetClanLeaderboards(
     groupId: string,
-    queryString?: { maxtop?: number; modes?: string; statid?: string },
-    tokens?: Tokens
-  ): Promise<APIResponse<object>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/Stats/Leaderboards/Clans/${groupId}/`,
-      queryString
-    );
+    queryString: {
+      maxtop?: number;
+      modes?: string;
+      statid?: string;
+    } | null
+  ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
+    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/Leaderboards/Clans/${groupId}/`, queryString);
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Gets aggregated stats for a clan using the same categories as the clan leaderboards.
+   * Gets aggregated stats for a clan using the same categories as the clan leaderboards. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    * @param groupId Group ID of the clan whose leaderboards you wish to fetch.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Aggregated stats for a clan using the same categories as the clan leaderboards.
+   * @param modes List of game modes for which to get leaderboards. See the documentation for DestinyActivityModeType for valid values, and pass in string representation, comma delimited.
+   * @returns Gets aggregated stats for a clan using the same categories as the clan leaderboards. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    */
-  GetClanAggregateStats(
+  public GetClanAggregateStats(
     groupId: string,
-    queryString?: { modes?: string },
-    tokens?: Tokens
+    queryString: {
+      modes?: string;
+    } | null
   ): Promise<APIResponse<DestinyClanAggregateStat[]>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/Stats/AggregateClanStats/${groupId}/`,
-      queryString
-    );
+    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/AggregateClanStats/${groupId}/`, queryString);
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint has not yet been implemented. It is being returned for a preview of future functionality, and for public comment/suggestion/preparation.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param maxtop Maximum number of top players to return. Use a large number to get entire leaderboard.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * @param modes List of game modes for which to get leaderboards. See the documentation for DestinyActivityModeType for valid values, and pass in string representation, comma delimited.
+   * @param statid ID of stat to return rather than returning all Leaderboard stats.
+   * @returns Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint has not yet been implemented. It is being returned for a preview of future functionality, and for public comment/suggestion/preparation.
    */
-  GetLeaderboards(
+  public GetLeaderboards(
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: { maxtop?: number; modes?: string; statid?: string },
-    tokens?: Tokens
-  ): Promise<APIResponse<object>> {
-    const requestURL = formatQueryStrings(
+    queryString: {
+      maxtop?: number;
+      modes?: string;
+      statid?: string;
+    } | null
+  ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Stats/Leaderboards/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
-   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    * @param characterId The specific character to build the leaderboard around for the provided Destiny Membership.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param maxtop Maximum number of top players to return. Use a large number to get entire leaderboard.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus.
+   * @param modes List of game modes for which to get leaderboards. See the documentation for DestinyActivityModeType for valid values, and pass in string representation, comma delimited.
+   * @param statid ID of stat to return rather than returning all Leaderboard stats.
+   * @returns Gets leaderboards with the signed in user's friends and the supplied destinyMembershipId as the focus. PREVIEW: This endpoint is still in beta, and may experience rough edges. The schema is in final form, but there may be bugs that prevent desirable operation.
    */
-  GetLeaderboardsForCharacter(
+  public GetLeaderboardsForCharacter(
     characterId: string,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: { maxtop?: number; modes?: string; statid?: string },
-    tokens?: Tokens
-  ): Promise<APIResponse<object>> {
-    const requestURL = formatQueryStrings(
+    queryString: {
+      maxtop?: number;
+      modes?: string;
+      statid?: string;
+    } | null
+  ): Promise<APIResponse<Record<string, Record<string, DestinyLeaderboard>>>> {
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/Stats/Leaderboards/${membershipType}/${destinyMembershipId}/${characterId}/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets a page list of Destiny items.
+   * @param page Page number to return, starting with 0.
    * @param searchTerm The string to use when searching for Destiny entities.
-   * @param type The type of entity for whom you would like results.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns A page list of Destiny items.
+   * @param type The type of entity for whom you would like results. These correspond to the entity's definition contract name. For instance, if you are looking for items, this property should be 'DestinyInventoryItemDefinition'.
+   * @returns Gets a page list of Destiny items.
    */
-  SearchDestinyEntities(
+  public SearchDestinyEntities(
     searchTerm: string,
     type: string,
-    queryString?: { page?: number },
-    tokens?: Tokens
+    queryString: {
+      page?: number;
+    } | null
   ): Promise<APIResponse<DestinyEntitySearchResult>> {
-    const requestURL = formatQueryStrings(
-      `${this.url}/Destiny2/Armory/Search/${type}/${searchTerm}/`,
-      queryString
-    );
+    var requestURL = formatQueryStrings(`${this.url}/Destiny2/Armory/Search/${type}/${searchTerm}/`, queryString);
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets historical stats for indicated character.
    * @param characterId The id of the character to retrieve. You can omit this character ID or set it to 0 to get aggregate stats across all characters.
+   * @param dayend Last day to return when daily stats are requested. Use the format YYYY-MM-DD. Currently, we cannot allow more than 31 days of daily data to be requested in a single request.
+   * @param daystart First day to return when daily stats are requested. Use the format YYYY-MM-DD. Currently, we cannot allow more than 31 days of daily data to be requested in a single request.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param groups Group of stats to include, otherwise only general stats are returned. Comma separated list is allowed. Values: General, Weapons, Medals
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Historical stats for indicated character.
+   * @param modes Game modes to return. See the documentation for DestinyActivityModeType for valid values, and pass in string representation, comma delimited.
+   * @param periodType Indicates a specific period type to return. Optional. May be: Daily, AllTime, or Activity
+   * @returns Gets historical stats for indicated character.
    */
-  GetHistoricalStats(
+  public GetHistoricalStats(
     characterId: string,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: {
+    queryString: {
       dayend?: string;
       daystart?: string;
-      groups?: number[];
-      modes?: number[];
-      periodType?: number;
-    },
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyHistoricalStatsByPeriod>> {
-    const requestURL = formatQueryStrings(
+      groups?: DestinyStatsGroupType[];
+      modes?: DestinyActivityModeType[];
+      periodType?: PeriodType;
+    } | null
+  ): Promise<APIResponse<Record<string, DestinyHistoricalStatsByPeriod>>> {
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets aggregate historical stats organized around each character for a given account.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
+   * @param groups Groups of stats to include, otherwise only general stats are returned. Comma separated list is allowed. Values: General, Weapons, Medals.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Aggregate historical stats organized around each character for a given account.
+   * @returns Gets aggregate historical stats organized around each character for a given account.
    */
-  GetHistoricalStatsForAccount(
+  public GetHistoricalStatsForAccount(
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: {
-      groups?: number[];
-    },
-    tokens?: Tokens
+    queryString: {
+      groups?: DestinyStatsGroupType[];
+    } | null
   ): Promise<APIResponse<DestinyHistoricalStatsAccountResult>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Stats/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets activity history stats for indicated character.
    * @param characterId The id of the character to retrieve.
+   * @param count Number of rows to return
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param queryString The optional querystrings that can be applied.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Activity history stats for indicated character.
+   * @param mode A filter for the activity mode to be returned. None returns all activities. See the documentation for DestinyActivityModeType for valid values, and pass in string representation.
+   * @param page Page number to return, starting with 0.
+   * @returns Gets activity history stats for indicated character.
    */
-  GetActivityHistory(
+  public GetActivityHistory(
     characterId: string,
     destinyMembershipId: string,
     membershipType: BungieMembershipType,
-    queryString?: {
+    queryString: {
       count?: number;
-      mode?: number;
+      mode?: DestinyActivityModeType;
       page?: number;
-    },
-    tokens?: Tokens
+    } | null
   ): Promise<APIResponse<DestinyActivityHistoryResults>> {
-    const requestURL = formatQueryStrings(
+    var requestURL = formatQueryStrings(
       `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/Activities/`,
       queryString
     );
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
@@ -867,19 +790,16 @@ export class Destiny {
    * @param characterId The id of the character to retrieve.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Details about unique weapon usage, including all exotic weapons.
+   * @returns Gets details about unique weapon usage, including all exotic weapons.
    */
-  GetUniqueWeaponHistory(
+  public GetUniqueWeaponHistory(
     characterId: string,
     destinyMembershipId: string,
-    membershipType: BungieMembershipType,
-    tokens?: Tokens
+    membershipType: BungieMembershipType
   ): Promise<APIResponse<DestinyHistoricalWeaponStatsData>> {
-    const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/UniqueWeapons/`;
+    var requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/UniqueWeapons/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
@@ -887,129 +807,83 @@ export class Destiny {
    * @param characterId The specific character whose activities should be returned.
    * @param destinyMembershipId The Destiny membershipId of the user to retrieve.
    * @param membershipType A valid non-BungieNet membership type.
-   * @param tokens The optional tokens that can be applied.
-   * @returns All activities the character has participated in together with aggregate statistics for those activities.
+   * @returns Gets all activities the character has participated in together with aggregate statistics for those activities.
    */
-  GetDestinyAggregateActivityStats(
+  public GetDestinyAggregateActivityStats(
     characterId: string,
     destinyMembershipId: string,
-    membershipType: BungieMembershipType,
-    tokens?: Tokens
+    membershipType: BungieMembershipType
   ): Promise<APIResponse<DestinyAggregateActivityResults>> {
-    const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/AggregateActivityStats/`;
+    var requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/AggregateActivityStats/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets custom localized content for the milestone of the given hash, if it exists.
    * @param milestoneHash The identifier for the milestone to be returned.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Custom localized content for the milestone of the given hash, if it exists.
+   * @returns Gets custom localized content for the milestone of the given hash, if it exists.
    */
-  GetPublicMilestoneContent(
-    milestoneHash: number,
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyMilestoneContent>> {
-    const requestURL = `${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`;
+  public GetPublicMilestoneContent(milestoneHash: number): Promise<APIResponse<DestinyMilestoneContent>> {
+    var requestURL = `${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Gets public information about currently available Milestones.
-   * @param tokens The optional tokens that can be applied.
-   * @returns Public information about currently available Milestones.
+   
+    * @returns Gets public information about currently available Milestones.
    */
-  GetPublicMilestones(
-    tokens?: Tokens
-  ): Promise<APIResponse<DestinyPublicMilestone>> {
-    const requestURL = `${this.url}/Destiny2/Milestones/`;
+  public GetPublicMilestones(): Promise<APIResponse<Record<number, DestinyPublicMilestone>>> {
+    var requestURL = `${this.url}/Destiny2/Milestones/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 
   /**
    * Initialize a request to perform an advanced write action.
-   * @param type Type of advanced write action.
-   * @param affectedItemId Item instance ID the action shall be applied to.
-   * @param membershipType Destiny membership type of the account to modify.
-   * @param characterId Destiny character ID, if applicable, that will be affected by the action.
-   * @param tokens The optional tokens that can be applied.
-   * @returns A request to perform an advanced write action.
+   
+    * @returns Initialize a request to perform an advanced write action.
    */
-  AwaInitializeRequest(
-    type: number,
-    affectedItemId: string,
+  public AwaInitializeRequest(
+    type: AwaType,
+    affectedItemId: string | null,
     membershipType: BungieMembershipType,
-    characterId: string,
-    tokens?: Tokens
+    characterId: string | null,
+    tokens: ITokens
   ): Promise<APIResponse<AwaInitializeResponse>> {
-    const requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
-
+    var requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: AwaPermissionRequested = {
-      type,
-      affectedItemId,
-      membershipType,
-      characterId,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: AwaPermissionRequested = { type, affectedItemId, membershipType, characterId };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
    * Provide the result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
-   * @param selection Indication of the selection the user has made.
-   * @param correlationId Correlation ID of the request.
-   * @param nonce Secret nonce received via the PUSH notification.
-   * @param tokens The optional tokens that can be applied.
-   * @returns The result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
+   
+    * @returns Provide the result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
    */
-  AwaProvideAuthorizationResult(
-    selection: number,
+  public AwaProvideAuthorizationResult(
+    selection: AwaUserSelection,
     correlationId: string,
-    nonce: string[],
-    tokens?: Tokens
+    nonce: string[]
   ): Promise<APIResponse<number>> {
-    const requestURL = `${this.url}/Destiny2/Awa/AwaProvideAuthorizationResult/`;
+    var requestURL = `${this.url}/Destiny2/Awa/AwaProvideAuthorizationResult/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: AwaUserResponse = {
-      selection,
-      correlationId,
-      nonce,
-    };
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: AwaUserResponse = { selection, correlationId, nonce };
+    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
   }
 
   /**
    * Returns the action token if user approves the request.
    * @param correlationId The identifier for the advanced write action request.
-   * @param tokens The optional tokens that can be applied.
-   * @returns The action token if user approves the request.
+   * @returns Returns the action token if user approves the request.
    */
-  AwaGetActionToken(
-    correlationId: string,
-    tokens?: Tokens
-  ): Promise<APIResponse<AwaAuthorizationResult>> {
-    const requestURL = `${this.url}/Destiny2/Awa/GetActionToken/${correlationId}/`;
-
+  public AwaGetActionToken(correlationId: string, tokens: ITokens): Promise<APIResponse<AwaAuthorizationResult>> {
+    var requestURL = `${this.url}/Destiny2/Awa/GetActionToken/${correlationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 }

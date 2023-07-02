@@ -1,125 +1,110 @@
 import { request } from "../../adapters/http-request";
 import { parseAuthenticationHeaders } from "../../adapters/utils";
-import { APIResponse } from "../../types/api";
-import { BungieMembershipType } from "../../types/enum";
-import { Tokens as TokensQuery } from "../../types/general";
 import {
-  BungieRewardDisplay,
+  ITokens,
+  APIResponse,
   PartnerOfferClaimRequest,
   PartnerOfferSkuHistoryResponse,
   PartnerRewardHistoryResponse,
-} from "../../types/interface";
+  BungieRewardDisplay,
+  BungieMembershipType,
+} from "../../types";
 
 export class Tokens {
-  constructor(
-    private url: string,
-    private headers: { [key: string]: string }
-  ) {}
+  constructor(private url: string, private headers: Record<string, string>) {}
 
   /**
    * Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
+   
+    * @returns Twitch Drops self-repair function - scans twitch for drops not marked as fulfilled and resyncs them.
    */
-  ForceDropsRepair(tokens?: TokensQuery): Promise<APIResponse<boolean>> {
-    const requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
-
+  public ForceDropsRepair(tokens: ITokens): Promise<APIResponse<boolean>> {
+    var requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "POST", authHeaders);
   }
 
   /**
    * Claim a partner offer as the authenticated user.
-   * @param PartnerOfferId
-   * @param BungieNetMembershipId
-   * @param TransactionId
-   * @returns A partner offer as the authenticated user.
+   
+    * @returns Claim a partner offer as the authenticated user.
    */
-  ClaimPartnerOffer(
+  public ClaimPartnerOffer(
     PartnerOfferId: string,
     BungieNetMembershipId: string,
     TransactionId: string,
-    tokens?: TokensQuery
+    tokens: ITokens
   ): Promise<APIResponse<boolean>> {
-    const requestURL = `${this.url}/Tokens/Partner/ClaimOffer/`;
-
+    var requestURL = `${this.url}/Tokens/Partner/ClaimOffer/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    const bodyParams: PartnerOfferClaimRequest = {
-      PartnerOfferId,
-      BungieNetMembershipId,
-      TransactionId,
-    };
-
-    return request(
-      requestURL,
-      true,
-      "POST",
-      authHeaders,
-      JSON.stringify(bodyParams)
-    );
+    const bodyParams: PartnerOfferClaimRequest = { PartnerOfferId, BungieNetMembershipId, TransactionId };
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
    * Apply a partner offer to the targeted user. This endpoint does not claim a new offer, but any already claimed offers will be applied to the game if not already.
    * @param partnerApplicationId The partner application identifier.
    * @param targetBnetMembershipId The bungie.net user to apply missing offers to. If not self, elevated permissions are required.
-   * @returns A partner offer to the targeted user. This endpoint does not claim a new offer, but any already claimed offers will be applied to the game if not already.
+   * @returns Apply a partner offer to the targeted user. This endpoint does not claim a new offer, but any already claimed offers will be applied to the game if not already.
    */
-  ApplyMissingPartnerOffersWithoutClaim(
+  public ApplyMissingPartnerOffersWithoutClaim(
     partnerApplicationId: number,
     targetBnetMembershipId: string,
-    tokens?: TokensQuery
+    tokens: ITokens
   ): Promise<APIResponse<boolean>> {
-    const requestURL = `${this.url}/Tokens/Partner/ApplyMissingOffers/${partnerApplicationId}/${targetBnetMembershipId}/`;
-
+    var requestURL = `${this.url}/Tokens/Partner/ApplyMissingOffers/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "POST", authHeaders);
-  }
-
-  /**
-   * Returns the partner rewards history of the targeted user, both partner offers and Twitch drops.
-   * @param partnerApplicationId The partner application identifier.
-   * @param targetBnetMembershipId The bungie.net user to return reward history for.
-   * @param tokens
-   */
-  GetPartnerRewardHistory(
-    partnerApplicationId: number,
-    targetBnetMembershipId: string,
-    tokens?: TokensQuery
-  ): Promise<APIResponse<PartnerRewardHistoryResponse>> {
-    const requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
-
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
    * Returns the partner sku and offer history of the targeted user. Elevated permissions are required to see users that are not yourself.
    * @param partnerApplicationId The partner application identifier.
    * @param targetBnetMembershipId The bungie.net user to apply missing offers to. If not self, elevated permissions are required.
-   * @returns The partner sku and offer history of the targeted user. Elevated permissions are required to see users that are not yourself.
+   * @returns Returns the partner sku and offer history of the targeted user. Elevated permissions are required to see users that are not yourself.
    */
-  GetPartnerOfferSkuHistory(
+  public GetPartnerOfferSkuHistory(
     partnerApplicationId: number,
     targetBnetMembershipId: string,
-    tokens?: TokensQuery
+    tokens: ITokens
   ): Promise<APIResponse<PartnerOfferSkuHistoryResponse[]>> {
-    const requestURL = `${this.url}/Tokens/Partner/History/${partnerApplicationId}/${targetBnetMembershipId}/`;
-
+    var requestURL = `${this.url}/Tokens/Partner/History/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Returns the partner rewards history of the targeted user, both partner offers and Twitch drops.
+   * @param partnerApplicationId The partner application identifier.
+   * @param targetBnetMembershipId The bungie.net user to return reward history for.
+   * @returns Returns the partner rewards history of the targeted user, both partner offers and Twitch drops.
+   */
+  public GetPartnerRewardHistory(
+    partnerApplicationId: number,
+    targetBnetMembershipId: string,
+    tokens: ITokens
+  ): Promise<APIResponse<PartnerRewardHistoryResponse>> {
+    var requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
    * Returns the bungie rewards for the targeted user.
    * @param membershipId bungie.net user membershipId for requested user rewards. If not self, elevated permissions are required.
-   * @returns The bungie rewards for the targeted user.
+   * @returns Returns the bungie rewards for the targeted user.
    */
-  GetBungieRewardsForUser(
+  public GetBungieRewardsForUser(
     membershipId: string,
-    tokens?: TokensQuery
-  ): Promise<APIResponse<{ [key: string]: BungieRewardDisplay }>> {
-    const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForUser/${membershipId}/`;
-
+    tokens: ITokens
+  ): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
+    var requestURL = `${this.url}/Tokens/Rewards/GetRewardsForUser/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
@@ -127,29 +112,27 @@ export class Tokens {
    * Returns the bungie rewards for the targeted user when a platform membership Id and Type are used.
    * @param membershipId users platform membershipId for requested user rewards. If not self, elevated permissions are required.
    * @param membershipType The target Destiny 2 membership type.
-   * @returns The bungie rewards for the targeted user when a platform membership Id and Type are used.
+   * @returns Returns the bungie rewards for the targeted user when a platform membership Id and Type are used.
    */
-  GetBungieRewardsForPlatformUser(
+  public GetBungieRewardsForPlatformUser(
     membershipId: string,
     membershipType: BungieMembershipType,
-    tokens?: TokensQuery
-  ): Promise<APIResponse<{ [key: string]: BungieRewardDisplay }>> {
-    const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForPlatformUser/${membershipId}/${membershipType}/`;
-
+    tokens: ITokens
+  ): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
+    var requestURL = `${this.url}/Tokens/Rewards/GetRewardsForPlatformUser/${membershipId}/${membershipType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
     return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
    * Returns a list of the current bungie rewards
-   * @returns A list of the current bungie rewards
+   
+    * @returns Returns a list of the current bungie rewards
    */
-  GetBungieRewardsList(
-    tokens?: TokensQuery
-  ): Promise<APIResponse<{ [key: string]: BungieRewardDisplay }>> {
-    const requestURL = `${this.url}/Tokens/Rewards/BungieRewards/`;
+  public GetBungieRewardsList(): Promise<APIResponse<Record<string, BungieRewardDisplay>>> {
+    var requestURL = `${this.url}/Tokens/Rewards/BungieRewards/`;
 
-    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
-    return request(requestURL, true, "GET", authHeaders);
+    return request(requestURL, true, "GET", this.headers);
   }
 }
