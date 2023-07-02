@@ -1,5 +1,4 @@
-import { request } from "../../adapters/http-request";
-import { parseAuthenticationHeaders, formatQueryStrings } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -20,8 +19,8 @@ export class Fireteam {
    * @param groupId The group id of the clan.
    * @returns Gets a count of all active non-public fireteams for the specified clan. Maximum value returned is 25.
    */
-  public GetActivePrivateClanFireteamCount(groupId: string, tokens: ITokens): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/Fireteam/Clan/${groupId}/ActiveCount/`;
+  public GetActivePrivateClanFireteamCount(groupId: string, tokens?: ITokens): Promise<APIResponse<number>> {
+    const requestURL = `${this.url}/Fireteam/Clan/${groupId}/ActiveCount/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -52,9 +51,9 @@ export class Fireteam {
       excludeImmediate?: boolean;
       langFilter?: string;
     } | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamSummary>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Clan/${groupId}/Available/${platform}/${activityType}/${dateRange}/${slotFilter}/${publicOnly}/${page}/`,
       queryString
     );
@@ -84,9 +83,9 @@ export class Fireteam {
       excludeImmediate?: boolean;
       langFilter?: string;
     } | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamSummary>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Search/Available/${platform}/${activityType}/${dateRange}/${slotFilter}/${page}/`,
       queryString
     );
@@ -114,9 +113,9 @@ export class Fireteam {
       groupFilter?: boolean;
       langFilter?: string;
     } | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfFireteamResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Fireteam/Clan/${groupId}/My/${platform}/${includeClosed}/${page}/`,
       queryString
     );
@@ -131,8 +130,8 @@ export class Fireteam {
    * @param groupId The group id of the clan.
    * @returns Gets a specific fireteam.
    */
-  public GetClanFireteam(fireteamId: string, groupId: string, tokens: ITokens): Promise<APIResponse<FireteamResponse>> {
-    var requestURL = `${this.url}/Fireteam/Clan/${groupId}/Summary/${fireteamId}/`;
+  public GetClanFireteam(fireteamId: string, groupId: string, tokens?: ITokens): Promise<APIResponse<FireteamResponse>> {
+    const requestURL = `${this.url}/Fireteam/Clan/${groupId}/Summary/${fireteamId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);

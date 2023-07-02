@@ -1,9 +1,9 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings } from "../../adapters/utils";
+import { formatQueryStrings, parseAuthenticationHeaders, request } from "../../adapters";
 import {
   ForumTopicsCategoryFiltersEnum,
   ForumTopicsQuickDateEnum,
   ForumTopicsSortEnum,
+  ITokens,
   APIResponse,
   PostSearchResponse,
   ForumPostSortEnum,
@@ -36,14 +36,16 @@ export class Forum {
     queryString: {
       locales?: string;
       tagstring?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Forum/GetTopicsPaged/${page}/${pageSize}/${group}/${sort}/${quickDate}/${categoryFilter}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -62,14 +64,16 @@ export class Forum {
     sort: ForumTopicsSortEnum,
     queryString: {
       locales?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Forum/GetCoreTopicsPaged/${page}/${sort}/${quickDate}/${categoryFilter}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -94,14 +98,16 @@ export class Forum {
     sortMode: ForumPostSortEnum,
     queryString: {
       showbanned?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Forum/GetPostsThreadedPaged/${parentPostId}/${page}/${pageSize}/${replySize}/${getParentPost}/${rootThreadMode}/${sortMode}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -124,14 +130,16 @@ export class Forum {
     sortMode: ForumPostSortEnum,
     queryString: {
       showbanned?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Forum/GetPostsThreadedPagedFromChild/${childPostId}/${page}/${pageSize}/${replySize}/${rootThreadMode}/${sortMode}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -144,11 +152,13 @@ export class Forum {
     childPostId: string,
     queryString: {
       showbanned?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParent/${childPostId}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParent/${childPostId}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -161,11 +171,13 @@ export class Forum {
     childPostId: string,
     queryString: {
       showbanned?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParentAwaitingApproval/${childPostId}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParentAwaitingApproval/${childPostId}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -173,10 +185,11 @@ export class Forum {
    * @param contentId
    * @returns Gets the post Id for the given content item's comments, if it exists.
    */
-  public GetTopicForContent(contentId: string): Promise<APIResponse<string>> {
-    var requestURL = `${this.url}/Forum/GetTopicForContent/${contentId}/`;
+  public GetTopicForContent(contentId: string, tokens?: ITokens): Promise<APIResponse<string>> {
+    const requestURL = `${this.url}/Forum/GetTopicForContent/${contentId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -187,11 +200,13 @@ export class Forum {
   public GetForumTagSuggestions(
     queryString: {
       partialtag?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<TagResponse[]>> {
-    var requestURL = formatQueryStrings(`${this.url}/Forum/GetForumTagSuggestions/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Forum/GetForumTagSuggestions/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -199,10 +214,11 @@ export class Forum {
    * @param topicId The post id of the topic that has the poll.
    * @returns Gets the specified forum poll.
    */
-  public GetPoll(topicId: string): Promise<APIResponse<PostSearchResponse>> {
-    var requestURL = `${this.url}/Forum/Poll/${topicId}/`;
+  public GetPoll(topicId: string, tokens?: ITokens): Promise<APIResponse<PostSearchResponse>> {
+    const requestURL = `${this.url}/Forum/Poll/${topicId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -210,10 +226,10 @@ export class Forum {
    
     * @returns Allows the caller to get a list of to 25 recruitment thread summary information objects.
    */
-  public GetRecruitmentThreadSummaries(): Promise<APIResponse<ForumRecruitmentDetail[]>> {
-    var requestURL = `${this.url}/Forum/Recruit/Summaries/`;
-
+  public GetRecruitmentThreadSummaries(tokens?: ITokens): Promise<APIResponse<ForumRecruitmentDetail[]>> {
+    const requestURL = `${this.url}/Forum/Recruit/Summaries/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: string[] = [];
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 }

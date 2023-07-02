@@ -1,6 +1,5 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings } from "../../adapters/utils";
-import { TokenError, TokenResponse } from "../../types/oauth";
+import { formatQueryStrings, request } from "../../adapters";
+import { TokenError, TokenResponse } from "../../types";
 
 export class OAuth {
   constructor(
@@ -24,7 +23,7 @@ export class OAuth {
    * @param {string} state OPTIONAL: String containing some information, particulary for avoid cross site scripting.
    * @returns Authorization url.
    */
-  GenerateAuthorizationURL(state?: string): string {
+  public GenerateAuthorizationURL(state?: string): string {
     return formatQueryStrings(this.authUrl, {
       client_id: this.client_id,
       response_type: "code",
@@ -32,7 +31,7 @@ export class OAuth {
     });
   }
 
-  GetOAuthAccessToken(code: string): Promise<TokenResponse | TokenError> {
+  public GetOAuthAccessToken(code: string): Promise<TokenResponse | TokenError> {
     return request(
       this.tokenUrl,
       true,
@@ -46,7 +45,7 @@ export class OAuth {
     );
   }
 
-  RefreshAccessToken(refresh_token: string): Promise<TokenResponse | TokenError> {
+  public RefreshAccessToken(refresh_token: string): Promise<TokenResponse | TokenError> {
     return request(
       this.tokenUrl,
       true,

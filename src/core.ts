@@ -1,5 +1,5 @@
-import { generateOptions } from "./adapters/utils";
-import { ClientOptions, Options } from "./types/general";
+import { generateOptions } from "./adapters";
+import { ClientOptions, Options } from "./types";
 
 import { App } from "./contents/app";
 import { CommunityContent } from "./contents/communitycontent";

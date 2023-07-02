@@ -1,10 +1,9 @@
-import { request } from "../../adapters/http-request";
-import { parseAuthenticationHeaders, formatQueryStrings } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
 import {
+  ITokens,
   APIResponse,
   GroupTheme,
   BungieMembershipType,
-  ITokens,
   GroupDateRange,
   GroupType,
   GroupV2Card,
@@ -47,10 +46,11 @@ export class GroupV2 {
    
     * @returns Returns a list of all available group avatars for the signed-in user.
    */
-  public GetAvailableAvatars(): Promise<APIResponse<Record<number, string>>> {
-    var requestURL = `${this.url}/GroupV2/GetAvailableAvatars/`;
+  public GetAvailableAvatars(tokens?: ITokens): Promise<APIResponse<Record<number, string>>> {
+    const requestURL = `${this.url}/GroupV2/GetAvailableAvatars/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -58,10 +58,11 @@ export class GroupV2 {
    
     * @returns Returns a list of all available group themes.
    */
-  public GetAvailableThemes(): Promise<APIResponse<GroupTheme[]>> {
-    var requestURL = `${this.url}/GroupV2/GetAvailableThemes/`;
+  public GetAvailableThemes(tokens?: ITokens): Promise<APIResponse<GroupTheme[]>> {
+    const requestURL = `${this.url}/GroupV2/GetAvailableThemes/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -69,8 +70,8 @@ export class GroupV2 {
    * @param mType The Destiny membership type of the account we wish to access settings.
    * @returns Gets the state of the user's clan invite preferences for a particular membership type - true if they wish to be invited to clans, false otherwise.
    */
-  public GetUserClanInviteSetting(mType: BungieMembershipType, tokens: ITokens): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/GroupV2/GetUserClanInviteSetting/${mType}/`;
+  public GetUserClanInviteSetting(mType: BungieMembershipType, tokens?: ITokens): Promise<APIResponse<boolean>> {
+    const requestURL = `${this.url}/GroupV2/GetUserClanInviteSetting/${mType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -85,9 +86,9 @@ export class GroupV2 {
   public GetRecommendedGroups(
     createDateRange: GroupDateRange,
     groupType: GroupType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<GroupV2Card[]>> {
-    var requestURL = `${this.url}/GroupV2/Recommended/${groupType}/${createDateRange}/`;
+    const requestURL = `${this.url}/GroupV2/Recommended/${groupType}/${createDateRange}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -108,10 +109,11 @@ export class GroupV2 {
     tagText: string,
     itemsPerPage: number,
     currentPage: number,
-    requestContinuationToken: string
+    requestContinuationToken: string,
+    tokens?: ITokens
   ): Promise<APIResponse<GroupSearchResponse>> {
-    var requestURL = `${this.url}/GroupV2/Search/`;
-
+    const requestURL = `${this.url}/GroupV2/Search/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupQuery = {
       name,
       groupType,
@@ -124,7 +126,7 @@ export class GroupV2 {
       currentPage,
       requestContinuationToken,
     };
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -132,10 +134,11 @@ export class GroupV2 {
    * @param groupId Requested group's id.
    * @returns Get information about a specific group of the given ID.
    */
-  public GetGroup(groupId: string): Promise<APIResponse<GroupResponse>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/`;
+  public GetGroup(groupId: string, tokens?: ITokens): Promise<APIResponse<GroupResponse>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -144,10 +147,11 @@ export class GroupV2 {
    * @param groupType Type of group to find.
    * @returns Get information about a specific group with the given name and type.
    */
-  public GetGroupByName(groupName: string, groupType: GroupType): Promise<APIResponse<GroupResponse>> {
-    var requestURL = `${this.url}/GroupV2/Name/${groupName}/${groupType}/`;
+  public GetGroupByName(groupName: string, groupType: GroupType, tokens?: ITokens): Promise<APIResponse<GroupResponse>> {
+    const requestURL = `${this.url}/GroupV2/Name/${groupName}/${groupType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -155,11 +159,11 @@ export class GroupV2 {
    
     * @returns Get information about a specific group with the given name and type. The POST version.
    */
-  public GetGroupByNameV2(groupName: string, groupType: GroupType): Promise<APIResponse<GroupResponse>> {
-    var requestURL = `${this.url}/GroupV2/NameV2/`;
-
+  public GetGroupByNameV2(groupName: string, groupType: GroupType, tokens?: ITokens): Promise<APIResponse<GroupResponse>> {
+    const requestURL = `${this.url}/GroupV2/NameV2/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupNameSearchRequest = { groupName, groupType };
-    return request(requestURL, true, "POST", this.headers, JSON.stringify(bodyParams));
+    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -167,10 +171,14 @@ export class GroupV2 {
    * @param groupId Requested group's id.
    * @returns Gets a list of available optional conversation channels and their settings.
    */
-  public GetGroupOptionalConversations(groupId: string): Promise<APIResponse<GroupOptionalConversation[]>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/`;
+  public GetGroupOptionalConversations(
+    groupId: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<GroupOptionalConversation[]>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -196,9 +204,9 @@ export class GroupV2 {
     homepage: number | null,
     enableInvitationMessagingForAdmins: boolean | null,
     defaultPublicity: number | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Edit/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Edit/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupEditAction = {
       name,
@@ -235,9 +243,9 @@ export class GroupV2 {
     gonfalonColorId: number,
     gonfalonDetailId: number,
     gonfalonDetailColorId: number,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/EditClanBanner/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/EditClanBanner/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: ClanBanner = {
       decalId,
@@ -263,9 +271,9 @@ export class GroupV2 {
     HostGuidedGamePermissionOverride: number | null,
     UpdateBannerPermissionOverride: boolean | null,
     JoinLevel: number | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/EditFounderOptions/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/EditFounderOptions/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupOptionsEditAction = {
       InvitePermissionOverride,
@@ -286,9 +294,9 @@ export class GroupV2 {
     groupId: string,
     chatName: string,
     chatSecurity: ChatSecuritySetting,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<string>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Add/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Add/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupOptionalConversationAddRequest = { chatName, chatSecurity };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -306,9 +314,9 @@ export class GroupV2 {
     chatEnabled: boolean | null,
     chatName: string,
     chatSecurity: number | null,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<string>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Edit/${conversationId}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Edit/${conversationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupOptionalConversationEditRequest = { chatEnabled, chatName, chatSecurity };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -328,11 +336,13 @@ export class GroupV2 {
     queryString: {
       memberType?: RuntimeGroupMemberType;
       nameSearch?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfGroupMember>> {
-    var requestURL = formatQueryStrings(`${this.url}/GroupV2/${groupId}/Members/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/GroupV2/${groupId}/Members/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -341,10 +351,15 @@ export class GroupV2 {
    * @param groupId The ID of the group.
    * @returns Get the list of members in a given group who are of admin level or higher.
    */
-  public GetAdminsAndFounderOfGroup(currentpage: number, groupId: string): Promise<APIResponse<SearchResultOfGroupMember>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/AdminsAndFounder/`;
+  public GetAdminsAndFounderOfGroup(
+    currentpage: number,
+    groupId: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<SearchResultOfGroupMember>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/AdminsAndFounder/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -360,9 +375,9 @@ export class GroupV2 {
     membershipId: string,
     membershipType: BungieMembershipType,
     memberType: RuntimeGroupMemberType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/SetMembershipType/${memberType}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/SetMembershipType/${memberType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -379,9 +394,9 @@ export class GroupV2 {
     groupId: string,
     membershipId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<GroupMemberLeaveResult>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Kick/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Kick/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -400,9 +415,9 @@ export class GroupV2 {
     membershipType: BungieMembershipType,
     comment: string,
     length: IgnoreLength,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Ban/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Ban/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupBanRequest = { comment, length };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -419,9 +434,9 @@ export class GroupV2 {
     groupId: string,
     membershipId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<number>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Unban/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Unban/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);
@@ -436,9 +451,9 @@ export class GroupV2 {
   public GetBannedMembersOfGroup(
     currentpage: number,
     groupId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfGroupBan>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Banned/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Banned/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -454,11 +469,13 @@ export class GroupV2 {
   public AbdicateFoundership(
     founderIdNew: string,
     groupId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Admin/AbdicateFoundership/${membershipType}/${founderIdNew}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Admin/AbdicateFoundership/${membershipType}/${founderIdNew}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", this.headers);
+    return request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -470,9 +487,9 @@ export class GroupV2 {
   public GetPendingMemberships(
     currentpage: number,
     groupId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfGroupMemberApplication>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/Pending/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/Pending/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -487,9 +504,9 @@ export class GroupV2 {
   public GetInvitedIndividuals(
     currentpage: number,
     groupId: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfGroupMemberApplication>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/InvitedIndividuals/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/InvitedIndividuals/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);
@@ -500,8 +517,8 @@ export class GroupV2 {
    * @param groupId ID of the group.
    * @returns Approve all of the pending users for the given group.
    */
-  public ApproveAllPending(groupId: string, message: string, tokens: ITokens): Promise<APIResponse<EntityActionResult[]>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveAll/`;
+  public ApproveAllPending(groupId: string, message: string, tokens?: ITokens): Promise<APIResponse<EntityActionResult[]>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveAll/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -512,8 +529,8 @@ export class GroupV2 {
    * @param groupId ID of the group.
    * @returns Deny all of the pending users for the given group.
    */
-  public DenyAllPending(groupId: string, message: string, tokens: ITokens): Promise<APIResponse<EntityActionResult[]>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyAll/`;
+  public DenyAllPending(groupId: string, message: string, tokens?: ITokens): Promise<APIResponse<EntityActionResult[]>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyAll/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -528,9 +545,9 @@ export class GroupV2 {
     groupId: string,
     memberships: UserMembership[],
     message: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<EntityActionResult[]>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveList/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveList/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationListRequest = { memberships, message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -548,9 +565,9 @@ export class GroupV2 {
     membershipId: string,
     membershipType: BungieMembershipType,
     message: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<boolean>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/Approve/${membershipType}/${membershipId}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/Approve/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -565,9 +582,9 @@ export class GroupV2 {
     groupId: string,
     memberships: UserMembership[],
     message: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<EntityActionResult[]>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyList/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyList/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationListRequest = { memberships, message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -585,11 +602,13 @@ export class GroupV2 {
     filter: GroupsForMemberFilter,
     groupType: GroupType,
     membershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<GetGroupsForMemberResponse>> {
-    var requestURL = `${this.url}/GroupV2/User/${membershipType}/${membershipId}/${filter}/${groupType}/`;
+    const requestURL = `${this.url}/GroupV2/User/${membershipType}/${membershipId}/${filter}/${groupType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -602,11 +621,13 @@ export class GroupV2 {
   public RecoverGroupForFounder(
     groupType: GroupType,
     membershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<GroupMembershipSearchResponse>> {
-    var requestURL = `${this.url}/GroupV2/Recover/${membershipType}/${membershipId}/${groupType}/`;
+    const requestURL = `${this.url}/GroupV2/Recover/${membershipType}/${membershipId}/${groupType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -621,11 +642,13 @@ export class GroupV2 {
     filter: GroupPotentialMemberStatus,
     groupType: GroupType,
     membershipId: string,
-    membershipType: BungieMembershipType
+    membershipType: BungieMembershipType,
+    tokens?: ITokens
   ): Promise<APIResponse<GroupPotentialMembershipSearchResponse>> {
-    var requestURL = `${this.url}/GroupV2/User/Potential/${membershipType}/${membershipId}/${filter}/${groupType}/`;
+    const requestURL = `${this.url}/GroupV2/User/Potential/${membershipType}/${membershipId}/${filter}/${groupType}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -640,9 +663,9 @@ export class GroupV2 {
     membershipId: string,
     membershipType: BungieMembershipType,
     message: string,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<GroupApplicationResponse>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInvite/${membershipType}/${membershipId}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInvite/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
@@ -659,9 +682,9 @@ export class GroupV2 {
     groupId: string,
     membershipId: string,
     membershipType: BungieMembershipType,
-    tokens: ITokens
+    tokens?: ITokens
   ): Promise<APIResponse<GroupApplicationResponse>> {
-    var requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInviteCancel/${membershipType}/${membershipId}/`;
+    const requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInviteCancel/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "POST", authHeaders);

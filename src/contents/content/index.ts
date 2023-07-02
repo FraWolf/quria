@@ -1,6 +1,6 @@
-import { request } from "../../adapters/http-request";
-import { formatQueryStrings } from "../../adapters/utils";
+import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
 import {
+  ITokens,
   APIResponse,
   ContentTypeDescription,
   ContentItemPublicContract,
@@ -16,10 +16,11 @@ export class Content {
    * @param type
    * @returns Gets an object describing a particular variant of content.
    */
-  public GetContentType(type: string): Promise<APIResponse<ContentTypeDescription>> {
-    var requestURL = `${this.url}/Content/GetContentType/${type}/`;
+  public GetContentType(type: string, tokens?: ITokens): Promise<APIResponse<ContentTypeDescription>> {
+    const requestURL = `${this.url}/Content/GetContentType/${type}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -34,11 +35,13 @@ export class Content {
     locale: string,
     queryString: {
       head?: boolean;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<ContentItemPublicContract>> {
-    var requestURL = formatQueryStrings(`${this.url}/Content/GetContentById/${id}/${locale}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Content/GetContentById/${id}/${locale}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -55,11 +58,16 @@ export class Content {
     type: string,
     queryString: {
       head?: boolean;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<ContentItemPublicContract>> {
-    var requestURL = formatQueryStrings(`${this.url}/Content/GetContentByTagAndType/${tag}/${type}/${locale}/`, queryString);
+    const requestURL = formatQueryStrings(
+      `${this.url}/Content/GetContentByTagAndType/${tag}/${type}/${locale}/`,
+      queryString
+    );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -82,11 +90,13 @@ export class Content {
       searchtext?: string;
       source?: string;
       tag?: string;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfContentItemPublicContract>> {
-    var requestURL = formatQueryStrings(`${this.url}/Content/Search/${locale}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Content/Search/${locale}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -107,14 +117,16 @@ export class Content {
       currentpage?: number;
       head?: boolean;
       itemsperpage?: number;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfContentItemPublicContract>> {
-    var requestURL = formatQueryStrings(
+    const requestURL = formatQueryStrings(
       `${this.url}/Content/SearchContentByTagAndType/${tag}/${type}/${locale}/`,
       queryString
     );
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -123,10 +135,11 @@ export class Content {
    * @param size
    * @returns Search for Help Articles.
    */
-  public SearchHelpArticles(searchtext: string, size: string): Promise<APIResponse<object>> {
-    var requestURL = `${this.url}/Content/SearchHelpArticles/${searchtext}/${size}/`;
+  public SearchHelpArticles(searchtext: string, size: string, tokens?: ITokens): Promise<APIResponse<object>> {
+    const requestURL = `${this.url}/Content/SearchHelpArticles/${searchtext}/${size}/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -141,10 +154,12 @@ export class Content {
     queryString: {
       categoryfilter?: string;
       includebody?: boolean;
-    } | null
+    } | null,
+    tokens?: ITokens
   ): Promise<APIResponse<NewsArticleRssResponse>> {
-    var requestURL = formatQueryStrings(`${this.url}/Content/Rss/NewsArticles/${pageToken}/`, queryString);
+    const requestURL = formatQueryStrings(`${this.url}/Content/Rss/NewsArticles/${pageToken}/`, queryString);
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", this.headers);
+    return request(requestURL, true, "GET", authHeaders);
   }
 }
