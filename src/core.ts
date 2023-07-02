@@ -4,7 +4,7 @@ import { ClientOptions, Options } from "./types/general";
 import { App } from "./contents/app";
 import { CommunityContent } from "./contents/communitycontent";
 import { Content } from "./contents/content";
-import { Destiny } from "./contents/destiny2";
+import { Destiny2 } from "./contents/destiny2";
 import { Forum } from "./contents/forum";
 import { GroupV2 } from "./contents/groupv2";
 import { OAuth } from "./contents/oauth";
@@ -25,7 +25,7 @@ export class Quria {
   public forum: Forum;
   public groupv2: GroupV2;
   public tokens: Tokens;
-  public destiny2: Destiny;
+  public destiny2: Destiny2;
   public communitycontent: CommunityContent;
   public trending: Trending;
   public fireteam: Fireteam;
@@ -49,11 +49,8 @@ export class Quria {
     this.forum = new Forum(this.options.urls.api, this.options.headers);
     this.groupv2 = new GroupV2(this.options.urls.api, this.options.headers);
     this.tokens = new Tokens(this.options.urls.api, this.options.headers);
-    this.destiny2 = new Destiny(this.options.urls.api, this.options.headers);
-    this.communitycontent = new CommunityContent(
-      this.options.urls.api,
-      this.options.headers
-    );
+    this.destiny2 = new Destiny2(this.options.urls.api, this.options.headers);
+    this.communitycontent = new CommunityContent(this.options.urls.api, this.options.headers);
     this.trending = new Trending(this.options.urls.api, this.options.headers);
     this.fireteam = new Fireteam(this.options.urls.api, this.options.headers);
     this.social = new Social(this.options.urls.api, this.options.headers);

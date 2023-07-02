@@ -46,9 +46,7 @@ export class OAuth {
     );
   }
 
-  RefreshAccessToken(
-    refresh_token: string
-  ): Promise<TokenResponse | TokenError> {
+  RefreshAccessToken(refresh_token: string): Promise<TokenResponse | TokenError> {
     return request(
       this.tokenUrl,
       true,
