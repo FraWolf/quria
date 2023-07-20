@@ -1,5 +1,5 @@
 import { ClientOptions, Options, ITokens } from "../types";
-import { Controller } from "./controller";
+import { Controller } from "./";
 import { httpRequest } from "./http-request";
 
 export function formatQueryStrings(
