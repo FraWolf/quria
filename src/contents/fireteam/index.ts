@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, formatQueryStrings, Controller } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -23,7 +23,7 @@ export class Fireteam {
     const requestURL = `${this.url}/Fireteam/Clan/${groupId}/ActiveCount/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -59,7 +59,7 @@ export class Fireteam {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -91,7 +91,7 @@ export class Fireteam {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -121,7 +121,7 @@ export class Fireteam {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -134,6 +134,6 @@ export class Fireteam {
     const requestURL = `${this.url}/Fireteam/Clan/${groupId}/Summary/${fireteamId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

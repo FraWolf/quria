@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request } from "../../adapters";
+import { Controller, parseAuthenticationHeaders } from "../../adapters";
 import {
   ForumTopicsCategoryFiltersEnum,
   CommunityContentSortMode,
@@ -26,6 +26,6 @@ export class CommunityContent {
     const requestURL = `${this.url}/CommunityContent/Get/${sort}/${mediaFilter}/${page}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

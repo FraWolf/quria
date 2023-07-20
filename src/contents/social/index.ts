@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request } from "../../adapters";
+import { Controller, parseAuthenticationHeaders } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -20,7 +20,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -32,7 +32,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Requests/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -44,7 +44,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Add/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -56,7 +56,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Requests/Accept/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -68,7 +68,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Requests/Decline/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -80,7 +80,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Remove/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -92,7 +92,7 @@ export class Social {
     const requestURL = `${this.url}/Social/Friends/Requests/Remove/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -109,6 +109,6 @@ export class Social {
     const requestURL = `${this.url}/Social/PlatformFriends/${friendPlatform}/${page}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

@@ -1,4 +1,4 @@
-import { formatQueryStrings, parseAuthenticationHeaders, request } from "../../adapters";
+import { Controller, formatQueryStrings, parseAuthenticationHeaders } from "../../adapters";
 import {
   ForumTopicsCategoryFiltersEnum,
   ForumTopicsQuickDateEnum,
@@ -45,7 +45,7 @@ export class Forum {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -73,7 +73,7 @@ export class Forum {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -107,7 +107,7 @@ export class Forum {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -139,7 +139,7 @@ export class Forum {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -158,7 +158,7 @@ export class Forum {
     const requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParent/${childPostId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -177,7 +177,7 @@ export class Forum {
     const requestURL = formatQueryStrings(`${this.url}/Forum/GetPostAndParentAwaitingApproval/${childPostId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -189,7 +189,7 @@ export class Forum {
     const requestURL = `${this.url}/Forum/GetTopicForContent/${contentId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -206,7 +206,7 @@ export class Forum {
     const requestURL = formatQueryStrings(`${this.url}/Forum/GetForumTagSuggestions/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -218,7 +218,7 @@ export class Forum {
     const requestURL = `${this.url}/Forum/Poll/${topicId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -230,6 +230,6 @@ export class Forum {
     const requestURL = `${this.url}/Forum/Recruit/Summaries/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: string[] = [];
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 }

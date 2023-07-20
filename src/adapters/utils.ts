@@ -1,4 +1,6 @@
 import { ClientOptions, Options, ITokens } from "../types";
+import { Controller } from "./controller";
+import { httpRequest } from "./http-request";
 
 export function formatQueryStrings(
   uri: string,
@@ -34,6 +36,8 @@ export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
 
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
+
+  Controller.setRequestHandler(changes.FETCHER || httpRequest);
 
   return {
     host,

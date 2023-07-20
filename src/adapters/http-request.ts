@@ -1,6 +1,6 @@
 import fetch from "isomorphic-unfetch";
 
-export async function request(
+export async function httpRequest(
   url: string,
   json = false,
   method = "GET",

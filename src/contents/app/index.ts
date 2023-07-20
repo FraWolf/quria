@@ -1,4 +1,4 @@
-import { formatQueryStrings, parseAuthenticationHeaders, request } from "../../adapters";
+import { Controller, formatQueryStrings, parseAuthenticationHeaders } from "../../adapters";
 import { ITokens, APIResponse, ApiUsage, Application } from "../../types";
 
 export class App {
@@ -22,7 +22,7 @@ export class App {
     const requestURL = formatQueryStrings(`${this.url}/App/ApiUsage/${applicationId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -34,6 +34,6 @@ export class App {
     const requestURL = `${this.url}/App/FirstParty/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

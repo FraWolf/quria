@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, formatQueryStrings, Controller } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -20,7 +20,7 @@ export class Content {
     const requestURL = `${this.url}/Content/GetContentType/${type}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -41,7 +41,7 @@ export class Content {
     const requestURL = formatQueryStrings(`${this.url}/Content/GetContentById/${id}/${locale}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -67,7 +67,7 @@ export class Content {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -96,7 +96,7 @@ export class Content {
     const requestURL = formatQueryStrings(`${this.url}/Content/Search/${locale}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -126,7 +126,7 @@ export class Content {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -139,7 +139,7 @@ export class Content {
     const requestURL = `${this.url}/Content/SearchHelpArticles/${searchtext}/${size}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -160,6 +160,6 @@ export class Content {
     const requestURL = formatQueryStrings(`${this.url}/Content/Rss/NewsArticles/${pageToken}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

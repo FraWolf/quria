@@ -1,9 +1,12 @@
+import { RequestHandler } from "../adapters";
+
 export interface Options {
   API_KEY: string;
   CLIENT_ID?: string;
   CLIENT_SECRET?: string;
   REDIRECT_URI?: string;
   HOST?: string;
+  FETCHER?: RequestHandler;
 }
 
 export interface ClientOptions {
