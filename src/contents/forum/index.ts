@@ -1,4 +1,4 @@
-import { Controller, formatQueryStrings, parseAuthenticationHeaders } from "../../adapters";
+import { formatQueryStrings, parseAuthenticationHeaders, Controller } from "../../adapters";
 import {
   ForumTopicsCategoryFiltersEnum,
   ForumTopicsQuickDateEnum,

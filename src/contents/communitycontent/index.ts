@@ -1,4 +1,4 @@
-import { Controller, parseAuthenticationHeaders } from "../../adapters";
+import { parseAuthenticationHeaders, Controller } from "../../adapters";
 import {
   ForumTopicsCategoryFiltersEnum,
   CommunityContentSortMode,

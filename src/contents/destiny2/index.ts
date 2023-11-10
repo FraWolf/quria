@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, formatQueryStrings, Controller } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -585,7 +585,10 @@ export class Destiny2 {
     activityId: string,
     tokens?: ITokens
   ): Promise<APIResponse<DestinyPostGameCarnageReportData>> {
-    const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
+    const requestURL = `${this.url.replace(
+      "www.bungie.net",
+      "stats.bungie.net"
+    )}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return Controller.request(requestURL, true, "GET", authHeaders);

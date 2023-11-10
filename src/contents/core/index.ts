@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, formatQueryStrings, Controller } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import { ITokens, APIResponse, CoreSettingsConfiguration, CoreSystem, GlobalAlert } from "../../types";
 
 export class Core {

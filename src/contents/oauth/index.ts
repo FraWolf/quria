@@ -1,4 +1,4 @@
-import { Controller, formatQueryStrings } from "../../adapters";
+import { formatQueryStrings, Controller } from "../../adapters";
 import { TokenError, TokenResponse } from "../../types";
 
 export class OAuth {
