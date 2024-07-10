@@ -25,6 +25,7 @@ import {
   IgnoreLength,
   GroupBanRequest,
   SearchResultOfGroupBan,
+  SearchResultOfGroupEditHistory,
   SearchResultOfGroupMemberApplication,
   EntityActionResult,
   GroupApplicationRequest,
@@ -454,6 +455,23 @@ export class GroupV2 {
     tokens?: ITokens
   ): Promise<APIResponse<SearchResultOfGroupBan>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/Banned/`;
+    const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
+
+    return request(requestURL, true, "GET", authHeaders);
+  }
+
+  /**
+   * Get the list of edits made to a given group. Only accessible to group Admins and above.
+   * @param currentpage Page number (starting with 1). Each page has a fixed size of 50 entries.
+   * @param groupId Group ID whose edit history you are fetching
+   * @returns Get the list of edits made to a given group. Only accessible to group Admins and above.
+   */
+  public GetGroupEditHistory(
+    currentpage: number,
+    groupId: string,
+    tokens?: ITokens
+  ): Promise<APIResponse<SearchResultOfGroupEditHistory>> {
+    const requestURL = `${this.url}/GroupV2/${groupId}/EditHistory/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
     return request(requestURL, true, "GET", authHeaders);

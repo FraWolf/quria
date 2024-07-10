@@ -1,4 +1,3 @@
-<img align="right" alt="Quria" src="https://cdn.discordapp.com/attachments/1005391416047960134/1005423400963035187/quria.png" width="350">
 <h1 align="center">Quria</h1>
 <p align="center">A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by <s>Axis Minds</s> <b>Oryx</b>.</p>
 <p align="center">
@@ -31,7 +30,7 @@ yarn add quria
   <summary>Basic usage</summary>
 
 ```js
-import {Quria} from 'quria';
+import { Quria } from "quria";
 
 const quria = new Quria({
   API_KEY: "your-api-key-here",
