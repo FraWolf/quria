@@ -31,6 +31,14 @@ export enum ApplicationScopes {
   UserPiiRead = 16384,
 }
 
+export enum OAuthApplicationType {
+  None = 0,
+  // Indicates the application is server based and can keep its secrets from end users and other potential snoops.
+  Confidential = 1,
+  // Indicates the application runs in a public place, and it can't be trusted to keep a secret.
+  Public = 2,
+}
+
 export enum ApplicationStatus {
   // No value assigned
   None = 0,
@@ -620,68 +628,6 @@ export enum DamageType {
   Strand = 7,
 }
 
-export enum DestinyTalentNodeStepWeaponPerformances {
-  None = 0,
-  RateOfFire = 1,
-  Damage = 2,
-  Accuracy = 4,
-  Range = 8,
-  Zoom = 16,
-  Recoil = 32,
-  Ready = 64,
-  Reload = 128,
-  HairTrigger = 256,
-  AmmoAndMagazine = 512,
-  TrackingAndDetonation = 1024,
-  ShotgunSpread = 2048,
-  ChargeTime = 4096,
-  All = 8191,
-}
-
-export enum DestinyTalentNodeStepImpactEffects {
-  None = 0,
-  ArmorPiercing = 1,
-  Ricochet = 2,
-  Flinch = 4,
-  CollateralDamage = 8,
-  Disorient = 16,
-  HighlightTarget = 32,
-  All = 63,
-}
-
-export enum DestinyTalentNodeStepGuardianAttributes {
-  None = 0,
-  Stats = 1,
-  Shields = 2,
-  Health = 4,
-  Revive = 8,
-  AimUnderFire = 16,
-  Radar = 32,
-  Invisibility = 64,
-  Reputations = 128,
-  All = 255,
-}
-
-export enum DestinyTalentNodeStepLightAbilities {
-  None = 0,
-  Grenades = 1,
-  Melee = 2,
-  MovementModes = 4,
-  Orbs = 8,
-  SuperEnergy = 16,
-  SuperMods = 32,
-  All = 63,
-}
-
-export enum DestinyTalentNodeStepDamageTypes {
-  None = 0,
-  Kinetic = 1,
-  Arc = 2,
-  Solar = 4,
-  Void = 8,
-  All = 15,
-}
-
 // If the objective has a known UI label, this enumeration will represent it.
 export enum DestinyObjectiveUiStyle {
   None = 0,
@@ -800,6 +746,7 @@ export enum DestinyActivityModeType {
   ZoneControl = 89,
   IronBannerRift = 90,
   IronBannerZoneControl = 91,
+  Relic = 92,
 }
 
 // Activity Modes are grouped into a few possible broad categories.
@@ -901,6 +848,20 @@ export enum DestinyPresentationDisplayStyle {
   Record = 4,
   SeasonalTriumph = 5,
   GuardianRank = 6,
+  CategoryCollectibles = 7,
+  CategoryCurrencies = 8,
+  CategoryEmblems = 9,
+  CategoryEmotes = 10,
+  CategoryEngrams = 11,
+  CategoryFinishers = 12,
+  CategoryGhosts = 13,
+  CategoryMisc = 14,
+  CategoryMods = 15,
+  CategoryOrnaments = 16,
+  CategoryShaders = 17,
+  CategoryShips = 18,
+  CategorySpawnfx = 19,
+  CategoryUpgradeMaterials = 20,
 }
 
 export enum DestinyRecordValueStyle {
@@ -922,6 +883,8 @@ export enum DestinyRecordToastStyle {
   GildedTitleComplete = 7,
   CraftingRecipeUnlocked = 8,
   ToastGuardianRankDetails = 9,
+  PathfinderObjectiveCompleteRituals = 10,
+  PathfinderObjectiveCompleteSchism = 11,
 }
 
 // A hint for what screen should be shown when this presentation node is clicked into. How you use this is your UI is up to you.
@@ -978,6 +941,68 @@ export enum SocketPlugSources {
   ProfilePlugSet = 4,
   // Use the CharacterPlugSets (DestinyProfileResponse.characterPlugSets) component data to determine which plugs are valid for this socket.
   CharacterPlugSet = 8,
+}
+
+export enum DestinyTalentNodeStepWeaponPerformances {
+  None = 0,
+  RateOfFire = 1,
+  Damage = 2,
+  Accuracy = 4,
+  Range = 8,
+  Zoom = 16,
+  Recoil = 32,
+  Ready = 64,
+  Reload = 128,
+  HairTrigger = 256,
+  AmmoAndMagazine = 512,
+  TrackingAndDetonation = 1024,
+  ShotgunSpread = 2048,
+  ChargeTime = 4096,
+  All = 8191,
+}
+
+export enum DestinyTalentNodeStepImpactEffects {
+  None = 0,
+  ArmorPiercing = 1,
+  Ricochet = 2,
+  Flinch = 4,
+  CollateralDamage = 8,
+  Disorient = 16,
+  HighlightTarget = 32,
+  All = 63,
+}
+
+export enum DestinyTalentNodeStepGuardianAttributes {
+  None = 0,
+  Stats = 1,
+  Shields = 2,
+  Health = 4,
+  Revive = 8,
+  AimUnderFire = 16,
+  Radar = 32,
+  Invisibility = 64,
+  Reputations = 128,
+  All = 255,
+}
+
+export enum DestinyTalentNodeStepLightAbilities {
+  None = 0,
+  Grenades = 1,
+  Melee = 2,
+  MovementModes = 4,
+  Orbs = 8,
+  SuperEnergy = 16,
+  SuperMods = 32,
+  All = 63,
+}
+
+export enum DestinyTalentNodeStepDamageTypes {
+  None = 0,
+  Kinetic = 1,
+  Arc = 2,
+  Solar = 4,
+  Void = 8,
+  All = 15,
 }
 
 // Indicates how a perk should be shown, or if it should be, in the game UI. Maybe useful for those of you trying to filter out internal-use-only perks (or for those of you trying to figure out what they do!)
@@ -1097,6 +1122,7 @@ export enum DestinyGameVersions {
   Anniversary30th = 128,
   TheWitchQueen = 256,
   Lightfall = 512,
+  TheFinalShape = 1024,
 }
 
 // Represents the possible components that can be returned from Destiny "Get" calls such as GetProfile, GetCharacter, GetVendor etc...
@@ -1134,7 +1160,7 @@ export enum DestinyComponentType {
   ItemInstances = 300,
   // Items can have Objectives (DestinyObjectiveDefinition) bound to them. If they do, this will return info for items that have such bound objectives.
   ItemObjectives = 301,
-  // Items can have perks (DestinyPerkDefinition). If they do, this will return info for what perks are active on items.
+  // Items can have perks (DestinySandboxPerkDefinition). If they do, this will return info for what perks are active on items.
   ItemPerks = 302,
   // If you just want to render the weapon, this is just enough info to do that rendering.
   ItemRenderData = 303,
@@ -1426,6 +1452,9 @@ export enum DestinyVendorItemState {
   // This indicates that the sale item is paracausal.
   Paracausal = 524288,
   Cryptarch = 1048576,
+  ArtifactPerkOwned = 2097152,
+  Savings = 4194304,
+  Ineligible = 8388608,
 }
 
 // If you look in the DestinyInventoryItemDefinition's "sockets" property, you'll see that there are two types of sockets: intrinsic, and "socketEntry."
@@ -1539,6 +1568,74 @@ export enum AwaResponseReason {
   Replaced = 3,
 }
 
+export enum FireteamFinderCodeOptionType {
+  None = 0,
+  ApplicationOnly = 1,
+  OnlineOnly = 2,
+  PlayerCount = 3,
+  Title = 4,
+  Tags = 5,
+  FinderActivityGraph = 6,
+  MicrophoneRequired = 7,
+}
+
+export enum FireteamFinderOptionAvailability {
+  None = 0,
+  CreateListingBuilder = 1,
+  SearchListingBuilder = 2,
+  ListingViewer = 4,
+  LobbyViewer = 8,
+}
+
+export enum FireteamFinderOptionVisibility {
+  Always = 0,
+  ShowWhenChangedFromDefault = 1,
+}
+
+export enum FireteamFinderOptionControlType {
+  None = 0,
+  ValueCollection = 1,
+  RadioButton = 2,
+}
+
+export enum FireteamFinderOptionSearchFilterType {
+  None = 0,
+  All = 1,
+  Any = 2,
+  InRangeInclusive = 3,
+  InRangeExclusive = 4,
+  GreaterThan = 5,
+  GreaterThanOrEqualTo = 6,
+  LessThan = 7,
+  LessThanOrEqualTo = 8,
+}
+
+export enum FireteamFinderOptionDisplayFormat {
+  Text = 0,
+  Integer = 1,
+  Bool = 2,
+  FormatString = 3,
+}
+
+export enum FireteamFinderOptionValueProviderType {
+  None = 0,
+  Values = 1,
+  PlayerCount = 2,
+  FireteamFinderLabels = 3,
+  FireteamFinderActivityGraph = 4,
+}
+
+export enum FireteamFinderOptionValueFlags {
+  None = 0,
+  CreateListingDefaultValue = 1,
+  SearchFilterDefaultValue = 2,
+}
+
+export enum FireteamFinderLabelFieldType {
+  Title = 0,
+  Label = 1,
+}
+
 export enum PlatformErrorCodes {
   None = 0,
   Success = 1,
@@ -1600,6 +1697,7 @@ export enum PlatformErrorCodes {
   PerUserThrottleExceeded = 57,
   PayloadSignatureVerificationFailure = 58,
   InvalidServiceAuthContext = 59,
+  FailedMinimumAgeCheck = 60,
   ObsoleteCredentialType = 89,
   UnableToUnPairMobileApp = 90,
   UnableToPairMobileApp = 91,
@@ -1737,6 +1835,11 @@ export enum PlatformErrorCodes {
   UserDisplayNameLessThanMinLength = 242,
   UserDisplayNameGreaterThanMaxLength = 243,
   UserDisplayNameContainsUnacceptableOrInvalidContent = 244,
+  EmailValidationOffline = 245,
+  EmailValidationFailOldCode = 246,
+  EmailValidationFailBadLink = 247,
+  EmailUnsubscribeFail = 248,
+  EmailUnsubscribeFailNew = 249,
   MessagingUnknownError = 300,
   MessagingSelfError = 301,
   MessagingSendThrottle = 302,
@@ -2309,6 +2412,51 @@ export enum PlatformErrorCodes {
   ClanFireteamPurchaseRequiredCreate = 3036,
   ClanFireteamSMSOrPurchaseRequiredJoin = 3037,
   ClanFireteamPurchaseRequiredJoin = 3038,
+  FireteamFinderInvalidMembershipType = 3100,
+  FireteamFinderInvalidMembershipId = 3101,
+  FireteamFinderInvalidCharacterId = 3102,
+  FireteamFinderInvalidListingOptions = 3103,
+  FireteamFinderInvalidRequestData = 3104,
+  FireteamFinderListingApplicationFailed = 3105,
+  FireteamFinderListingAutoJoinFailed = 3106,
+  FireteamFinderPlayerApplicationsParsingFailed = 3107,
+  FireteamFinderJoinLobbyHostFailed = 3108,
+  FireteamFinderPlayerNotInGame = 3109,
+  FireteamFinderActivationFailed = 3110,
+  FireteamFinderApplicationNotFound = 3111,
+  FireteamFinderUserAlreadyAppliedToListing = 3112,
+  FireteamFinderApplicationClosedForUpdates = 3113,
+  FireteamFinderListingAtMaxOpenApplicationsLimit = 3114,
+  FireteamFinderUserNotInApplication = 3115,
+  FireteamFinderApplicationUserAlreadyListingOwner = 3116,
+  FireteamFinderOfferNotFound = 3117,
+  FireteamFinderOfferClosedForUpdates = 3118,
+  FireteamFinderOfferUserNotTarget = 3119,
+  FireteamFinderLobbyNotFound = 3120,
+  FireteamFinderListingNotFound = 3121,
+  FireteamFinderLobbyFull = 3122,
+  FireteamFinderUserNotListingOwner = 3123,
+  FireteamFinderUserNotLobbyOwner = 3124,
+  FireteamFinderLobbyClosedForUpdates = 3125,
+  FireteamFinderUserNotInLobby = 3126,
+  FireteamFinderDisabledSettingsValue = 3127,
+  FireteamFinderOwnerInActiveLobby = 3128,
+  FireteamFinderApplicationClosedToOfflinePlayers = 3129,
+  FireteamFinderUserNotApplicationOwner = 3130,
+  FireteamFinderInviteValidationFailed = 3131,
+  FireteamFinderOwnerNotInGame = 3132,
+  FireteamFinderPlayerAtMaxLobbyLimit = 3133,
+  FireteamFinderLobbyTooFarInTheFuture = 3134,
+  FireteamFinderResponseUndefined = 3150,
+  FireteamFinderResponseMoved = 3151,
+  FireteamFinderResponseLoggingIn = 3152,
+  FireteamFinderResponseBadRequest = 3153,
+  FireteamFinderResponseUnauthorized = 3154,
+  FireteamFinderResponseForbidden = 3155,
+  FireteamFinderResponseNotFound = 3156,
+  FireteamFinderInternalServerError = 3157,
+  FireteamFinderServiceUnavailable = 3158,
+  FireteamFinderInternalServerErrorNonFatal = 3159,
   CrossSaveOverriddenAccountNotFound = 3200,
   CrossSaveTooManyOverriddenPlatforms = 3201,
   CrossSaveNoOverriddenPlatforms = 3202,
@@ -2357,6 +2505,7 @@ export enum PlatformErrorCodes {
   ErrorPhoneValidationCodeExpired = 3708,
   ErrorPhoneValidationInvalidNumberType = 3709,
   ErrorPhoneValidationCodeTooRecentlyChecked = 3710,
+  ErrorPhoneValidationRecentlyPlayedDestiny2AccountRequired = 3711,
   ApplePushErrorUnknown = 3800,
   ApplePushErrorNull = 3801,
   ApplePushErrorTimeout = 3802,
@@ -2376,6 +2525,8 @@ export enum PlatformErrorCodes {
   ErrorBungieBlockSelf = 3908,
   ErrorBungieFriendsListFull = 3910,
   ErrorBungieBlockListFull = 3911,
+  ErrorBungieFriendNotFound = 3912,
+  ErrorBungieFriendInvalidMembershipType = 3913,
   ErrorEgsUnknown = 4000,
   ErrorEgsBadRequest = 4001,
   ErrorEgsNotAuthorized = 4002,
@@ -2453,6 +2604,81 @@ export enum FireteamPlatformInviteResult {
   AlreadyInFireteam = 2,
   Throttled = 3,
   ServiceError = 4,
+}
+
+export enum DestinyFireteamFinderApplicationType {
+  Unknown = 0,
+  Creator = 1,
+  Search = 2,
+  Invite = 3,
+  Friend = 4,
+  Encounter = 5,
+  Public = 6,
+}
+
+export enum DestinyFireteamFinderApplicationState {
+  Unknown = 0,
+  WaitingForApplicants = 1,
+  WaitingForLobbyOwner = 2,
+  Accepted = 3,
+  Rejected = 4,
+  Deleted = 5,
+  Expired = 6,
+}
+
+export enum DestinyFireteamFinderLobbyPrivacyScope {
+  Unknown = 0,
+  Open = 1,
+  Applications = 2,
+  Clan = 3,
+  Friends = 4,
+}
+
+export enum DestinyFireteamFinderLobbyState {
+  Unknown = 0,
+  Inactive = 1,
+  Active = 2,
+  Expired = 3,
+  Closed = 4,
+  Canceled = 5,
+  Deleted = 6,
+}
+
+export enum DestinyFireteamFinderPlayerReadinessState {
+  Unknown = 0,
+  Reserved = 1,
+  Disconnected = 2,
+  InLobbyUnready = 3,
+  InLobbyReady = 4,
+  Summoned = 5,
+}
+
+export enum DestinyFireteamFinderOfferState {
+  Unknown = 0,
+  Pending = 1,
+  Accepted = 2,
+  Rejected = 3,
+  Deleted = 4,
+  Expired = 5,
+}
+
+export enum DestinyFireteamFinderListingFilterRangeType {
+  Unknown = 0,
+  All = 1,
+  Any = 2,
+  InRangeInclusive = 3,
+  InRangeExclusive = 4,
+  GreaterThan = 5,
+  GreaterThanOrEqualTo = 6,
+  LessThan = 7,
+  LessThanOrEqualTo = 8,
+}
+
+export enum DestinyFireteamFinderListingFilterMatchType {
+  Unknown = 0,
+  MustNot = 1,
+  Should = 2,
+  Filter = 3,
 }
 
 export enum PresenceStatus {
