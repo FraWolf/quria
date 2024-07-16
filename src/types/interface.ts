@@ -5459,6 +5459,8 @@ export interface DestinyCharacterActivitiesComponent {
   dateActivityStarted: string;
   // The list of activities that the user can play.
   availableActivities: DestinyActivity[];
+  // The list of activity interactables that the player can interact with.
+  availableActivityInteractables: DestinyActivityInteractableReference[];
   // If the user is in an activity, this will be the hash of the Activity being played. Note that you must combine this info with currentActivityModeHash to get a real picture of what the user is doing right now. For instance, PVP "Activities" are just maps: it's the ActivityMode that determines what type of PVP game they're playing.
   currentActivityHash: number;
   // If the user is in an activity, this will be the hash of the activity mode being played. Combine with currentActivityHash to give a person a full picture of what they're doing right now.
@@ -5509,6 +5511,32 @@ export interface DestinyActivity {
   loadoutRequirementIndex: number | null;
 }
 
+export interface DestinyActivityInteractableReference {
+  activityInteractableHash: number;
+  activityInteractableElementIndex: number;
+}
+
+// There are times in every Activity's life when interacting with an object in the world will result in another Activity activating. Well, not every Activity. Just certain ones.
+// Anyways, this defines a set of interactable components, the activities that they spawn when you interact with them, and the conditions under which they can be interacted with.
+// Sadly, we don't get any *really* good data for them, like positional data... yet. I have hopes for future data that we could put on this.
+export interface DestinyActivityInteractableDefinition {
+  // The possible interactables in this activity interactable definition.
+  entries: DestinyActivityInteractableEntryDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Defines a specific interactable and the action that can occur when triggered.
+export interface DestinyActivityInteractableEntryDefinition {
+  // The activity that will trigger when you interact with this interactable.
+  activityHash: number;
+}
+
 // Items can have objectives and progression. When you request this block, you will obtain information about any Objectives and progression tied to this item.
 export interface DestinyItemObjectivesComponent {
   // If the item has a hard association with objectives, your progress on them will be defined here.
@@ -5523,7 +5551,7 @@ export interface DestinyItemObjectivesComponent {
 export interface DestinyCharacterRecordsComponent {
   featuredRecordHashes: number[];
   records: Record<string, DestinyRecordComponent>;
-  // The hash for the root presentation node definition of Triumph categories.
+  // The hash for the root presentation node definition. of Triumph categories.
   recordCategoriesRootNodeHash: number;
   // The hash for the root presentation node definition of Triumph Seals.
   recordSealsRootNodeHash: number;
@@ -6724,32 +6752,6 @@ export interface DestinyFireteamFinderActivityGraphDefinition {
 
 export interface DestinyActivityGraphReference {
   activityGraphHash: number;
-}
-
-export interface DestinyActivityInteractableReference {
-  activityInteractableHash: number;
-  activityInteractableElementIndex: number;
-}
-
-// There are times in every Activity's life when interacting with an object in the world will result in another Activity activating. Well, not every Activity. Just certain ones.
-// Anyways, this defines a set of interactable components, the activities that they spawn when you interact with them, and the conditions under which they can be interacted with.
-// Sadly, we don't get any *really* good data for them, like positional data... yet. I have hopes for future data that we could put on this.
-export interface DestinyActivityInteractableDefinition {
-  // The possible interactables in this activity interactable definition.
-  entries: DestinyActivityInteractableEntryDefinition[];
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-// Defines a specific interactable and the action that can occur when triggered.
-export interface DestinyActivityInteractableEntryDefinition {
-  // The activity that will trigger when you interact with this interactable.
-  activityHash: number;
 }
 
 export interface DestinyFireteamFinderActivitySetDefinition {
