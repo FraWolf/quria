@@ -885,6 +885,9 @@ export enum DestinyRecordToastStyle {
   ToastGuardianRankDetails = 9,
   PathfinderObjectiveCompleteRituals = 10,
   PathfinderObjectiveCompleteSchism = 11,
+  PathfinderObjectiveCompletePvp = 12,
+  PathfinderObjectiveCompleteStrikes = 13,
+  PathfinderObjectiveCompleteGambit = 14,
 }
 
 // A hint for what screen should be shown when this presentation node is clicked into. How you use this is your UI is up to you.
@@ -1455,6 +1458,7 @@ export enum DestinyVendorItemState {
   ArtifactPerkOwned = 2097152,
   Savings = 4194304,
   Ineligible = 8388608,
+  ArtifactPerkBoosted = 16777216,
 }
 
 // If you look in the DestinyInventoryItemDefinition's "sockets" property, you'll see that there are two types of sockets: intrinsic, and "socketEntry."

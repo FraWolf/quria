@@ -4550,6 +4550,10 @@ export interface DestinyItemPlugBase {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 export interface DestinyItemPlug {
@@ -4567,6 +4571,10 @@ export interface DestinyItemPlug {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 // The set of progression-related information that applies at a Profile-wide level for your Destiny experience. This differs from the Jimi Hendrix Experience because there's less guitars on fire. Yet. #spoileralert?
@@ -5551,7 +5559,7 @@ export interface DestinyItemObjectivesComponent {
 export interface DestinyCharacterRecordsComponent {
   featuredRecordHashes: number[];
   records: Record<string, DestinyRecordComponent>;
-  // The hash for the root presentation node definition. of Triumph categories.
+  // The hash for the root presentation node definition of Triumph categories.
   recordCategoriesRootNodeHash: number;
   // The hash for the root presentation node definition of Triumph Seals.
   recordSealsRootNodeHash: number;
@@ -5779,6 +5787,10 @@ export interface DestinyItemPlugComponent {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 // This component provides a quick lookup of every item the requested character has and how much of that item they have.
@@ -5886,12 +5898,12 @@ export interface DestinyVendorsResponse {
   // COMPONENT TYPE: VendorCategories
   categories: DictionaryComponentResponseOfuint32AndDestinyVendorCategoriesComponent;
   // Sales, keyed by the vendorItemIndex of the item being sold. These are keyed by the Vendor Hash, so you will get one Sale Item Set Component per vendor returned.
-  // Note that within the Sale Item Set component, the sales are themselves keyed by the vendorSaleIndex, so you can relate it to the corrent sale item definition within the Vendor's definition.
+  // Note that within the Sale Item Set component, the sales are themselves keyed by the vendorSaleIndex, so you can relate it to the current sale item definition within the Vendor's definition.
   // COMPONENT TYPE: VendorSales
   sales: DictionaryComponentResponseOfuint32AndPersonalDestinyVendorSaleItemSetComponent;
   // The set of item detail components, one set of item components per Vendor. These are keyed by the Vendor Hash, so you will get one Item Component Set per vendor returned.
   // The components contained inside are themselves keyed by the vendorSaleIndex, and will have whatever item-level components you requested (Sockets, Stats, Instance data etc...) per item being sold by the vendor.
-  itemComponents: Record<string, DestinyItemComponentSetOfint32>;
+  itemComponents: Record<string, DestinyVendorItemComponentSetOfint32>;
   // A "lookup" convenience component that can be used to quickly check if the character has access to items that can be used for purchasing.
   // COMPONENT TYPE: CurrencyLookups
   currencyLookups: SingleComponentResponseOfDestinyCurrenciesComponent;
@@ -6049,8 +6061,8 @@ export interface DestinyVendorResponse {
   // COMPONENT TYPE: VendorSales
   sales: DictionaryComponentResponseOfint32AndDestinyVendorSaleItemComponent;
   // Item components, keyed by the vendorItemIndex of the active sale items.
-  // COMPONENT TYPE: [See inside the DestinyItemComponentSet contract for component types.]
-  itemComponents: DestinyItemComponentSetOfint32;
+  // COMPONENT TYPE: [See inside the DestinyVendorItemComponentSet contract for component types.]
+  itemComponents: DestinyVendorItemComponentSetOfint32;
   // A "lookup" convenience component that can be used to quickly check if the character has access to items that can be used for purchasing.
   // COMPONENT TYPE: CurrencyLookups
   currencyLookups: SingleComponentResponseOfDestinyCurrenciesComponent;
@@ -7670,6 +7682,27 @@ export interface DictionaryComponentResponseOfint32AndDestinyItemPlugObjectivesC
 
 export interface DictionaryComponentResponseOfint32AndDestinyItemTalentGridComponent {
   data: Record<string, DestinyItemTalentGridComponent>;
+  privacy: ComponentPrivacySetting;
+  // If true, this component is disabled.
+  disabled: boolean | null;
+}
+
+export interface DestinyVendorItemComponentSetOfint32 {
+  itemComponents: DictionaryComponentResponseOfint32AndDestinyItemComponent;
+  instances: DictionaryComponentResponseOfint32AndDestinyItemInstanceComponent;
+  renderData: DictionaryComponentResponseOfint32AndDestinyItemRenderComponent;
+  stats: DictionaryComponentResponseOfint32AndDestinyItemStatsComponent;
+  sockets: DictionaryComponentResponseOfint32AndDestinyItemSocketsComponent;
+  reusablePlugs: DictionaryComponentResponseOfint32AndDestinyItemReusablePlugsComponent;
+  plugObjectives: DictionaryComponentResponseOfint32AndDestinyItemPlugObjectivesComponent;
+  talentGrids: DictionaryComponentResponseOfint32AndDestinyItemTalentGridComponent;
+  plugStates: DictionaryComponentResponseOfuint32AndDestinyItemPlugComponent;
+  objectives: DictionaryComponentResponseOfint32AndDestinyItemObjectivesComponent;
+  perks: DictionaryComponentResponseOfint32AndDestinyItemPerksComponent;
+}
+
+export interface DictionaryComponentResponseOfint32AndDestinyItemComponent {
+  data: Record<string, DestinyItemComponent>;
   privacy: ComponentPrivacySetting;
   // If true, this component is disabled.
   disabled: boolean | null;
