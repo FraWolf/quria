@@ -598,6 +598,7 @@ export class FireteamFinder {
    * @param destinyCharacterId A valid Destiny character ID.
    * @param destinyMembershipId A valid Destiny membership ID.
    * @param destinyMembershipType A valid Destiny membership type.
+   * @param overrideOfflineFilter Optional boolean to bypass the offline-only check, so the client can pull fireteam from the game.
    * @returns Returns search results for available Fireteams provided search filters.
    */
   public SearchListingsByFilters(
@@ -608,9 +609,15 @@ export class FireteamFinder {
     pageSize: number,
     pageToken: string,
     lobbyState: DestinyFireteamFinderLobbyState,
+    queryString: {
+      overrideOfflineFilter?: boolean;
+    } | null,
     tokens?: ITokens
   ): Promise<APIResponse<DestinyFireteamFinderSearchListingsByFiltersResponse>> {
-    const requestURL = `${this.url}/FireteamFinder/Search/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
+    const requestURL = formatQueryStrings(
+      `${this.url}/FireteamFinder/Search/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`,
+      queryString
+    );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderSearchListingsByFiltersRequest = { filters, pageSize, pageToken, lobbyState };
     return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));

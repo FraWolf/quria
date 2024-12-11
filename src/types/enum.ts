@@ -360,6 +360,37 @@ export enum DestinyProgressionRewardItemState {
   ClaimAllowed = 8,
 }
 
+// When a Stat (DestinyStatDefinition) is aggregated, this is the rules used for determining the level and formula used for aggregation.
+// * CharacterAverage = apply a weighted average using the related DestinyStatGroupDefinition on the DestinyInventoryItemDefinition across the character's equipped items. See both of those definitions for details. * Character = don't aggregate: the stat should be located and used directly on the character. * Item = don't aggregate: the stat should be located and used directly on the item.
+export enum DestinyStatAggregationType {
+  CharacterAverage = 0,
+  Character = 1,
+  Item = 2,
+}
+
+// At last, stats have categories. Use this for whatever purpose you might wish.
+export enum DestinyStatCategory {
+  Gameplay = 0,
+  Weapon = 1,
+  Defense = 2,
+  Primary = 3,
+}
+
+// A flags enumeration/bitmask where each bit represents a different possible state that the item can be in that may effect how the item is displayed to the user and what actions can be performed against it.
+export enum ItemState {
+  None = 0,
+  // If this bit is set, the item has been "locked" by the user and cannot be deleted. You may want to represent this visually with a "lock" icon.
+  Locked = 1,
+  // If this bit is set, the item is a quest that's being tracked by the user. You may want a visual indicator to show that this is a tracked quest.
+  Tracked = 2,
+  // If this bit is set, the item has a Masterwork plug inserted. This usually coincides with having a special "glowing" effect applied to the item's icon.
+  Masterwork = 4,
+  // If this bit is set, the item has been 'crafted' by the player. You may want to represent this visually with a "crafted" icon overlay.
+  Crafted = 8,
+  // If this bit is set, the item has a 'highlighted' objective. You may want to represent this with an orange-red icon border color.
+  HighlightedObjective = 16,
+}
+
 // There are many Progressions in Destiny (think Character Level, or Reputation). These are the various "Scopes" of Progressions, which affect many things: * Where/if they are stored * How they are calculated * Where they can be used in other game logic
 export enum DestinyProgressionScope {
   Account = 0,
@@ -436,22 +467,6 @@ export enum ItemLocation {
   Vault = 2,
   Vendor = 3,
   Postmaster = 4,
-}
-
-// When a Stat (DestinyStatDefinition) is aggregated, this is the rules used for determining the level and formula used for aggregation.
-// * CharacterAverage = apply a weighted average using the related DestinyStatGroupDefinition on the DestinyInventoryItemDefinition across the character's equipped items. See both of those definitions for details. * Character = don't aggregate: the stat should be located and used directly on the character. * Item = don't aggregate: the stat should be located and used directly on the item.
-export enum DestinyStatAggregationType {
-  CharacterAverage = 0,
-  Character = 1,
-  Item = 2,
-}
-
-// At last, stats have categories. Use this for whatever purpose you might wish.
-export enum DestinyStatCategory {
-  Gameplay = 0,
-  Weapon = 1,
-  Defense = 2,
-  Primary = 3,
 }
 
 export enum EquippingItemBlockAttributes {
@@ -1095,21 +1110,6 @@ export enum TransferStatuses {
   NotTransferrable = 2,
   // You could transfer the item, but the place you're trying to put it has run out of room! Check your remaining Vault and/or character space.
   NoRoomInDestination = 4,
-}
-
-// A flags enumeration/bitmask where each bit represents a different possible state that the item can be in that may effect how the item is displayed to the user and what actions can be performed against it.
-export enum ItemState {
-  None = 0,
-  // If this bit is set, the item has been "locked" by the user and cannot be deleted. You may want to represent this visually with a "lock" icon.
-  Locked = 1,
-  // If this bit is set, the item is a quest that's being tracked by the user. You may want a visual indicator to show that this is a tracked quest.
-  Tracked = 2,
-  // If this bit is set, the item has a Masterwork plug inserted. This usually coincides with having a special "glowing" effect applied to the item's icon.
-  Masterwork = 4,
-  // If this bit is set, the item has been 'crafted' by the player. You may want to represent this visually with a "crafted" icon overlay.
-  Crafted = 8,
-  // If this bit is set, the item has a 'highlighted' objective. You may want to represent this with an orange-red icon border color.
-  HighlightedObjective = 16,
 }
 
 // A flags enumeration/bitmask indicating the versions of the game that a given user has purchased.
