@@ -18,6 +18,9 @@ import {
   HostGuidedGamesPermissionLevel,
   RuntimeGroupMemberType,
   DestinyProgressionRewardItemState,
+  ItemState,
+  DestinyStatAggregationType,
+  DestinyStatCategory,
   DestinyProgressionScope,
   DestinyProgressionStepDisplayEffect,
   SpecialItemType,
@@ -33,8 +36,6 @@ import {
   BucketScope,
   BucketCategory,
   ItemLocation,
-  DestinyStatAggregationType,
-  DestinyStatCategory,
   EquippingItemBlockAttributes,
   DestinyAmmunitionType,
   DestinyGender,
@@ -82,7 +83,6 @@ import {
   PlatformErrorCodes,
   ItemBindStatus,
   TransferStatuses,
-  ItemState,
   ComponentPrivacySetting,
   DestinyGameVersions,
   DestinyPresentationNodeState,
@@ -1121,6 +1121,8 @@ export interface DestinyProgression {
   seasonResets: DestinyProgressionResetEntry[];
   // Information about historical rewards for this progression, if there is any data for it.
   rewardItemStates: DestinyProgressionRewardItemState[];
+  // Information about items stats and states that have socket overrides, if there is any data for it.
+  rewardItemSocketOverrideStates: Record<string, DestinyProgressionRewardItemSocketOverrideState>;
 }
 
 // Represents a season and the number of resets you had in that season.
@@ -1128,6 +1130,22 @@ export interface DestinyProgression {
 export interface DestinyProgressionResetEntry {
   season: number;
   resets: number;
+}
+
+// Represents the stats and item state if applicable for progression reward items with socket overrides
+export interface DestinyProgressionRewardItemSocketOverrideState {
+  // Information about the computed stats from socket and plug overrides for this progression, if there is any data for it.
+  rewardItemStats: Record<string, DestinyStat>;
+  // Information about the item state, specifically deepsight if there is any data for it
+  itemState: ItemState;
+}
+
+// Represents a stat on an item *or* Character (NOT a Historical Stat, but a physical attribute stat like Attack, Defense etc...)
+export interface DestinyStat {
+  // The hash identifier for the Stat. Use it to look up the DestinyStatDefinition for static data about the stat.
+  statHash: number;
+  // The current value of the Stat.
+  value: number;
 }
 
 // Provides common properties for destiny definitions.
@@ -1139,6 +1157,52 @@ export interface DestinyDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
+}
+
+// This represents a stat that's applied to a character or an item (such as a weapon, piece of armor, or a vehicle).
+// An example of a stat might be Attack Power on a weapon.
+// Stats go through a complex set of transformations before they end up being shown to the user as a number or a progress bar, and those transformations are fundamentally intertwined with the concept of a "Stat Group" (DestinyStatGroupDefinition). Items have both Stats and a reference to a Stat Group, and it is the Stat Group that takes the raw stat information and gives it both rendering metadata (such as whether to show it as a number or a progress bar) and the final transformation data (interpolation tables to turn the raw investment stat into a display stat). Please see DestinyStatGroupDefinition for more information on that transformational process.
+// Stats are segregated from Stat Groups because different items and types of items can refer to the same stat, but have different "scales" for the stat while still having the same underlying value. For example, both a Shotgun and an Auto Rifle may have a "raw" impact stat of 50, but the Auto Rifle's Stat Group will scale that 50 down so that, when it is displayed, it is a smaller value relative to the shotgun. (this is a totally made up example, don't assume shotguns have naturally higher impact than auto rifles because of this)
+// A final caveat is that some stats, even after this "final" transformation, go through yet another set of transformations directly in the game as a result of dynamic, stateful scripts that get run. BNet has no access to these scripts, nor any way to know which scripts get executed. As a result, the stats for an item that you see in-game - particularly for stats that are often impacted by Perks, like Magazine Size - can change dramatically from what we return on Bungie.Net. This is a known issue with no fix coming down the pipeline. Take these stats with a grain of salt.
+// Stats actually go through four transformations, for those interested:
+// 1) "Sandbox" stat, the "most raw" form. These are pretty much useless without transformations applied, and thus are not currently returned in the API. If you really want these, we can provide them. Maybe someone could do something cool with it?
+// 2) "Investment" stat (the stat's value after DestinyStatDefinition's interpolation tables and aggregation logic is applied to the "Sandbox" stat value)
+// 3) "Display" stat (the stat's base UI-visible value after DestinyStatGroupDefinition's interpolation tables are applied to the Investment Stat value. For most stats, this is what is displayed.)
+// 4) Underlying in-game stat (the stat's actual value according to the game, after the game runs dynamic scripts based on the game and character's state. This is the final transformation that BNet does not have access to. For most stats, this is not actually displayed to the user, with the exception of Magazine Size which is then piped back to the UI for display in-game, but not to BNet.)
+export interface DestinyStatDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // Stats can exist on a character or an item, and they may potentially be aggregated in different ways. The DestinyStatAggregationType enum value indicates the way that this stat is being aggregated.
+  aggregationType: DestinyStatAggregationType;
+  // True if the stat is computed rather than being delivered as a raw value on items.
+  // For instance, the Light stat in Destiny 1 was a computed stat.
+  hasComputedBlock: boolean;
+  // The category of the stat, according to the game.
+  statCategory: DestinyStatCategory;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Many Destiny*Definition contracts - the "first order" entities of Destiny that have their own tables in the Manifest Database - also have displayable information. This is the base class for that display information.
+export interface DestinyDisplayPropertiesDefinition {
+  description: string;
+  name: string;
+  // Note that "icon" is sometimes misleading, and should be interpreted in the context of the entity. For instance, in Destiny 1 the DestinyRecordBookDefinition's icon was a big picture of a book.
+  // But usually, it will be a small square image that you can use as... well, an icon.
+  // They are currently represented as 96px x 96px images.
+  icon: string;
+  iconSequences: DestinyIconSequenceDefinition[];
+  // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
+  highResIcon: string;
+  hasIcon: boolean;
+}
+
+export interface DestinyIconSequenceDefinition {
+  frames: string[];
 }
 
 // A "Progression" in Destiny is best explained by an example.
@@ -1176,24 +1240,6 @@ export interface DestinyProgressionDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
-}
-
-// Many Destiny*Definition contracts - the "first order" entities of Destiny that have their own tables in the Manifest Database - also have displayable information. This is the base class for that display information.
-export interface DestinyDisplayPropertiesDefinition {
-  description: string;
-  name: string;
-  // Note that "icon" is sometimes misleading, and should be interpreted in the context of the entity. For instance, in Destiny 1 the DestinyRecordBookDefinition's icon was a big picture of a book.
-  // But usually, it will be a small square image that you can use as... well, an icon.
-  // They are currently represented as 96px x 96px images.
-  icon: string;
-  iconSequences: DestinyIconSequenceDefinition[];
-  // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
-  highResIcon: string;
-  hasIcon: boolean;
-}
-
-export interface DestinyIconSequenceDefinition {
-  frames: string[];
 }
 
 export interface DestinyProgressionDisplayPropertiesDefinition {
@@ -1590,6 +1636,8 @@ export interface DestinyMaterialRequirement {
   countIsConstant: boolean;
   // If True, this requirement is "silent": don't bother showing it in a material requirements display. I mean, I'm not your mom: I'm not going to tell you you *can't* show it. But we won't show it in our UI.
   omitFromRequirements: boolean;
+  // If true, this material requirement references a virtual item stack size value. You can get that value from a corresponding DestinyMaterialRequirementSetState.
+  hasVirtualStackSize: boolean;
 }
 
 // If the item can exist in an inventory - the overwhelming majority of them can and do - then this is the basic properties regarding the item's relationship with the inventory.
@@ -1740,34 +1788,6 @@ export interface DestinyInventoryItemStatDefinition {
   // This is pulled directly from the item's DestinyStatGroupDefinition, and placed here for convenience.
   // If not returned, there is no maximum to use (and thus the stat should not be shown in a way that assumes there is a limit to the stat)
   displayMaximum: number | null;
-}
-
-// This represents a stat that's applied to a character or an item (such as a weapon, piece of armor, or a vehicle).
-// An example of a stat might be Attack Power on a weapon.
-// Stats go through a complex set of transformations before they end up being shown to the user as a number or a progress bar, and those transformations are fundamentally intertwined with the concept of a "Stat Group" (DestinyStatGroupDefinition). Items have both Stats and a reference to a Stat Group, and it is the Stat Group that takes the raw stat information and gives it both rendering metadata (such as whether to show it as a number or a progress bar) and the final transformation data (interpolation tables to turn the raw investment stat into a display stat). Please see DestinyStatGroupDefinition for more information on that transformational process.
-// Stats are segregated from Stat Groups because different items and types of items can refer to the same stat, but have different "scales" for the stat while still having the same underlying value. For example, both a Shotgun and an Auto Rifle may have a "raw" impact stat of 50, but the Auto Rifle's Stat Group will scale that 50 down so that, when it is displayed, it is a smaller value relative to the shotgun. (this is a totally made up example, don't assume shotguns have naturally higher impact than auto rifles because of this)
-// A final caveat is that some stats, even after this "final" transformation, go through yet another set of transformations directly in the game as a result of dynamic, stateful scripts that get run. BNet has no access to these scripts, nor any way to know which scripts get executed. As a result, the stats for an item that you see in-game - particularly for stats that are often impacted by Perks, like Magazine Size - can change dramatically from what we return on Bungie.Net. This is a known issue with no fix coming down the pipeline. Take these stats with a grain of salt.
-// Stats actually go through four transformations, for those interested:
-// 1) "Sandbox" stat, the "most raw" form. These are pretty much useless without transformations applied, and thus are not currently returned in the API. If you really want these, we can provide them. Maybe someone could do something cool with it?
-// 2) "Investment" stat (the stat's value after DestinyStatDefinition's interpolation tables and aggregation logic is applied to the "Sandbox" stat value)
-// 3) "Display" stat (the stat's base UI-visible value after DestinyStatGroupDefinition's interpolation tables are applied to the Investment Stat value. For most stats, this is what is displayed.)
-// 4) Underlying in-game stat (the stat's actual value according to the game, after the game runs dynamic scripts based on the game and character's state. This is the final transformation that BNet does not have access to. For most stats, this is not actually displayed to the user, with the exception of Magazine Size which is then piped back to the UI for display in-game, but not to BNet.)
-export interface DestinyStatDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // Stats can exist on a character or an item, and they may potentially be aggregated in different ways. The DestinyStatAggregationType enum value indicates the way that this stat is being aggregated.
-  aggregationType: DestinyStatAggregationType;
-  // True if the stat is computed rather than being delivered as a raw value on items.
-  // For instance, the Light stat in Destiny 1 was a computed stat.
-  hasComputedBlock: boolean;
-  // The category of the stat, according to the game.
-  statCategory: DestinyStatCategory;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
 }
 
 // When an inventory item (DestinyInventoryItemDefinition) has Stats (such as Attack Power), the item will refer to a Stat Group. This definition enumerates the properties used to transform the item's "Investment" stats into "Display" stats.
@@ -4133,10 +4153,12 @@ export interface DestinySeasonPassDefinition {
 }
 
 export interface DestinyProgressionRewardItemQuantity {
+  rewardItemIndex: number;
   rewardedAtProgressionLevel: number;
   acquisitionBehavior: DestinyProgressionRewardItemAcquisitionBehavior;
   uiDisplayStyle: string;
   claimUnlockDisplayStrings: string[];
+  socketOverrides: DestinyProgressionSocketPlugOverride[];
   // The hash identifier for the item in question. Use it to look up the item's DestinyInventoryItemDefinition.
   itemHash: number;
   // If this quantity is referring to a specific instance of an item, this will have the item's instance ID. Normally, this will be null.
@@ -4145,6 +4167,12 @@ export interface DestinyProgressionRewardItemQuantity {
   quantity: number;
   // Indicates that this item quantity may be conditionally shown or hidden, based on various sources of state. For example: server flags, account state, or character progress.
   hasConditionalVisibility: boolean;
+}
+
+// The information for how progression item definitions should override a given socket with custom plug data.
+export interface DestinyProgressionSocketPlugOverride {
+  socketTypeHash: number;
+  overrideSingleItemHash: number | null;
 }
 
 // DestinyManifest is the external-facing contract for just the properties needed by those calling the Destiny Platform.
@@ -5029,6 +5057,8 @@ export interface DestinyFactionProgression {
   seasonResets: DestinyProgressionResetEntry[];
   // Information about historical rewards for this progression, if there is any data for it.
   rewardItemStates: DestinyProgressionRewardItemState[];
+  // Information about items stats and states that have socket overrides, if there is any data for it.
+  rewardItemSocketOverrideStates: Record<string, DestinyProgressionRewardItemSocketOverrideState>;
 }
 
 // Represents a runtime instance of a user's milestone status. Live Milestone data should be combined with DestinyMilestoneDefinition data to show the user a picture of what is available for them to do in the game, and their status in regards to said "things to do." Consider it a big, wonky to-do list, or Advisors 3.0 for those who remember the Destiny 1 API.
@@ -5625,14 +5655,6 @@ export interface DestinyItemInstanceComponent {
   energy: DestinyItemInstanceEnergy;
 }
 
-// Represents a stat on an item *or* Character (NOT a Historical Stat, but a physical attribute stat like Attack, Defense etc...)
-export interface DestinyStat {
-  // The hash identifier for the Stat. Use it to look up the DestinyStatDefinition for static data about the stat.
-  statHash: number;
-  // The current value of the Stat.
-  value: number;
-}
-
 export interface DestinyItemInstanceEnergy {
   // The type of energy for this item. Plugs that require Energy can only be inserted if they have the "Any" Energy Type or the matching energy type of this item. This is a reference to the DestinyEnergyTypeDefinition for the energy type, where you can find extended info about it.
   energyTypeHash: number;
@@ -5795,11 +5817,29 @@ export interface DestinyItemPlugComponent {
 
 // This component provides a quick lookup of every item the requested character has and how much of that item they have.
 // Requesting this component will allow you to circumvent manually putting together the list of which currencies you have for the purpose of testing currency requirements on an item being purchased, or operations that have costs.
-// You *could* figure this out yourself by doing a GetCharacter or GetProfile request and forming your own lookup table, but that is inconvenient enough that this feels like a worthwhile (and optional) redundency. Don't bother requesting it if you have already created your own lookup from prior GetCharacter/GetProfile calls.
+// You *could* figure this out yourself by doing a GetCharacter or GetProfile request and forming your own lookup table, but that is inconvenient enough that this feels like a worthwhile (and optional) redundancy. Don't bother requesting it if you have already created your own lookup from prior GetCharacter/GetProfile calls.
 export interface DestinyCurrenciesComponent {
   // A dictionary - keyed by the item's hash identifier (DestinyInventoryItemDefinition), and whose value is the amount of that item you have across all available inventory buckets for purchasing.
   // This allows you to see whether the requesting character can afford any given purchase/action without having to re-create this list itself.
   itemQuantities: Record<string, number>;
+  // A map of material requirement hashes and their status information.
+  materialRequirementSetStates: Record<string, DestinyMaterialRequirementSetState>;
+}
+
+export interface DestinyMaterialRequirementSetState {
+  // The hash identifier of the material requirement set. Use it to look up the DestinyMaterialRequirementSetDefinition.
+  materialRequirementSetHash: number;
+  // The dynamic state values for individual material requirements.
+  materialRequirementStates: DestinyMaterialRequirementState[];
+}
+
+export interface DestinyMaterialRequirementState {
+  // The hash identifier of the material required. Use it to look up the material's DestinyInventoryItemDefinition.
+  itemHash: number;
+  // The amount of the material required.
+  count: number;
+  // A value for the amount of a (possibly virtual) material on some scope. For example: Dawning cookie baking material requirements.
+  stackSize: number;
 }
 
 // The response contract for GetDestinyCharacter, with components that can be returned for character and item-level data.
