@@ -1,4 +1,5 @@
 import {
+  OAuthApplicationType,
   ApplicationStatus,
   DeveloperRole,
   BungieMembershipType,
@@ -17,6 +18,9 @@ import {
   HostGuidedGamesPermissionLevel,
   RuntimeGroupMemberType,
   DestinyProgressionRewardItemState,
+  ItemState,
+  DestinyStatAggregationType,
+  DestinyStatCategory,
   DestinyProgressionScope,
   DestinyProgressionStepDisplayEffect,
   SpecialItemType,
@@ -32,8 +36,6 @@ import {
   BucketScope,
   BucketCategory,
   ItemLocation,
-  DestinyStatAggregationType,
-  DestinyStatCategory,
   EquippingItemBlockAttributes,
   DestinyAmmunitionType,
   DestinyGender,
@@ -50,11 +52,6 @@ import {
   DestinyUnlockValueUIStyle,
   DestinyObjectiveUiStyle,
   DestinyObjectiveGrantStyle,
-  DestinyTalentNodeStepWeaponPerformances,
-  DestinyTalentNodeStepImpactEffects,
-  DestinyTalentNodeStepGuardianAttributes,
-  DestinyTalentNodeStepLightAbilities,
-  DestinyTalentNodeStepDamageTypes,
   DestinyActivityNavPointType,
   DestinyActivityModeCategory,
   DestinyGraphNodeState,
@@ -69,6 +66,11 @@ import {
   PlugAvailabilityMode,
   DestinyEnergyType,
   SocketPlugSources,
+  DestinyTalentNodeStepWeaponPerformances,
+  DestinyTalentNodeStepImpactEffects,
+  DestinyTalentNodeStepGuardianAttributes,
+  DestinyTalentNodeStepLightAbilities,
+  DestinyTalentNodeStepDamageTypes,
   ItemPerkVisibility,
   DestinyProgressionRewardItemAcquisitionBehavior,
   GroupPotentialMemberStatus,
@@ -81,7 +83,6 @@ import {
   PlatformErrorCodes,
   ItemBindStatus,
   TransferStatuses,
-  ItemState,
   ComponentPrivacySetting,
   DestinyGameVersions,
   DestinyPresentationNodeState,
@@ -109,6 +110,23 @@ import {
   TrendingEntryType,
   FireteamPlatform,
   FireteamPlatformInviteResult,
+  DestinyFireteamFinderApplicationState,
+  DestinyFireteamFinderApplicationType,
+  DestinyFireteamFinderLobbyState,
+  DestinyFireteamFinderLobbyPrivacyScope,
+  FireteamFinderCodeOptionType,
+  FireteamFinderOptionAvailability,
+  FireteamFinderOptionVisibility,
+  FireteamFinderOptionControlType,
+  FireteamFinderOptionSearchFilterType,
+  FireteamFinderOptionDisplayFormat,
+  FireteamFinderOptionValueProviderType,
+  FireteamFinderOptionValueFlags,
+  FireteamFinderLabelFieldType,
+  DestinyFireteamFinderPlayerReadinessState,
+  DestinyFireteamFinderOfferState,
+  DestinyFireteamFinderListingFilterRangeType,
+  DestinyFireteamFinderListingFilterMatchType,
   PresenceStatus,
   PresenceOnlineStateFlags,
   FriendRelationshipState,
@@ -140,6 +158,7 @@ export interface Datapoint {
 }
 
 export interface Application {
+  applicationType: OAuthApplicationType;
   // Unique ID assigned to the application
   applicationId: number;
   // Name of the application
@@ -710,6 +729,20 @@ export interface GroupBan {
   destinyUserInfo: GroupUserInfoCard;
 }
 
+export interface GroupEditHistory {
+  groupId: string;
+  name: string;
+  nameEditors: string | null;
+  about: string;
+  aboutEditors: string | null;
+  motto: string;
+  mottoEditors: string | null;
+  clanCallsign: string;
+  clanCallsignEditors: string | null;
+  editDate: string | null;
+  groupEditors: UserInfoCard[];
+}
+
 export interface GroupMemberApplication {
   groupId: string;
   creationDate: string;
@@ -1088,6 +1121,8 @@ export interface DestinyProgression {
   seasonResets: DestinyProgressionResetEntry[];
   // Information about historical rewards for this progression, if there is any data for it.
   rewardItemStates: DestinyProgressionRewardItemState[];
+  // Information about items stats and states that have socket overrides, if there is any data for it.
+  rewardItemSocketOverrideStates: Record<string, DestinyProgressionRewardItemSocketOverrideState>;
 }
 
 // Represents a season and the number of resets you had in that season.
@@ -1095,6 +1130,22 @@ export interface DestinyProgression {
 export interface DestinyProgressionResetEntry {
   season: number;
   resets: number;
+}
+
+// Represents the stats and item state if applicable for progression reward items with socket overrides
+export interface DestinyProgressionRewardItemSocketOverrideState {
+  // Information about the computed stats from socket and plug overrides for this progression, if there is any data for it.
+  rewardItemStats: Record<string, DestinyStat>;
+  // Information about the item state, specifically deepsight if there is any data for it
+  itemState: ItemState;
+}
+
+// Represents a stat on an item *or* Character (NOT a Historical Stat, but a physical attribute stat like Attack, Defense etc...)
+export interface DestinyStat {
+  // The hash identifier for the Stat. Use it to look up the DestinyStatDefinition for static data about the stat.
+  statHash: number;
+  // The current value of the Stat.
+  value: number;
 }
 
 // Provides common properties for destiny definitions.
@@ -1106,6 +1157,52 @@ export interface DestinyDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
+}
+
+// This represents a stat that's applied to a character or an item (such as a weapon, piece of armor, or a vehicle).
+// An example of a stat might be Attack Power on a weapon.
+// Stats go through a complex set of transformations before they end up being shown to the user as a number or a progress bar, and those transformations are fundamentally intertwined with the concept of a "Stat Group" (DestinyStatGroupDefinition). Items have both Stats and a reference to a Stat Group, and it is the Stat Group that takes the raw stat information and gives it both rendering metadata (such as whether to show it as a number or a progress bar) and the final transformation data (interpolation tables to turn the raw investment stat into a display stat). Please see DestinyStatGroupDefinition for more information on that transformational process.
+// Stats are segregated from Stat Groups because different items and types of items can refer to the same stat, but have different "scales" for the stat while still having the same underlying value. For example, both a Shotgun and an Auto Rifle may have a "raw" impact stat of 50, but the Auto Rifle's Stat Group will scale that 50 down so that, when it is displayed, it is a smaller value relative to the shotgun. (this is a totally made up example, don't assume shotguns have naturally higher impact than auto rifles because of this)
+// A final caveat is that some stats, even after this "final" transformation, go through yet another set of transformations directly in the game as a result of dynamic, stateful scripts that get run. BNet has no access to these scripts, nor any way to know which scripts get executed. As a result, the stats for an item that you see in-game - particularly for stats that are often impacted by Perks, like Magazine Size - can change dramatically from what we return on Bungie.Net. This is a known issue with no fix coming down the pipeline. Take these stats with a grain of salt.
+// Stats actually go through four transformations, for those interested:
+// 1) "Sandbox" stat, the "most raw" form. These are pretty much useless without transformations applied, and thus are not currently returned in the API. If you really want these, we can provide them. Maybe someone could do something cool with it?
+// 2) "Investment" stat (the stat's value after DestinyStatDefinition's interpolation tables and aggregation logic is applied to the "Sandbox" stat value)
+// 3) "Display" stat (the stat's base UI-visible value after DestinyStatGroupDefinition's interpolation tables are applied to the Investment Stat value. For most stats, this is what is displayed.)
+// 4) Underlying in-game stat (the stat's actual value according to the game, after the game runs dynamic scripts based on the game and character's state. This is the final transformation that BNet does not have access to. For most stats, this is not actually displayed to the user, with the exception of Magazine Size which is then piped back to the UI for display in-game, but not to BNet.)
+export interface DestinyStatDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // Stats can exist on a character or an item, and they may potentially be aggregated in different ways. The DestinyStatAggregationType enum value indicates the way that this stat is being aggregated.
+  aggregationType: DestinyStatAggregationType;
+  // True if the stat is computed rather than being delivered as a raw value on items.
+  // For instance, the Light stat in Destiny 1 was a computed stat.
+  hasComputedBlock: boolean;
+  // The category of the stat, according to the game.
+  statCategory: DestinyStatCategory;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Many Destiny*Definition contracts - the "first order" entities of Destiny that have their own tables in the Manifest Database - also have displayable information. This is the base class for that display information.
+export interface DestinyDisplayPropertiesDefinition {
+  description: string;
+  name: string;
+  // Note that "icon" is sometimes misleading, and should be interpreted in the context of the entity. For instance, in Destiny 1 the DestinyRecordBookDefinition's icon was a big picture of a book.
+  // But usually, it will be a small square image that you can use as... well, an icon.
+  // They are currently represented as 96px x 96px images.
+  icon: string;
+  iconSequences: DestinyIconSequenceDefinition[];
+  // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
+  highResIcon: string;
+  hasIcon: boolean;
+}
+
+export interface DestinyIconSequenceDefinition {
+  frames: string[];
 }
 
 // A "Progression" in Destiny is best explained by an example.
@@ -1143,24 +1240,6 @@ export interface DestinyProgressionDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
-}
-
-// Many Destiny*Definition contracts - the "first order" entities of Destiny that have their own tables in the Manifest Database - also have displayable information. This is the base class for that display information.
-export interface DestinyDisplayPropertiesDefinition {
-  description: string;
-  name: string;
-  // Note that "icon" is sometimes misleading, and should be interpreted in the context of the entity. For instance, in Destiny 1 the DestinyRecordBookDefinition's icon was a big picture of a book.
-  // But usually, it will be a small square image that you can use as... well, an icon.
-  // They are currently represented as 96px x 96px images.
-  icon: string;
-  iconSequences: DestinyIconSequenceDefinition[];
-  // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
-  highResIcon: string;
-  hasIcon: boolean;
-}
-
-export interface DestinyIconSequenceDefinition {
-  frames: string[];
 }
 
 export interface DestinyProgressionDisplayPropertiesDefinition {
@@ -1557,6 +1636,8 @@ export interface DestinyMaterialRequirement {
   countIsConstant: boolean;
   // If True, this requirement is "silent": don't bother showing it in a material requirements display. I mean, I'm not your mom: I'm not going to tell you you *can't* show it. But we won't show it in our UI.
   omitFromRequirements: boolean;
+  // If true, this material requirement references a virtual item stack size value. You can get that value from a corresponding DestinyMaterialRequirementSetState.
+  hasVirtualStackSize: boolean;
 }
 
 // If the item can exist in an inventory - the overwhelming majority of them can and do - then this is the basic properties regarding the item's relationship with the inventory.
@@ -1707,34 +1788,6 @@ export interface DestinyInventoryItemStatDefinition {
   // This is pulled directly from the item's DestinyStatGroupDefinition, and placed here for convenience.
   // If not returned, there is no maximum to use (and thus the stat should not be shown in a way that assumes there is a limit to the stat)
   displayMaximum: number | null;
-}
-
-// This represents a stat that's applied to a character or an item (such as a weapon, piece of armor, or a vehicle).
-// An example of a stat might be Attack Power on a weapon.
-// Stats go through a complex set of transformations before they end up being shown to the user as a number or a progress bar, and those transformations are fundamentally intertwined with the concept of a "Stat Group" (DestinyStatGroupDefinition). Items have both Stats and a reference to a Stat Group, and it is the Stat Group that takes the raw stat information and gives it both rendering metadata (such as whether to show it as a number or a progress bar) and the final transformation data (interpolation tables to turn the raw investment stat into a display stat). Please see DestinyStatGroupDefinition for more information on that transformational process.
-// Stats are segregated from Stat Groups because different items and types of items can refer to the same stat, but have different "scales" for the stat while still having the same underlying value. For example, both a Shotgun and an Auto Rifle may have a "raw" impact stat of 50, but the Auto Rifle's Stat Group will scale that 50 down so that, when it is displayed, it is a smaller value relative to the shotgun. (this is a totally made up example, don't assume shotguns have naturally higher impact than auto rifles because of this)
-// A final caveat is that some stats, even after this "final" transformation, go through yet another set of transformations directly in the game as a result of dynamic, stateful scripts that get run. BNet has no access to these scripts, nor any way to know which scripts get executed. As a result, the stats for an item that you see in-game - particularly for stats that are often impacted by Perks, like Magazine Size - can change dramatically from what we return on Bungie.Net. This is a known issue with no fix coming down the pipeline. Take these stats with a grain of salt.
-// Stats actually go through four transformations, for those interested:
-// 1) "Sandbox" stat, the "most raw" form. These are pretty much useless without transformations applied, and thus are not currently returned in the API. If you really want these, we can provide them. Maybe someone could do something cool with it?
-// 2) "Investment" stat (the stat's value after DestinyStatDefinition's interpolation tables and aggregation logic is applied to the "Sandbox" stat value)
-// 3) "Display" stat (the stat's base UI-visible value after DestinyStatGroupDefinition's interpolation tables are applied to the Investment Stat value. For most stats, this is what is displayed.)
-// 4) Underlying in-game stat (the stat's actual value according to the game, after the game runs dynamic scripts based on the game and character's state. This is the final transformation that BNet does not have access to. For most stats, this is not actually displayed to the user, with the exception of Magazine Size which is then piped back to the UI for display in-game, but not to BNet.)
-export interface DestinyStatDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // Stats can exist on a character or an item, and they may potentially be aggregated in different ways. The DestinyStatAggregationType enum value indicates the way that this stat is being aggregated.
-  aggregationType: DestinyStatAggregationType;
-  // True if the stat is computed rather than being delivered as a raw value on items.
-  // For instance, the Light stat in Destiny 1 was a computed stat.
-  hasComputedBlock: boolean;
-  // The category of the stat, according to the game.
-  statCategory: DestinyStatCategory;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
 }
 
 // When an inventory item (DestinyInventoryItemDefinition) has Stats (such as Attack Power), the item will refer to a Stat Group. This definition enumerates the properties used to transform the item's "Investment" stats into "Display" stats.
@@ -2413,6 +2466,7 @@ export interface DestinyActivityDefinition {
   challenges: DestinyActivityChallengeDefinition[];
   // If there are status strings related to the activity and based on internal state of the game, account, or character, then this will be the definition of those strings and the states needed in order for the strings to be shown.
   optionalUnlockStrings: DestinyActivityUnlockStringDefinition[];
+  requirements: DestinyActivityRequirementsBlock;
   // Represents all of the possible activities that could be played in the Playlist, along with information that we can use to determine if they are active at the present time.
   playlistItems: DestinyActivityPlaylistItemDefinition[];
   // Unfortunately, in practice this is almost never populated. In theory, this is supposed to tell which Activity Graph to show if you bring up the director while in this activity.
@@ -2551,7 +2605,7 @@ export interface DestinyObjectivePerkEntryDefinition {
 }
 
 // Perks are modifiers to a character or item that can be applied situationally.
-// - Perks determine a weapons' damage type.
+// - Perks determine a weapon's damage type.
 // - Perks put the Mods in Modifiers (they are literally the entity that bestows the Sandbox benefit for whatever fluff text about the modifier in the Socket, Plug or Talent Node)
 // - Perks are applied for unique alterations of state in Objectives
 // Anyways, I'm sure you can see why perks are so interesting.
@@ -2569,9 +2623,6 @@ export interface DestinySandboxPerkDefinition {
   // The hash identifier for looking up the DestinyDamageTypeDefinition, if this perk has a damage type.
   // This is preferred over using the damageType enumeration value, which has been left purely because it is occasionally convenient.
   damageTypeHash: number | null;
-  // An old holdover from the original Armory, this was an attempt to group perks by functionality.
-  // It is as yet unpopulated, and there will be quite a bit of work needed to restore it to its former working order.
-  perkGroups: DestinyTalentNodeStepGroups;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -2579,15 +2630,6 @@ export interface DestinySandboxPerkDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
-}
-
-// These properties are an attempt to categorize talent node steps by certain common properties. See the related enumerations for the type of properties being categorized.
-export interface DestinyTalentNodeStepGroups {
-  weaponPerformance: DestinyTalentNodeStepWeaponPerformances;
-  impactEffects: DestinyTalentNodeStepImpactEffects;
-  guardianAttributes: DestinyTalentNodeStepGuardianAttributes;
-  lightAbilities: DestinyTalentNodeStepLightAbilities;
-  damageTypes: DestinyTalentNodeStepDamageTypes;
 }
 
 // All damage types that are possible in the game are defined here, along with localized info and icons as needed.
@@ -2678,6 +2720,17 @@ export interface DestinyLocationReleaseDefinition {
 // Represents a status string that could be conditionally displayed about an activity. Note that externally, you can only see the strings themselves. Internally we combine this information with server state to determine which strings should be shown.
 export interface DestinyActivityUnlockStringDefinition {
   // The string to be displayed if the conditions are met.
+  displayString: string;
+}
+
+export interface DestinyActivityRequirementsBlock {
+  // If being a fireteam Leader in this activity is gated, this is the gate being checked.
+  leaderRequirementLabels: DestinyActivityRequirementLabel[];
+  // If being a fireteam member in this activity is gated, this is the gate being checked.
+  fireteamRequirementLabels: DestinyActivityRequirementLabel[];
+}
+
+export interface DestinyActivityRequirementLabel {
   displayString: string;
 }
 
@@ -3261,6 +3314,8 @@ export interface DestinyPresentationNodeDefinition {
   // Some presentation nodes are meant to be explicitly shown on the "root" or "entry" screens for the feature to which they are related. You should use this icon when showing them on such a view, if you have a similar "entry point" view in your UI. If you don't have a UI, then I guess it doesn't matter either way does it?
   rootViewIcon: string;
   nodeType: DestinyPresentationNodeType;
+  // Primarily for Guardian Ranks, this property if the contents of this node are tied to the current season. These nodes are shown with a different color for the in-game Guardian Ranks display.
+  isSeasonal: boolean;
   // Indicates whether this presentation node's state is determined on a per-character or on an account-wide basis.
   scope: DestinyScope;
   // If this presentation node shows a related objective (for instance, if it tracks the progress of its children), the objective being tracked is indicated here.
@@ -3898,6 +3953,15 @@ export interface DestinyNodeStepDefinition {
   socketReplacements: DestinyNodeSocketReplaceResponse[];
 }
 
+// These properties are an attempt to categorize talent node steps by certain common properties. See the related enumerations for the type of properties being categorized.
+export interface DestinyTalentNodeStepGroups {
+  weaponPerformance: DestinyTalentNodeStepWeaponPerformances;
+  impactEffects: DestinyTalentNodeStepImpactEffects;
+  guardianAttributes: DestinyTalentNodeStepGuardianAttributes;
+  lightAbilities: DestinyTalentNodeStepLightAbilities;
+  damageTypes: DestinyTalentNodeStepDamageTypes;
+}
+
 // This is a bit of an odd duck. Apparently, if talent nodes steps have this data, the game will go through on step activation and alter the first Socket it finds on the item that has a type matching the given socket type, inserting the indicated plug item.
 export interface DestinyNodeSocketReplaceResponse {
   // The hash identifier of the socket type to find amidst the item's sockets (the item to which this talent grid is attached). See DestinyInventoryItemDefinition.sockets.socketEntries to find the socket type of sockets on the item in question.
@@ -4028,6 +4092,8 @@ export interface DestinySeasonDefinition {
   seasonPassProgressionHash: number | null;
   artifactItemHash: number | null;
   sealPresentationNodeHash: number | null;
+  // A list of Acts for the Episode
+  acts: DestinySeasonActDefinition[];
   seasonalChallengesPresentationNodeHash: number | null;
   // Optional - Defines the promotional text, images, and links to preview this season.
   preview: DestinySeasonPreviewDefinition;
@@ -4038,6 +4104,16 @@ export interface DestinySeasonDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
+}
+
+// Defines the name, start time and ranks included in an Act of an Episode.
+export interface DestinySeasonActDefinition {
+  // The name of the Act.
+  displayName: string;
+  // The start time of the Act.
+  startTime: string;
+  // The number of ranks included in the Act.
+  rankCount: number;
 }
 
 // Defines the promotional text, images, and links to preview this season.
@@ -4077,10 +4153,12 @@ export interface DestinySeasonPassDefinition {
 }
 
 export interface DestinyProgressionRewardItemQuantity {
+  rewardItemIndex: number;
   rewardedAtProgressionLevel: number;
   acquisitionBehavior: DestinyProgressionRewardItemAcquisitionBehavior;
   uiDisplayStyle: string;
   claimUnlockDisplayStrings: string[];
+  socketOverrides: DestinyProgressionSocketPlugOverride[];
   // The hash identifier for the item in question. Use it to look up the item's DestinyInventoryItemDefinition.
   itemHash: number;
   // If this quantity is referring to a specific instance of an item, this will have the item's instance ID. Normally, this will be null.
@@ -4089,6 +4167,12 @@ export interface DestinyProgressionRewardItemQuantity {
   quantity: number;
   // Indicates that this item quantity may be conditionally shown or hidden, based on various sources of state. For example: server flags, account state, or character progress.
   hasConditionalVisibility: boolean;
+}
+
+// The information for how progression item definitions should override a given socket with custom plug data.
+export interface DestinyProgressionSocketPlugOverride {
+  socketTypeHash: number;
+  overrideSingleItemHash: number | null;
 }
 
 // DestinyManifest is the external-facing contract for just the properties needed by those calling the Destiny Platform.
@@ -4400,10 +4484,12 @@ export interface DestinyProfileComponent {
   currentSeasonRewardPowerCap: number | null;
   // If populated, this is a reference to the event card that is currently active.
   activeEventCardHash: number | null;
-  // The 'current' Guardian Rank value, which starts at rank 1.
+  // The 'current' Guardian Rank value, which starts at rank 1. This rank value will drop at the start of a new season to your 'renewed' rank from the previous season.
   currentGuardianRank: number;
-  // The 'lifetime highest' Guardian Rank value, which starts at rank 1.
+  // The 'lifetime highest' Guardian Rank value, which starts at rank 1. This rank value should never go down.
   lifetimeHighestGuardianRank: number;
+  // The seasonal 'renewed' Guardian Rank value. This rank value resets at the start of each new season to the highest-earned non-advanced rank.
+  renewedGuardianRank: number;
 }
 
 // Defines the properties of an 'Event Card' in Destiny 2, to coincide with a seasonal event for additional challenges, premium rewards, a new seal, and a special title. For example: Solstice of Heroes 2022.
@@ -4492,6 +4578,10 @@ export interface DestinyItemPlugBase {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 export interface DestinyItemPlug {
@@ -4509,6 +4599,10 @@ export interface DestinyItemPlug {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 // The set of progression-related information that applies at a Profile-wide level for your Destiny experience. This differs from the Jimi Hendrix Experience because there's less guitars on fire. Yet. #spoileralert?
@@ -4963,6 +5057,8 @@ export interface DestinyFactionProgression {
   seasonResets: DestinyProgressionResetEntry[];
   // Information about historical rewards for this progression, if there is any data for it.
   rewardItemStates: DestinyProgressionRewardItemState[];
+  // Information about items stats and states that have socket overrides, if there is any data for it.
+  rewardItemSocketOverrideStates: Record<string, DestinyProgressionRewardItemSocketOverrideState>;
 }
 
 // Represents a runtime instance of a user's milestone status. Live Milestone data should be combined with DestinyMilestoneDefinition data to show the user a picture of what is available for them to do in the game, and their status in regards to said "things to do." Consider it a big, wonky to-do list, or Advisors 3.0 for those who remember the Destiny 1 API.
@@ -5401,6 +5497,8 @@ export interface DestinyCharacterActivitiesComponent {
   dateActivityStarted: string;
   // The list of activities that the user can play.
   availableActivities: DestinyActivity[];
+  // The list of activity interactables that the player can interact with.
+  availableActivityInteractables: DestinyActivityInteractableReference[];
   // If the user is in an activity, this will be the hash of the Activity being played. Note that you must combine this info with currentActivityModeHash to get a real picture of what the user is doing right now. For instance, PVP "Activities" are just maps: it's the ActivityMode that determines what type of PVP game they're playing.
   currentActivityHash: number;
   // If the user is in an activity, this will be the hash of the activity mode being played. Combine with currentActivityHash to give a person a full picture of what they're doing right now.
@@ -5449,6 +5547,32 @@ export interface DestinyActivity {
   booleanActivityOptions: Record<string, boolean>;
   // If returned, this is the index into the DestinyActivityDefinition's "loadouts" property, indicating the currently active loadout requirements.
   loadoutRequirementIndex: number | null;
+}
+
+export interface DestinyActivityInteractableReference {
+  activityInteractableHash: number;
+  activityInteractableElementIndex: number;
+}
+
+// There are times in every Activity's life when interacting with an object in the world will result in another Activity activating. Well, not every Activity. Just certain ones.
+// Anyways, this defines a set of interactable components, the activities that they spawn when you interact with them, and the conditions under which they can be interacted with.
+// Sadly, we don't get any *really* good data for them, like positional data... yet. I have hopes for future data that we could put on this.
+export interface DestinyActivityInteractableDefinition {
+  // The possible interactables in this activity interactable definition.
+  entries: DestinyActivityInteractableEntryDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Defines a specific interactable and the action that can occur when triggered.
+export interface DestinyActivityInteractableEntryDefinition {
+  // The activity that will trigger when you interact with this interactable.
+  activityHash: number;
 }
 
 // Items can have objectives and progression. When you request this block, you will obtain information about any Objectives and progression tied to this item.
@@ -5529,14 +5653,6 @@ export interface DestinyItemInstanceComponent {
   breakerTypeHash: number | null;
   // IF populated, this item supports Energy mechanics (i.e. Armor 2.0), and these are the current details of its energy type and available capacity to spend energy points.
   energy: DestinyItemInstanceEnergy;
-}
-
-// Represents a stat on an item *or* Character (NOT a Historical Stat, but a physical attribute stat like Attack, Defense etc...)
-export interface DestinyStat {
-  // The hash identifier for the Stat. Use it to look up the DestinyStatDefinition for static data about the stat.
-  statHash: number;
-  // The current value of the Stat.
-  value: number;
 }
 
 export interface DestinyItemInstanceEnergy {
@@ -5693,15 +5809,37 @@ export interface DestinyItemPlugComponent {
   // If a plug is not enabled, this will be populated with indexes into the plug item definition's plug.enabledRules property, so that you can show the reasons why it is not enabled.
   // This list will be empty if the plug is enabled.
   enableFailIndexes: number[];
+  // If available, this is the stack size to display for the socket plug item.
+  stackSize: number | null;
+  // If available, this is the maximum stack size to display for the socket plug item.
+  maxStackSize: number | null;
 }
 
 // This component provides a quick lookup of every item the requested character has and how much of that item they have.
 // Requesting this component will allow you to circumvent manually putting together the list of which currencies you have for the purpose of testing currency requirements on an item being purchased, or operations that have costs.
-// You *could* figure this out yourself by doing a GetCharacter or GetProfile request and forming your own lookup table, but that is inconvenient enough that this feels like a worthwhile (and optional) redundency. Don't bother requesting it if you have already created your own lookup from prior GetCharacter/GetProfile calls.
+// You *could* figure this out yourself by doing a GetCharacter or GetProfile request and forming your own lookup table, but that is inconvenient enough that this feels like a worthwhile (and optional) redundancy. Don't bother requesting it if you have already created your own lookup from prior GetCharacter/GetProfile calls.
 export interface DestinyCurrenciesComponent {
   // A dictionary - keyed by the item's hash identifier (DestinyInventoryItemDefinition), and whose value is the amount of that item you have across all available inventory buckets for purchasing.
   // This allows you to see whether the requesting character can afford any given purchase/action without having to re-create this list itself.
   itemQuantities: Record<string, number>;
+  // A map of material requirement hashes and their status information.
+  materialRequirementSetStates: Record<string, DestinyMaterialRequirementSetState>;
+}
+
+export interface DestinyMaterialRequirementSetState {
+  // The hash identifier of the material requirement set. Use it to look up the DestinyMaterialRequirementSetDefinition.
+  materialRequirementSetHash: number;
+  // The dynamic state values for individual material requirements.
+  materialRequirementStates: DestinyMaterialRequirementState[];
+}
+
+export interface DestinyMaterialRequirementState {
+  // The hash identifier of the material required. Use it to look up the material's DestinyInventoryItemDefinition.
+  itemHash: number;
+  // The amount of the material required.
+  count: number;
+  // A value for the amount of a (possibly virtual) material on some scope. For example: Dawning cookie baking material requirements.
+  stackSize: number;
 }
 
 // The response contract for GetDestinyCharacter, with components that can be returned for character and item-level data.
@@ -5800,12 +5938,12 @@ export interface DestinyVendorsResponse {
   // COMPONENT TYPE: VendorCategories
   categories: DictionaryComponentResponseOfuint32AndDestinyVendorCategoriesComponent;
   // Sales, keyed by the vendorItemIndex of the item being sold. These are keyed by the Vendor Hash, so you will get one Sale Item Set Component per vendor returned.
-  // Note that within the Sale Item Set component, the sales are themselves keyed by the vendorSaleIndex, so you can relate it to the corrent sale item definition within the Vendor's definition.
+  // Note that within the Sale Item Set component, the sales are themselves keyed by the vendorSaleIndex, so you can relate it to the current sale item definition within the Vendor's definition.
   // COMPONENT TYPE: VendorSales
   sales: DictionaryComponentResponseOfuint32AndPersonalDestinyVendorSaleItemSetComponent;
   // The set of item detail components, one set of item components per Vendor. These are keyed by the Vendor Hash, so you will get one Item Component Set per vendor returned.
   // The components contained inside are themselves keyed by the vendorSaleIndex, and will have whatever item-level components you requested (Sockets, Stats, Instance data etc...) per item being sold by the vendor.
-  itemComponents: Record<string, DestinyItemComponentSetOfint32>;
+  itemComponents: Record<string, DestinyVendorItemComponentSetOfint32>;
   // A "lookup" convenience component that can be used to quickly check if the character has access to items that can be used for purchasing.
   // COMPONENT TYPE: CurrencyLookups
   currencyLookups: SingleComponentResponseOfDestinyCurrenciesComponent;
@@ -5963,8 +6101,8 @@ export interface DestinyVendorResponse {
   // COMPONENT TYPE: VendorSales
   sales: DictionaryComponentResponseOfint32AndDestinyVendorSaleItemComponent;
   // Item components, keyed by the vendorItemIndex of the active sale items.
-  // COMPONENT TYPE: [See inside the DestinyItemComponentSet contract for component types.]
-  itemComponents: DestinyItemComponentSetOfint32;
+  // COMPONENT TYPE: [See inside the DestinyVendorItemComponentSet contract for component types.]
+  itemComponents: DestinyVendorItemComponentSetOfint32;
   // A "lookup" convenience component that can be used to quickly check if the character has access to items that can be used for purchasing.
   // COMPONENT TYPE: CurrencyLookups
   currencyLookups: SingleComponentResponseOfDestinyCurrenciesComponent;
@@ -6642,6 +6780,134 @@ export interface DestinyPublicActivityStatus {
   rewardTooltipItems: DestinyItemQuantity[];
 }
 
+export interface DestinyFireteamFinderActivityGraphDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  color: DestinyColor;
+  isPlayerElectedDifficultyNode: boolean;
+  parentHash: number | null;
+  children: number[];
+  selfAndAllDescendantHashes: number[];
+  relatedActivitySetHashes: number[];
+  specificActivitySetHash: number | null;
+  relatedActivityHashes: number[];
+  relatedDirectorNodes: DestinyActivityGraphReference[];
+  relatedInteractableActivities: DestinyActivityInteractableReference[];
+  relatedLocationHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivityGraphReference {
+  activityGraphHash: number;
+}
+
+export interface DestinyFireteamFinderActivitySetDefinition {
+  maximumPartySize: number;
+  optionHashes: number[];
+  labelHashes: number[];
+  activityGraphHashes: number[];
+  activityHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyFireteamFinderOptionDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  descendingSortPriority: number;
+  groupHash: number;
+  codeOptionType: FireteamFinderCodeOptionType;
+  availability: FireteamFinderOptionAvailability;
+  visibility: FireteamFinderOptionVisibility;
+  uiDisplayStyle: string;
+  creatorSettings: DestinyFireteamFinderOptionCreatorSettings;
+  searcherSettings: DestinyFireteamFinderOptionSearcherSettings;
+  values: DestinyFireteamFinderOptionValues;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyFireteamFinderOptionCreatorSettings {
+  control: DestinyFireteamFinderOptionSettingsControl;
+}
+
+export interface DestinyFireteamFinderOptionSettingsControl {
+  type: FireteamFinderOptionControlType;
+  minSelectedItems: number;
+  maxSelectedItems: number;
+}
+
+export interface DestinyFireteamFinderOptionSearcherSettings {
+  control: DestinyFireteamFinderOptionSettingsControl;
+  searchFilterType: FireteamFinderOptionSearchFilterType;
+}
+
+export interface DestinyFireteamFinderOptionValues {
+  optionalNull: DestinyDisplayPropertiesDefinition;
+  optionalFormatString: string;
+  displayFormatType: FireteamFinderOptionDisplayFormat;
+  type: FireteamFinderOptionValueProviderType;
+  valueDefinitions: DestinyFireteamFinderOptionValueDefinition[];
+}
+
+export interface DestinyFireteamFinderOptionValueDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  value: number;
+  flags: FireteamFinderOptionValueFlags;
+}
+
+export interface DestinyFireteamFinderOptionGroupDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  descendingSortPriority: number;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyFireteamFinderLabelDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  descendingSortPriority: number;
+  groupHash: number;
+  allowInFields: FireteamFinderLabelFieldType;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyFireteamFinderLabelGroupDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  descendingSortPriority: number;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
 export interface DestinyLoadoutConstantsDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   // This is the same icon as the one in the display properties, offered here as well with a more descriptive name.
@@ -6700,6 +6966,21 @@ export interface DestinyGuardianRankIconBackgroundsDefinition {
   backgroundPlateBlackAlphaImagePath: string;
 }
 
+export interface DestinyFireteamFinderConstantsDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  fireteamFinderActivityGraphRootCategoryHashes: number[];
+  allFireteamFinderActivityHashes: number[];
+  guardianOathDisplayProperties: DestinyDisplayPropertiesDefinition;
+  guardianOathTenets: DestinyDisplayPropertiesDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
 export interface InterpolationPoint {
   value: number;
   weight: number;
@@ -6753,6 +7034,19 @@ export interface SearchResultOfGroupMember {
 
 export interface SearchResultOfGroupBan {
   results: GroupBan[];
+  totalResults: number;
+  hasMore: boolean;
+  query: PagedQuery;
+  replacementContinuationToken: string;
+  // If useTotalResults is true, then totalResults represents an accurate count.
+  // If False, it does not, and may be estimated/only the size of the current page.
+  // Either way, you should probably always only trust hasMore.
+  // This is a long-held historical throwback to when we used to do paging with known total results. Those queries toasted our database, and we were left to hastily alter our endpoints and create backward- compatible shims, of which useTotalResults is one.
+  useTotalResults: boolean;
+}
+
+export interface SearchResultOfGroupEditHistory {
+  results: GroupEditHistory[];
   totalResults: number;
   hasMore: boolean;
   query: PagedQuery;
@@ -7433,6 +7727,27 @@ export interface DictionaryComponentResponseOfint32AndDestinyItemTalentGridCompo
   disabled: boolean | null;
 }
 
+export interface DestinyVendorItemComponentSetOfint32 {
+  itemComponents: DictionaryComponentResponseOfint32AndDestinyItemComponent;
+  instances: DictionaryComponentResponseOfint32AndDestinyItemInstanceComponent;
+  renderData: DictionaryComponentResponseOfint32AndDestinyItemRenderComponent;
+  stats: DictionaryComponentResponseOfint32AndDestinyItemStatsComponent;
+  sockets: DictionaryComponentResponseOfint32AndDestinyItemSocketsComponent;
+  reusablePlugs: DictionaryComponentResponseOfint32AndDestinyItemReusablePlugsComponent;
+  plugObjectives: DictionaryComponentResponseOfint32AndDestinyItemPlugObjectivesComponent;
+  talentGrids: DictionaryComponentResponseOfint32AndDestinyItemTalentGridComponent;
+  plugStates: DictionaryComponentResponseOfuint32AndDestinyItemPlugComponent;
+  objectives: DictionaryComponentResponseOfint32AndDestinyItemObjectivesComponent;
+  perks: DictionaryComponentResponseOfint32AndDestinyItemPerksComponent;
+}
+
+export interface DictionaryComponentResponseOfint32AndDestinyItemComponent {
+  data: Record<string, DestinyItemComponent>;
+  privacy: ComponentPrivacySetting;
+  // If true, this component is disabled.
+  disabled: boolean | null;
+}
+
 export interface SingleComponentResponseOfDestinyVendorComponent {
   data: DestinyVendorComponent;
   privacy: ComponentPrivacySetting;
@@ -7743,6 +8058,260 @@ export interface SearchResultOfFireteamResponse {
   useTotalResults: boolean;
 }
 
+export interface DestinyFireteamFinderApplyToListingResponse {
+  isApplied: boolean;
+  application: DestinyFireteamFinderApplication;
+  listing: DestinyFireteamFinderListing;
+}
+
+export interface DestinyFireteamFinderApplication {
+  applicationId: string;
+  revision: number;
+  state: DestinyFireteamFinderApplicationState;
+  submitterId: DestinyFireteamFinderPlayerId;
+  referralToken: string;
+  applicantSet: DestinyFireteamFinderApplicantSet;
+  applicationType: DestinyFireteamFinderApplicationType;
+  listingId: string;
+  createdDateTime: string;
+}
+
+export interface DestinyFireteamFinderPlayerId {
+  membershipId: string;
+  membershipType: BungieMembershipType;
+  characterId: string;
+}
+
+export interface DestinyFireteamFinderApplicantSet {
+  applicants: DestinyFireteamFinderApplicant[];
+}
+
+export interface DestinyFireteamFinderApplicant {}
+
+export interface DestinyFireteamFinderListing {
+  listingId: string;
+  revision: number;
+  ownerId: DestinyFireteamFinderPlayerId;
+  settings: DestinyFireteamFinderLobbySettings;
+  availableSlots: number;
+  lobbyId: string;
+  lobbyState: DestinyFireteamFinderLobbyState;
+  createdDateTime: string;
+}
+
+export interface DestinyFireteamFinderLobbySettings {
+  maxPlayerCount: number;
+  onlinePlayersOnly: boolean;
+  privacyScope: DestinyFireteamFinderLobbyPrivacyScope;
+  scheduledDateTime: string;
+  clanId: string;
+  listingValues: DestinyFireteamFinderListingValue[];
+  activityGraphHash: number;
+  activityHash: number;
+}
+
+export interface DestinyFireteamFinderListingValue {
+  valueType: number;
+  values: number[];
+}
+
+export interface DestinyFireteamFinderBulkGetListingStatusResponse {
+  listingStatus: DestinyFireteamFinderListingStatus[];
+}
+
+export interface DestinyFireteamFinderListingStatus {
+  listingId: string;
+  listingRevision: number;
+  availableSlots: number;
+}
+
+export interface DestinyFireteamFinderBulkGetListingStatusRequest {}
+
+export interface DestinyFireteamFinderLobbyListingReference {
+  lobbyId: string;
+  listingId: string;
+}
+
+export interface DestinyFireteamFinderGetApplicationResponse {
+  applicationId: string;
+  revision: number;
+  state: DestinyFireteamFinderApplicationState;
+  submitterId: DestinyFireteamFinderPlayerId;
+  referralToken: string;
+  applicantSet: DestinyFireteamFinderApplicantSet;
+  applicationType: DestinyFireteamFinderApplicationType;
+  listingId: string;
+  createdDateTime: string;
+}
+
+export interface DestinyFireteamFinderGetListingApplicationsResponse {
+  applications: DestinyFireteamFinderApplication[];
+  pageSize: number;
+  nextPageToken: string;
+}
+
+export interface DestinyFireteamFinderLobbyResponse {
+  lobbyId: string;
+  revision: number;
+  state: DestinyFireteamFinderLobbyState;
+  owner: DestinyFireteamFinderPlayerId;
+  settings: DestinyFireteamFinderLobbySettings;
+  players: DestinyFireteamFinderLobbyPlayer[];
+  listingId: string;
+  createdDateTime: string;
+}
+
+export interface DestinyFireteamFinderLobbyPlayer {
+  playerId: DestinyFireteamFinderPlayerId;
+  referralToken: string;
+  state: DestinyFireteamFinderPlayerReadinessState;
+  offerId: string;
+}
+
+export interface DestinyFireteamFinderGetPlayerLobbiesResponse {
+  // All available lobbies that this player has created or is a member of.
+  lobbies: DestinyFireteamFinderLobbyResponse[];
+  // The number of results requested.
+  pageSize: number;
+  // A string token required to get the next page of results. This will be null or empty if there are no more results.
+  nextPageToken: string;
+}
+
+export interface DestinyFireteamFinderGetPlayerApplicationsResponse {
+  // All applications that this player has sent.
+  applications: DestinyFireteamFinderApplication[];
+  // String token to request next page of results.
+  nextPageToken: string;
+}
+
+export interface DestinyFireteamFinderGetPlayerOffersResponse {
+  // All offers that this player has recieved.
+  offers: DestinyFireteamFinderOffer[];
+}
+
+export interface DestinyFireteamFinderOffer {
+  offerId: string;
+  lobbyId: string;
+  revision: number;
+  state: DestinyFireteamFinderOfferState;
+  targetId: DestinyFireteamFinderPlayerId;
+  applicationId: string;
+  createdDateTime: string;
+}
+
+export interface DestinyFireteamFinderGetCharacterActivityAccessResponse {
+  // A map of fireteam finder activity graph hashes to visibility and availability states.
+  fireteamFinderActivityGraphStates: Record<string, DestinyFireteamFinderActivityGraphState>;
+}
+
+export interface DestinyFireteamFinderActivityGraphState {
+  // Indicates if this fireteam finder activity graph node is visible for this character.
+  isVisible: boolean;
+  // Indicates if this fireteam finder activity graph node is available to select for this character.
+  isAvailable: boolean;
+}
+
+export interface DestinyFireteamFinderGetLobbyOffersResponse {
+  offers: DestinyFireteamFinderOffer[];
+  pageToken: string;
+}
+
+export interface DestinyFireteamFinderHostLobbyResponse {
+  lobbyId: string;
+  listingId: string;
+  applicationId: string;
+  offerId: string;
+}
+
+export interface DestinyFireteamFinderHostLobbyRequest {
+  maxPlayerCount: number;
+  onlinePlayersOnly: boolean;
+  privacyScope: DestinyFireteamFinderLobbyPrivacyScope;
+  scheduledDateTime: string;
+  clanId: string;
+  listingValues: DestinyFireteamFinderListingValue[];
+  activityGraphHash: number;
+  activityHash: number;
+}
+
+export interface DestinyFireteamFinderJoinLobbyRequest {
+  lobbyId: string;
+  offerId: string;
+}
+
+export interface DestinyFireteamFinderKickPlayerRequest {
+  targetMembershipType: BungieMembershipType;
+  targetCharacterId: string;
+}
+
+export interface DestinyFireteamFinderRespondToApplicationResponse {
+  applicationId: string;
+  applicationRevision: number;
+}
+
+export interface DestinyFireteamFinderRespondToApplicationRequest {
+  accepted: boolean;
+}
+
+export interface DestinyFireteamFinderRespondToAuthenticationResponse {
+  applicationId: string;
+  applicationRevision: number;
+  offer: DestinyFireteamFinderOffer;
+  listing: DestinyFireteamFinderListing;
+}
+
+export interface DestinyFireteamFinderRespondToAuthenticationRequest {
+  confirmed: boolean;
+}
+
+export interface DestinyFireteamFinderRespondToOfferResponse {
+  offerId: string;
+  revision: number;
+  state: DestinyFireteamFinderOfferState;
+}
+
+export interface DestinyFireteamFinderRespondToOfferRequest {
+  accepted: boolean;
+}
+
+export interface DestinyFireteamFinderSearchListingsByClanResponse {
+  listings: DestinyFireteamFinderListing[];
+  pageToken: string;
+}
+
+export interface DestinyFireteamFinderSearchListingsByClanRequest {
+  pageSize: number;
+  pageToken: string;
+  lobbyState: DestinyFireteamFinderLobbyState;
+}
+
+export interface DestinyFireteamFinderSearchListingsByFiltersResponse {
+  listings: DestinyFireteamFinderListing[];
+  pageToken: string;
+}
+
+export interface DestinyFireteamFinderSearchListingsByFiltersRequest {
+  filters: DestinyFireteamFinderListingFilter[];
+  pageSize: number;
+  pageToken: string;
+  lobbyState: DestinyFireteamFinderLobbyState;
+}
+
+export interface DestinyFireteamFinderListingFilter {
+  listingValue: DestinyFireteamFinderListingValue;
+  rangeType: DestinyFireteamFinderListingFilterRangeType;
+  matchType: DestinyFireteamFinderListingFilterMatchType;
+}
+
+export interface DestinyFireteamFinderUpdateLobbySettingsResponse {
+  updatedLobby: DestinyFireteamFinderLobbyResponse;
+  updatedListing: DestinyFireteamFinderListing;
+}
+
+export interface DestinyFireteamFinderUpdateLobbySettingsRequest {
+  updatedSettings: DestinyFireteamFinderLobbySettings;
+}
+
 export interface BungieFriendListResponse {
   friends: BungieFriend[];
 }
@@ -7835,10 +8404,12 @@ export interface Destiny2CoreSettings {
   craftingRootNodeHash: number;
   loadoutConstantsHash: number;
   guardianRankConstantsHash: number;
+  fireteamFinderConstantsHash: number;
   guardianRanksRootNodeHash: number;
   currentRankProgressionHashes: number[];
   insertPlugFreeProtectedPlugItemHashes: number[];
   insertPlugFreeBlockedSocketTypeHashes: number[];
+  enabledFireteamFinderActivityGraphHashes: number[];
   undiscoveredCollectibleImage: string;
   ammoTypeHeavyIcon: string;
   ammoTypeSpecialIcon: string;
