@@ -1,4 +1,4 @@
-import { formatQueryStrings, request } from "../../adapters";
+import { checkRunningEnvironment, formatQueryStrings, request } from "../../adapters";
 import { TokenError, TokenResponse } from "../../types";
 
 export class OAuth {
@@ -11,7 +11,8 @@ export class OAuth {
   ) {}
 
   private btoa(data: string) {
-    return Buffer.from(data).toString("base64");
+    if (checkRunningEnvironment() === "node") return Buffer.from(data).toString("base64");
+    else return btoa(data);
   }
 
   private encodeCredentials() {
