@@ -474,7 +474,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/EditHistory/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
