@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import {
   BungieMembershipType,
   ITokens,
@@ -68,7 +68,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -96,7 +96,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -119,7 +119,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Listing/${listingId}/Apply/${applicationType}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -138,7 +138,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Listing/BulkStatus/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderBulkGetListingStatusRequest = {};
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -159,7 +159,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Application/${applicationId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -171,7 +171,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Listing/${listingId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -203,7 +203,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -224,7 +224,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Lobby/${lobbyId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -252,7 +252,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -280,7 +280,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -308,7 +308,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -327,7 +327,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/CharacterActivityAccess/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -348,7 +348,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Offer/${offerId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -378,7 +378,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -414,7 +414,7 @@ export class FireteamFinder {
       activityGraphHash,
       activityHash,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -435,7 +435,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Lobby/Join/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderJoinLobbyRequest = { lobbyId, offerId };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -460,7 +460,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Lobby/${lobbyId}/KickPlayer/${targetMembershipId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderKickPlayerRequest = { targetMembershipType, targetCharacterId };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -481,7 +481,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Application/Leave/${applicationId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -502,7 +502,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Lobby/Leave/${lobbyId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -524,7 +524,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Application/Respond/${applicationId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderRespondToApplicationRequest = { accepted };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -546,7 +546,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Authentication/Respond/${applicationId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderRespondToAuthenticationRequest = { confirmed };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -568,7 +568,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Offer/Respond/${offerId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderRespondToOfferRequest = { accepted };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -590,7 +590,7 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Search/Clan/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderSearchListingsByClanRequest = { pageSize, pageToken, lobbyState };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -620,7 +620,7 @@ export class FireteamFinder {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderSearchListingsByFiltersRequest = { filters, pageSize, pageToken, lobbyState };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -642,6 +642,6 @@ export class FireteamFinder {
     const requestURL = `${this.url}/FireteamFinder/Lobby/UpdateSettings/${lobbyId}/${destinyMembershipType}/${destinyMembershipId}/${destinyCharacterId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyFireteamFinderUpdateLobbySettingsRequest = { updatedSettings };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 }

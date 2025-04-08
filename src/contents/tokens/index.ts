@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request } from "../../adapters";
+import { parseAuthenticationHeaders, Controller } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -21,7 +21,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Partner/ForceDropsRepair/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -38,7 +38,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Partner/ClaimOffer/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: PartnerOfferClaimRequest = { PartnerOfferId, BungieNetMembershipId, TransactionId };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -55,7 +55,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Partner/ApplyMissingOffers/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -72,7 +72,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Partner/History/${partnerApplicationId}/${targetBnetMembershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -89,7 +89,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Partner/History/${targetBnetMembershipId}/Application/${partnerApplicationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -104,7 +104,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForUser/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -121,7 +121,7 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Rewards/GetRewardsForPlatformUser/${membershipId}/${membershipType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -133,6 +133,6 @@ export class Tokens {
     const requestURL = `${this.url}/Tokens/Rewards/BungieRewards/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }
