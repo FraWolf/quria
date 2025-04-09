@@ -2,6 +2,10 @@ import { checkRunningEnvironment, formatQueryStrings, request } from "../../adap
 import { TokenError, TokenResponse } from "../../types";
 
 export class OAuth {
+  private get environment() {
+    return checkRunningEnvironment();
+  }
+
   constructor(
     private authUrl: string,
     private tokenUrl: string,
@@ -11,8 +15,11 @@ export class OAuth {
   ) {}
 
   private btoa(data: string) {
-    if (checkRunningEnvironment() === "node") return Buffer.from(data).toString("base64");
-    else return btoa(data);
+    if (this.environment === "node") {
+      return Buffer.from(data).toString("base64");
+    } else {
+      return btoa(data);
+    }
   }
 
   private encodeCredentials() {
