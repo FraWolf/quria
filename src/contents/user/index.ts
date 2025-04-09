@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request } from "../../adapters";
+import { parseAuthenticationHeaders, Controller } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -25,7 +25,7 @@ export class User {
     const requestURL = `${this.url}/User/GetBungieNetUserById/${id}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -40,7 +40,7 @@ export class User {
     const requestURL = `${this.url}/User/GetSanitizedPlatformDisplayNames/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -55,7 +55,7 @@ export class User {
     const requestURL = `${this.url}/User/GetCredentialTypesForTargetAccount/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -67,7 +67,7 @@ export class User {
     const requestURL = `${this.url}/User/GetAvailableThemes/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -84,7 +84,7 @@ export class User {
     const requestURL = `${this.url}/User/GetMembershipsById/${membershipId}/${membershipType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -96,7 +96,7 @@ export class User {
     const requestURL = `${this.url}/User/GetMembershipsForCurrentUser/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -113,7 +113,7 @@ export class User {
     const requestURL = `${this.url}/User/GetMembershipFromHardLinkedCredential/${crType}/${credential}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -130,7 +130,7 @@ export class User {
     const requestURL = `${this.url}/User/Search/Prefix/${displayNamePrefix}/${page}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -146,6 +146,6 @@ export class User {
     const requestURL = `${this.url}/User/Search/GlobalName/${page}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: UserSearchPrefixRequest = { displayNamePrefix };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 }

@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import { ITokens, APIResponse, CoreSettingsConfiguration, CoreSystem, GlobalAlert } from "../../types";
 
 export class Core {
@@ -13,7 +13,7 @@ export class Core {
     const requestURL = `${this.url}/GetAvailableLocales/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -25,7 +25,7 @@ export class Core {
     const requestURL = `${this.url}/Settings/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -37,7 +37,7 @@ export class Core {
     const requestURL = `${this.url}/UserSystemOverrides/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -54,6 +54,6 @@ export class Core {
     const requestURL = formatQueryStrings(`${this.url}/GlobalAlerts/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }
