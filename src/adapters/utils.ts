@@ -56,3 +56,7 @@ export function generateOptions(changes: Options): ClientOptions {
     },
   };
 }
+
+export function checkRunningEnvironment() {
+  return typeof process !== "undefined" && process.versions != null && process.versions.node != null ? "node" : "browser";
+}
