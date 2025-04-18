@@ -1,6 +1,6 @@
 {
   "name": "quria",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A user-friendly Destiny 2 API Wrapper written with TypeScript and approved by -Axis Minds- Oryx.",
   "main": "index.js",
   "scripts": {
