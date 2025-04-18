@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -67,7 +67,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Manifest/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -84,7 +84,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Manifest/${entityType}/${hashIdentifier}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -101,7 +101,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/SearchDestinyPlayerByBungieName/${membershipType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: ExactSearchRequest = { displayName, displayNameCode };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -125,7 +125,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -149,7 +149,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -175,7 +175,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -187,7 +187,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Clan/${groupId}/WeeklyRewardState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -199,7 +199,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Clan/ClanBannerDictionary/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -225,7 +225,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -253,7 +253,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -281,7 +281,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -298,7 +298,7 @@ export class Destiny2 {
     const requestURL = formatQueryStrings(`${this.url}/Destiny2/Vendors/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -326,7 +326,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -353,7 +353,7 @@ export class Destiny2 {
       characterId,
       membershipType,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -378,7 +378,7 @@ export class Destiny2 {
       characterId,
       membershipType,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -395,7 +395,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItem/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemActionRequest = { itemId, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -412,7 +412,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/EquipItems/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemSetActionRequest = { itemIds, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -429,7 +429,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Loadouts/EquipLoadout/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -456,7 +456,7 @@ export class Destiny2 {
       characterId,
       membershipType,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -483,7 +483,7 @@ export class Destiny2 {
       characterId,
       membershipType,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -500,7 +500,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Loadouts/ClearLoadout/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyLoadoutActionRequest = { loadoutIndex, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -518,7 +518,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/SetLockState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -536,7 +536,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/SetTrackedState/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyItemStateRequest = { state, itemId, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -555,7 +555,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlug/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyInsertPlugsActionRequest = { actionToken, itemInstanceId, plug, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -573,7 +573,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Actions/Items/InsertSocketPlugFree/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyInsertPlugsFreeActionRequest = { plug, itemId, characterId, membershipType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -591,7 +591,7 @@ export class Destiny2 {
     )}/Destiny2/Stats/PostGameCarnageReport/${activityId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -609,7 +609,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Stats/PostGameCarnageReport/${activityId}/Report/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: DestinyReportOffensePgcrRequest = { reasonCategoryHashes, reasonHashes, offendingCharacterId };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -623,7 +623,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Stats/Definition/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -646,7 +646,7 @@ export class Destiny2 {
     const requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/Leaderboards/Clans/${groupId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -665,7 +665,7 @@ export class Destiny2 {
     const requestURL = formatQueryStrings(`${this.url}/Destiny2/Stats/AggregateClanStats/${groupId}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -693,7 +693,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -723,7 +723,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -744,7 +744,7 @@ export class Destiny2 {
     const requestURL = formatQueryStrings(`${this.url}/Destiny2/Armory/Search/${type}/${searchTerm}/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -778,7 +778,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -802,7 +802,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -832,7 +832,7 @@ export class Destiny2 {
     );
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -851,7 +851,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/UniqueWeapons/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -870,7 +870,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/${membershipType}/Account/${destinyMembershipId}/Character/${characterId}/Stats/AggregateActivityStats/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -882,7 +882,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Milestones/${milestoneHash}/Content/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -894,7 +894,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Milestones/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -912,7 +912,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Awa/Initialize/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: AwaPermissionRequested = { type, affectedItemId, membershipType, characterId };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -929,7 +929,7 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Awa/AwaProvideAuthorizationResult/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: AwaUserResponse = { selection, correlationId, nonce };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -941,6 +941,6 @@ export class Destiny2 {
     const requestURL = `${this.url}/Destiny2/Awa/GetActionToken/${correlationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }

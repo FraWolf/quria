@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request, formatQueryStrings } from "../../adapters";
+import { parseAuthenticationHeaders, Controller, formatQueryStrings } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -51,7 +51,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/GetAvailableAvatars/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -63,7 +63,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/GetAvailableThemes/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -75,7 +75,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/GetUserClanInviteSetting/${mType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -92,7 +92,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/Recommended/${groupType}/${createDateRange}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -127,7 +127,7 @@ export class GroupV2 {
       currentPage,
       requestContinuationToken,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -139,7 +139,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -152,7 +152,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/Name/${groupName}/${groupType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -164,7 +164,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/NameV2/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupNameSearchRequest = { groupName, groupType };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -179,7 +179,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -227,7 +227,7 @@ export class GroupV2 {
       enableInvitationMessagingForAdmins,
       defaultPublicity,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -257,7 +257,7 @@ export class GroupV2 {
       gonfalonDetailId,
       gonfalonDetailColorId,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -283,7 +283,7 @@ export class GroupV2 {
       UpdateBannerPermissionOverride,
       JoinLevel,
     };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -300,7 +300,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Add/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupOptionalConversationAddRequest = { chatName, chatSecurity };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -320,7 +320,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Edit/${conversationId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupOptionalConversationEditRequest = { chatEnabled, chatName, chatSecurity };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -343,7 +343,7 @@ export class GroupV2 {
     const requestURL = formatQueryStrings(`${this.url}/GroupV2/${groupId}/Members/`, queryString);
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -360,7 +360,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/AdminsAndFounder/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -381,7 +381,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/SetMembershipType/${memberType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -400,7 +400,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Kick/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -421,7 +421,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Ban/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupBanRequest = { comment, length };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -440,7 +440,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/${membershipType}/${membershipId}/Unban/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -457,7 +457,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Banned/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -474,7 +474,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/EditHistory/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -493,7 +493,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Admin/AbdicateFoundership/${membershipType}/${founderIdNew}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 
   /**
@@ -510,7 +510,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/Pending/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -527,7 +527,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/InvitedIndividuals/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -539,7 +539,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveAll/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -551,7 +551,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyAll/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -568,7 +568,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/ApproveList/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationListRequest = { memberships, message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -588,7 +588,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/Approve/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -605,7 +605,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/DenyList/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationListRequest = { memberships, message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -626,7 +626,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/User/${membershipType}/${membershipId}/${filter}/${groupType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -645,7 +645,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/Recover/${membershipType}/${membershipId}/${groupType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -666,7 +666,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/User/Potential/${membershipType}/${membershipId}/${filter}/${groupType}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -686,7 +686,7 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInvite/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
     const bodyParams: GroupApplicationRequest = { message };
-    return request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
+    return Controller.request(requestURL, true, "POST", authHeaders, JSON.stringify(bodyParams));
   }
 
   /**
@@ -705,6 +705,6 @@ export class GroupV2 {
     const requestURL = `${this.url}/GroupV2/${groupId}/Members/IndividualInviteCancel/${membershipType}/${membershipId}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "POST", authHeaders);
+    return Controller.request(requestURL, true, "POST", authHeaders);
   }
 }

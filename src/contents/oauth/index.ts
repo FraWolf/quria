@@ -1,4 +1,4 @@
-import { formatQueryStrings, request } from "../../adapters";
+import { formatQueryStrings, Controller } from "../../adapters";
 import { TokenError, TokenResponse } from "../../types";
 
 export class OAuth {
@@ -32,7 +32,7 @@ export class OAuth {
   }
 
   public GetOAuthAccessToken(code: string): Promise<TokenResponse | TokenError> {
-    return request(
+    return Controller.request(
       this.tokenUrl,
       true,
       "POST",
@@ -46,7 +46,7 @@ export class OAuth {
   }
 
   public RefreshAccessToken(refresh_token: string): Promise<TokenResponse | TokenError> {
-    return request(
+    return Controller.request(
       this.tokenUrl,
       true,
       "POST",

@@ -1,4 +1,4 @@
-import { parseAuthenticationHeaders, request } from "../../adapters";
+import { parseAuthenticationHeaders, Controller } from "../../adapters";
 import {
   ITokens,
   APIResponse,
@@ -20,7 +20,7 @@ export class Trending {
     const requestURL = `${this.url}/Trending/Categories/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -37,7 +37,7 @@ export class Trending {
     const requestURL = `${this.url}/Trending/Categories/${categoryId}/${pageNumber}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 
   /**
@@ -54,6 +54,6 @@ export class Trending {
     const requestURL = `${this.url}/Trending/Details/${trendingEntryType}/${identifier}/`;
     const authHeaders = parseAuthenticationHeaders(this.headers, tokens);
 
-    return request(requestURL, true, "GET", authHeaders);
+    return Controller.request(requestURL, true, "GET", authHeaders);
   }
 }
