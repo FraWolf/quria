@@ -65,3 +65,4 @@ Currently no projects uses Quria because it's still in development phase. If you
 <h2>Contributing</h2>
 
 If you would contribute to this project, just fork the repository and then send a pull request. We will validate your request and, if it's valid, we will commit into the main branch.
+
