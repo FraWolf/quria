@@ -1,4 +1,4 @@
-import { ClientOptions, Options, ITokens } from "../types";
+import { ClientOptions, Options, ITokens, CustomUserAgent } from "../types";
 import { Controller } from "./";
 import { httpRequest } from "./http-request";
 
@@ -34,8 +34,51 @@ export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
   return { ...headers, ...newObject };
 }
 
+export function parseUserAgent(userAgent?: CustomUserAgent, appId?: string) {
+  let appName: string = "Quria Wrapper";
+  let appVersion: string = "1.0.0";
+  let contacts: string = "";
+
+  if (userAgent) {
+    // If the user specify a string User Agent, pass it
+    if (typeof userAgent === "string") {
+      return userAgent;
+    }
+
+    // Parse user agent from object
+    if ("APP_NAME" in userAgent) {
+      appName = userAgent.APP_NAME;
+      appVersion = userAgent.APP_VERSION.toString();
+
+      if ("CONTACT_WEBSITE" in userAgent) {
+        contacts += `${userAgent.CONTACT_WEBSITE}`;
+
+        if ("CONTACT_MAIL" in userAgent) {
+          contacts += `;${userAgent.CONTACT_MAIL}`;
+        }
+      }
+    }
+  }
+
+  // Build user agent
+  let final = `${appName}/${appVersion}`;
+
+  // Add AppId to User Agent
+  if (appId) {
+    final += ` AppId/${appId}`;
+  }
+
+  // Add contacts
+  if (contacts) {
+    final += ` (+${contacts})`;
+  }
+
+  return final;
+}
+
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
+  const parsedUserAgent = parseUserAgent(changes.USER_AGENT, changes.CLIENT_ID);
 
   Controller.setRequestHandler(changes.FETCHER || httpRequest);
 
@@ -53,6 +96,7 @@ export function generateOptions(changes: Options): ClientOptions {
     },
     headers: {
       "X-API-Key": changes.API_KEY,
+      "User-Agent": parsedUserAgent,
     },
   };
 }
