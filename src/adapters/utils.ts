@@ -87,7 +87,7 @@ export function generateOptions(changes: Options): ClientOptions {
     urls: {
       api: `${host}/Platform`,
       authorization: `${host}/en/OAuth/Authorize`,
-      token: `${host}/Platform/App/OAuth/token`,
+      token: `${host}/Platform/App/OAuth/Token`,
     },
     app: {
       client_id: changes.CLIENT_ID,
