@@ -34,7 +34,8 @@ export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
   return { ...headers, ...newObject };
 }
 
-export function parseUserAgent(userAgent?: CustomUserAgent, appId?: string) {
+export function parseUserAgent(userAgent?: CustomUserAgent) {
+  let appId: string | null = null;
   let appName: string = "Quria Wrapper";
   let appVersion: string = "2.3.0";
   let contacts: string = "";
@@ -58,6 +59,10 @@ export function parseUserAgent(userAgent?: CustomUserAgent, appId?: string) {
         }
       }
     }
+
+    if ("APP_ID" in userAgent) {
+      appId = userAgent?.APP_ID?.toString();
+    }
   }
 
   // Build user agent
@@ -78,7 +83,7 @@ export function parseUserAgent(userAgent?: CustomUserAgent, appId?: string) {
 
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
-  const parsedUserAgent = parseUserAgent(changes.USER_AGENT, changes.CLIENT_ID);
+  const parsedUserAgent = parseUserAgent(changes.USER_AGENT);
 
   Controller.setRequestHandler(changes.FETCHER || httpRequest);
 
