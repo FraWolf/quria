@@ -83,7 +83,9 @@ export function parseUserAgent(userAgent?: CustomUserAgent) {
 
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
-  const parsedUserAgent = parseUserAgent(changes.USER_AGENT);
+
+  // Use user agent only on server
+  const parsedUserAgent = checkRunningEnvironment() === "node" ? parseUserAgent(changes.USER_AGENT) : undefined;
 
   Controller.setRequestHandler(changes.FETCHER || httpRequest);
 

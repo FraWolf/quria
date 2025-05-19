@@ -24,7 +24,7 @@ export interface ClientOptions {
   };
   headers: {
     "X-API-Key": string;
-    "User-Agent": string;
+    "User-Agent"?: string;
   };
 }
 
