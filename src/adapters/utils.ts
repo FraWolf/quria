@@ -84,12 +84,9 @@ export function parseUserAgent(userAgent?: CustomUserAgent) {
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
 
-  // Use user agent only on server
-  const parsedUserAgent = checkRunningEnvironment() === "node" ? parseUserAgent(changes.USER_AGENT) : undefined;
-
   Controller.setRequestHandler(changes.FETCHER || httpRequest);
 
-  return {
+  const options: ClientOptions = {
     host,
     urls: {
       api: `${host}/Platform`,
@@ -103,9 +100,15 @@ export function generateOptions(changes: Options): ClientOptions {
     },
     headers: {
       "X-API-Key": changes.API_KEY,
-      "User-Agent": parsedUserAgent,
     },
   };
+
+  // Add user agent if running on server
+  if (checkRunningEnvironment() === "node") {
+    options.headers["User-Agent"] = parseUserAgent(changes.USER_AGENT);
+  }
+
+  return options;
 }
 
 export function checkRunningEnvironment() {
