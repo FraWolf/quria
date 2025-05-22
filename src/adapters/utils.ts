@@ -1,4 +1,4 @@
-import { ClientOptions, Options, ITokens } from "../types";
+import { ClientOptions, Options, ITokens, CustomUserAgent } from "../types";
 import { Controller } from "./";
 import { httpRequest } from "./http-request";
 
@@ -34,17 +34,64 @@ export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
   return { ...headers, ...newObject };
 }
 
+export function parseUserAgent(userAgent?: CustomUserAgent) {
+  let appId: string | undefined;
+  let appName: string = "Quria Wrapper";
+  let appVersion: string = "2.3.0";
+  let contacts: string = "";
+
+  if (userAgent) {
+    // If the user specify a string User Agent, pass it
+    if (typeof userAgent === "string") {
+      return userAgent;
+    }
+
+    // Parse user agent from object
+    if ("APP_NAME" in userAgent) {
+      appName = userAgent.APP_NAME;
+      appVersion = userAgent.APP_VERSION.toString();
+
+      if ("CONTACT_WEBSITE" in userAgent) {
+        contacts += `${userAgent.CONTACT_WEBSITE}`;
+
+        if ("CONTACT_MAIL" in userAgent) {
+          contacts += `;${userAgent.CONTACT_MAIL}`;
+        }
+      }
+    }
+
+    if ("APP_ID" in userAgent) {
+      appId = userAgent?.APP_ID?.toString();
+    }
+  }
+
+  // Build user agent
+  let final = `${appName}/${appVersion}`;
+
+  // Add AppId to User Agent
+  if (appId) {
+    final += ` AppId/${appId}`;
+  }
+
+  // Add contacts
+  if (contacts) {
+    final += ` (+${contacts})`;
+  }
+
+  return final;
+}
+
 export function generateOptions(changes: Options): ClientOptions {
   const host = changes.HOST || "https://www.bungie.net";
 
   Controller.setRequestHandler(changes.FETCHER || httpRequest);
 
-  return {
+  const options: ClientOptions = {
     host,
     urls: {
       api: `${host}/Platform`,
       authorization: `${host}/en/OAuth/Authorize`,
-      token: `${host}/Platform/App/OAuth/token`,
+      token: `${host}/Platform/App/OAuth/Token`,
     },
     app: {
       client_id: changes.CLIENT_ID,
@@ -55,4 +102,15 @@ export function generateOptions(changes: Options): ClientOptions {
       "X-API-Key": changes.API_KEY,
     },
   };
+
+  // Add user agent if running on server
+  if (checkRunningEnvironment() === "node") {
+    options.headers["User-Agent"] = parseUserAgent(changes.USER_AGENT);
+  }
+
+  return options;
+}
+
+export function checkRunningEnvironment() {
+  return typeof process !== "undefined" && process.versions != null && process.versions.node != null ? "node" : "browser";
 }

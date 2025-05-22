@@ -6,6 +6,7 @@ export interface Options {
   CLIENT_SECRET?: string;
   REDIRECT_URI?: string;
   HOST?: string;
+  USER_AGENT?: CustomUserAgent;
   FETCHER?: RequestHandler;
 }
 
@@ -23,6 +24,7 @@ export interface ClientOptions {
   };
   headers: {
     "X-API-Key": string;
+    "User-Agent"?: string;
   };
 }
 
@@ -30,3 +32,14 @@ export interface ITokens {
   access_token?: string;
   refresh_token?: string;
 }
+
+export type CustomUserAgent =
+  | string
+  | { APP_ID?: string | number; APP_NAME: string; APP_VERSION: string | number; CONTACT_WEBSITE?: string }
+  | {
+      APP_ID?: string | number;
+      APP_NAME: string;
+      APP_VERSION: string | number;
+      CONTACT_WEBSITE: string;
+      CONTACT_MAIL: string;
+    };
