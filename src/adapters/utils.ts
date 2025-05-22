@@ -35,7 +35,7 @@ export function parseAuthenticationHeaders(headers: object, tokens?: ITokens) {
 }
 
 export function parseUserAgent(userAgent?: CustomUserAgent) {
-  let appId: string | null = null;
+  let appId: string | undefined;
   let appName: string = "Quria Wrapper";
   let appVersion: string = "2.3.0";
   let contacts: string = "";

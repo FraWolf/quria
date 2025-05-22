@@ -35,9 +35,9 @@ export interface ITokens {
 
 export type CustomUserAgent =
   | string
-  | { APP_ID: string | number; APP_NAME: string; APP_VERSION: string | number; CONTACT_WEBSITE?: string }
+  | { APP_ID?: string | number; APP_NAME: string; APP_VERSION: string | number; CONTACT_WEBSITE?: string }
   | {
-      APP_ID: string | number;
+      APP_ID?: string | number;
       APP_NAME: string;
       APP_VERSION: string | number;
       CONTACT_WEBSITE: string;
