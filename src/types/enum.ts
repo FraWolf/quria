@@ -81,6 +81,7 @@ export enum BungieMembershipType {
   TigerStadia = 5,
   TigerEgs = 6,
   TigerDemon = 10,
+  GoliathGame = 20,
   BungieNext = 254,
   // "All" is only valid for searching capabilities: you need to pass the actual matching BungieMembershipType for any query where you pass a known membershipId.
   All = -1,
@@ -482,6 +483,17 @@ export enum DestinyAmmunitionType {
   Unknown = 4,
 }
 
+export enum DamageType {
+  None = 0,
+  Kinetic = 1,
+  Arc = 2,
+  Thermal = 3,
+  Void = 4,
+  Raid = 5,
+  Stasis = 6,
+  Strand = 7,
+}
+
 export enum DestinyClass {
   Titan = 0,
   Hunter = 1,
@@ -632,17 +644,6 @@ export enum DestinyObjectiveGrantStyle {
   Always = 2,
 }
 
-export enum DamageType {
-  None = 0,
-  Kinetic = 1,
-  Arc = 2,
-  Thermal = 3,
-  Void = 4,
-  Raid = 5,
-  Stasis = 6,
-  Strand = 7,
-}
-
 // If the objective has a known UI label, this enumeration will represent it.
 export enum DestinyObjectiveUiStyle {
   None = 0,
@@ -652,6 +653,12 @@ export enum DestinyObjectiveUiStyle {
   CraftingWeaponTimestamp = 4,
   CraftingMementos = 5,
   CraftingMementoTitle = 6,
+  DiscoverableMystery0 = 7,
+  DiscoverableMystery1 = 8,
+  DiscoverableMystery2 = 9,
+  DiscoverableMystery3 = 10,
+  DiscoverableMystery4 = 11,
+  DiscoverableExotic = 12,
 }
 
 export enum DestinyActivityNavPointType {
@@ -817,6 +824,53 @@ export enum DestinyItemSubType {
   Glaive = 33,
 }
 
+export enum DestinyActivityDifficultyId {
+  Trivial = 0,
+  Easy = 1,
+  Normal = 2,
+  Challenging = 3,
+  Hard = 4,
+  Brave = 5,
+  AlmostImpossible = 6,
+  Impossible = 7,
+  Count = 8,
+}
+
+export enum DestinyActivitySkullDynamicUse {
+  Unknown = 0,
+  Allowed = 1,
+  Disallowed = 2,
+  Count = 3,
+}
+
+export enum DestinyActivityModifierDisplayCategory {
+  None = 0,
+  ModeRules = 1,
+  SelfBuildcraft = 2,
+  EnemyAdjustment = 3,
+  EnemyBuildcraft = 4,
+  Seasonal = 5,
+  Fun = 6,
+  Count = 7,
+}
+
+export enum DestinyActivityModifierConnotation {
+  Neutral = 0,
+  Positive = 1,
+  Negative = 2,
+  Affix = 3,
+  Informational = 4,
+  Reward = 5,
+  Event = 6,
+  Count = 7,
+}
+
+export enum DestinyActivityDifficultyTierType {
+  Default = 0,
+  Training = 1,
+  Count = 2,
+}
+
 // Represents a potential state of an Activity Graph node.
 export enum DestinyGraphNodeState {
   Hidden = 0,
@@ -903,6 +957,8 @@ export enum DestinyRecordToastStyle {
   PathfinderObjectiveCompletePvp = 12,
   PathfinderObjectiveCompleteStrikes = 13,
   PathfinderObjectiveCompleteGambit = 14,
+  SeasonWeeklyComplete = 15,
+  SeasonDailyComplete = 16,
 }
 
 // A hint for what screen should be shown when this presentation node is clicked into. How you use this is your UI is up to you.
@@ -1126,6 +1182,8 @@ export enum DestinyGameVersions {
   TheWitchQueen = 256,
   Lightfall = 512,
   TheFinalShape = 1024,
+  EdgeOfFate = 28535,
+  Renegades = 28536,
 }
 
 // Represents the possible components that can be returned from Destiny "Get" calls such as GetProfile, GetCharacter, GetVendor etc...
@@ -1572,6 +1630,20 @@ export enum AwaResponseReason {
   Replaced = 3,
 }
 
+export enum DestinyActivityTreeType {
+  FireteamFinder = 0,
+  Curator = 1,
+  EventHome = 2,
+  SeasonHome = 3,
+  Count = 4,
+}
+
+export enum DestinyActivityTreeChildSortMode {
+  Investment = 0,
+  FocusFirst = 1,
+  BonusAndFocusFirst = 2,
+}
+
 export enum FireteamFinderCodeOptionType {
   None = 0,
   ApplicationOnly = 1,
@@ -1627,6 +1699,7 @@ export enum FireteamFinderOptionValueProviderType {
   PlayerCount = 2,
   FireteamFinderLabels = 3,
   FireteamFinderActivityGraph = 4,
+  FireteamFinderUIActivityTree = 5,
 }
 
 export enum FireteamFinderOptionValueFlags {

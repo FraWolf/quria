@@ -54,6 +54,11 @@ import {
   DestinyObjectiveGrantStyle,
   DestinyActivityNavPointType,
   DestinyActivityModeCategory,
+  DestinyActivityDifficultyTierType,
+  DestinyActivitySkullDynamicUse,
+  DestinyActivityModifierDisplayCategory,
+  DestinyActivityModifierConnotation,
+  DestinyActivityDifficultyId,
   DestinyGraphNodeState,
   DestinyRewardSourceCategory,
   DestinyPresentationNodeType,
@@ -114,6 +119,8 @@ import {
   DestinyFireteamFinderApplicationType,
   DestinyFireteamFinderLobbyState,
   DestinyFireteamFinderLobbyPrivacyScope,
+  DestinyActivityTreeType,
+  DestinyActivityTreeChildSortMode,
   FireteamFinderCodeOptionType,
   FireteamFinderOptionAvailability,
   FireteamFinderOptionVisibility,
@@ -309,6 +316,9 @@ export interface UserMembershipData {
   // If this property is populated, it will have the membership ID of the account considered to be "primary" in this user's cross save relationship.
   // If null, this user has no cross save relationship, nor primary account.
   primaryMembershipId: string | null;
+  // If this property is populated, it will have the membershipId for the Marathon Membership on this user's account
+  // If null, this user has no Marathon (i.e. "GoliathGame") membership.
+  marathonMembershipId: string | null;
   bungieNetUser: GeneralUser;
 }
 
@@ -1295,6 +1305,8 @@ export interface DestinyInventoryItemDefinition {
   iconWatermark: string;
   // If available, this is the 'shelved' release watermark overlay for the icon. If the item version has a power cap below the current season power cap, it can be treated as 'shelved', and should be shown with this 'shelved' watermark overlay.
   iconWatermarkShelved: string;
+  // This is the active watermark for the item if it is currently Featured in-game. Clients should use the isFeaturedItem boolean to decide whether or not to show this as opposed to iconWatermark.
+  iconWatermarkFeatured: string;
   // A secondary icon associated with the item. Currently this is used in very context specific applications, such as Emblem Nameplates.
   secondaryIcon: string;
   // Pulled from the secondary icon, this is the "secondary background" of the secondary icon. Confusing? Sure, that's why I call it "overlay" here: because as far as it's been used thus far, it has been for an optional overlay image. We'll see if that holds up, but at least for now it explains what this image is a bit better.
@@ -1303,6 +1315,8 @@ export interface DestinyInventoryItemDefinition {
   secondarySpecial: string;
   // Sometimes, an item will have a background color. Most notably this occurs with Emblems, who use the Background Color for small character nameplates such as the "friends" view you see in-game. There are almost certainly other items that have background color as well, though I have not bothered to investigate what items have it nor what purposes they serve: use it as you will.
   backgroundColor: DestinyColor;
+  // Whether or not this item is currently featured in the game, giving it a special watermark
+  isFeaturedItem: boolean;
   // If we were able to acquire an in-game screenshot for the item, the path to that screenshot will be returned here. Note that not all items have screenshots: particularly not any non-equippable items.
   screenshot: string;
   // The localized title/name of the item's type. This can be whatever the designers want, and has no guarantee of consistency between items.
@@ -1858,6 +1872,8 @@ export interface DestinyEquippingBlockDefinition {
   ammoType: DestinyAmmunitionType;
   // These are strings that represent the possible Game/Account/Character state failure conditions that can occur when trying to equip the item. They match up one-to-one with requiredUnlockExpressions.
   displayStrings: string[];
+  // If this item is part of an item set with bonus perks, this will the hash of that set.
+  equipableItemSetHash: number | null;
 }
 
 // Characters can not only have Inventory buckets (containers of items that are generally matched by their type or functionality), they can also have Equipment Slots.
@@ -1884,6 +1900,79 @@ export interface DestinyEquipmentSlotDefinition {
 
 export interface DestinyArtDyeReference {
   artDyeChannelHash: number;
+}
+
+// Perks that are active only when you have a certain number of set items equipped.
+export interface DestinyEquipableItemSetDefinition {
+  // Display Properties, including name and icon, for this item set
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // The items that confer these perks.
+  setItems: number[];
+  // The perks conferred by this set of armor pieces.
+  setPerks: DestinyItemSetPerkDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyItemSetPerkDefinition {
+  // The number of set pieces required to activate the perk.
+  requiredSetCount: number;
+  // The perk this set confers.
+  sandboxPerkHash: number;
+}
+
+// Perks are modifiers to a character or item that can be applied situationally.
+// - Perks determine a weapon's damage type.
+// - Perks put the Mods in Modifiers (they are literally the entity that bestows the Sandbox benefit for whatever fluff text about the modifier in the Socket, Plug or Talent Node)
+// - Perks are applied for unique alterations of state in Objectives
+// Anyways, I'm sure you can see why perks are so interesting.
+// What Perks often don't have is human readable information, so we attempt to reverse engineer that by pulling that data from places that uniquely refer to these perks: namely, Talent Nodes and Plugs. That only gives us a subset of perks that are human readable, but those perks are the ones people generally care about anyways. The others are left as a mystery, their true purpose mostly unknown and undocumented.
+export interface DestinySandboxPerkDefinition {
+  // These display properties are by no means guaranteed to be populated. Usually when it is, it's only because we back-filled them with the displayProperties of some Talent Node or Plug item that happened to be uniquely providing that perk.
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // The string identifier for the perk.
+  perkIdentifier: string;
+  // If true, you can actually show the perk in the UI. Otherwise, it doesn't have useful player-facing information.
+  isDisplayable: boolean;
+  // If this perk grants a damage type to a weapon, the damage type will be defined here.
+  // Unless you have a compelling reason to use this enum value, use the damageTypeHash instead to look up the actual DestinyDamageTypeDefinition.
+  damageType: DamageType;
+  // The hash identifier for looking up the DestinyDamageTypeDefinition, if this perk has a damage type.
+  // This is preferred over using the damageType enumeration value, which has been left purely because it is occasionally convenient.
+  damageTypeHash: number | null;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// All damage types that are possible in the game are defined here, along with localized info and icons as needed.
+export interface DestinyDamageTypeDefinition {
+  // The description of the damage type, icon etc...
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // A variant of the icon that is transparent and colorless.
+  transparentIconPath: string;
+  // If TRUE, the game shows this damage type's icon. Otherwise, it doesn't. Whether you show it or not is up to you.
+  showIcon: boolean;
+  // We have an enumeration for damage types for quick reference. This is the current definition's damage type enum value.
+  enumValue: DamageType;
+  // A color associated with the damage type. The displayProperties icon is tinted with a color close to this.
+  color: DestinyColor;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
 }
 
 // This Block defines the rendering data associated with the item, if any.
@@ -2466,7 +2555,11 @@ export interface DestinyActivityDefinition {
   challenges: DestinyActivityChallengeDefinition[];
   // If there are status strings related to the activity and based on internal state of the game, account, or character, then this will be the definition of those strings and the states needed in order for the strings to be shown.
   optionalUnlockStrings: DestinyActivityUnlockStringDefinition[];
+  activityFamilyHashes: number[];
+  traitHashes: number[];
   requirements: DestinyActivityRequirementsBlock;
+  difficultyTierCollectionHash: number | null;
+  selectableSkullCollectionHashes: number[];
   // Represents all of the possible activities that could be played in the Playlist, along with information that we can use to determine if they are active at the present time.
   playlistItems: DestinyActivityPlaylistItemDefinition[];
   // Unfortunately, in practice this is almost never populated. In theory, this is supposed to tell which Activity Graph to show if you bring up the director while in this activity.
@@ -2602,55 +2695,6 @@ export interface DestinyObjectivePerkEntryDefinition {
   perkHash: number;
   // An enumeration indicating whether it will be applied as long as the Objective is active, when it's completed, or until it's completed.
   style: DestinyObjectiveGrantStyle;
-}
-
-// Perks are modifiers to a character or item that can be applied situationally.
-// - Perks determine a weapon's damage type.
-// - Perks put the Mods in Modifiers (they are literally the entity that bestows the Sandbox benefit for whatever fluff text about the modifier in the Socket, Plug or Talent Node)
-// - Perks are applied for unique alterations of state in Objectives
-// Anyways, I'm sure you can see why perks are so interesting.
-// What Perks often don't have is human readable information, so we attempt to reverse engineer that by pulling that data from places that uniquely refer to these perks: namely, Talent Nodes and Plugs. That only gives us a subset of perks that are human readable, but those perks are the ones people generally care about anyways. The others are left as a mystery, their true purpose mostly unknown and undocumented.
-export interface DestinySandboxPerkDefinition {
-  // These display properties are by no means guaranteed to be populated. Usually when it is, it's only because we back-filled them with the displayProperties of some Talent Node or Plug item that happened to be uniquely providing that perk.
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // The string identifier for the perk.
-  perkIdentifier: string;
-  // If true, you can actually show the perk in the UI. Otherwise, it doesn't have useful player-facing information.
-  isDisplayable: boolean;
-  // If this perk grants a damage type to a weapon, the damage type will be defined here.
-  // Unless you have a compelling reason to use this enum value, use the damageTypeHash instead to look up the actual DestinyDamageTypeDefinition.
-  damageType: DamageType;
-  // The hash identifier for looking up the DestinyDamageTypeDefinition, if this perk has a damage type.
-  // This is preferred over using the damageType enumeration value, which has been left purely because it is occasionally convenient.
-  damageTypeHash: number | null;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-// All damage types that are possible in the game are defined here, along with localized info and icons as needed.
-export interface DestinyDamageTypeDefinition {
-  // The description of the damage type, icon etc...
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // A variant of the icon that is transparent and colorless.
-  transparentIconPath: string;
-  // If TRUE, the game shows this damage type's icon. Otherwise, it doesn't. Whether you show it or not is up to you.
-  showIcon: boolean;
-  // We have an enumeration for damage types for quick reference. This is the current definition's damage type enum value.
-  enumValue: DamageType;
-  // A color associated with the damage type. The displayProperties icon is tinted with a color close to this.
-  color: DestinyColor;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
 }
 
 // Defines the conditions under which stat modifications will be applied to a Character while participating in an objective.
@@ -2866,6 +2910,174 @@ export interface DestinyActivityTypeDefinition {
   redacted: boolean;
 }
 
+export interface DestinyActivityFamilyDefinition {
+  traits: number[];
+  disabledSkullCategoryHashes: number[];
+  disabledSkullSubcategoryHashes: number[];
+  fixedSkullSubcategoryHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyTraitDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // An identifier for how this trait can be displayed. For example: a 'keyword' hint to show an explanation for certain related terms.
+  displayHint: string;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivitySkullCategoryDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivitySkullSubcategoryDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  parentSkullCategoryHash: number;
+  availabilityTierRank: number;
+  defaultSkullHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivityDifficultyTierCollectionDefinition {
+  difficultyTiers: DestinyActivityDifficultyTierDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivityDifficultyTierDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  recommendedActivityLevelOffset: number;
+  fixedActivitySkulls: DestinyActivitySkull[];
+  tierEnabledUnlockExpression: DestinyUnlockExpressionDefinition;
+  tierType: DestinyActivityDifficultyTierType;
+  optionalRequiredTrait: number | null;
+  activityLevel: number;
+  tierRank: number;
+  minimumFireteamLeaderPower: number;
+  maximumFireteamLeaderPower: number;
+  scoreTimeLimitMultiplier: number;
+  selectableSkullCollectionHashes: number[];
+  skullSubcategoryOverrides: DestinyActivityDifficultyTierSubcategoryOverride[];
+}
+
+export interface DestinyActivitySkull {
+  hash: number;
+  skullIdentifierHash: number;
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  skullOptions: DestinyActivitySkullOption[];
+  dynamicUse: DestinyActivitySkullDynamicUse;
+  modifierPowerContribution: number;
+  modifierMultiplierContribution: number;
+  skullExclusionGroupHash: number | null;
+  hasUi: boolean;
+  displayDescriptionOverrideForNavMode: string;
+  activityModifierDisplayCategory: DestinyActivityModifierDisplayCategory;
+  activityModifierConnotation: DestinyActivityModifierConnotation;
+  displayInNavMode: boolean;
+  displayInActivitySelection: boolean;
+}
+
+export interface DestinyActivitySkullOption {
+  optionHash: number;
+  stringValue: string;
+  boolValue: boolean;
+  integerValue: number;
+  floatValue: number;
+  minDisplayDifficultyId: DestinyActivityDifficultyId;
+}
+
+export interface DestinyActivitySelectableSkullExclusionGroupDefinition {
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Where the sausage gets made. Unlock Expressions are the foundation of the game's gating mechanics and investment-related restrictions. They can test Unlock Flags and Unlock Values for certain states, using a sufficient amount of logical operators such that unlock expressions are effectively Turing complete.
+// Use UnlockExpressionParser to evaluate expressions using an IUnlockContext parsed from Babel.
+export interface DestinyUnlockExpressionDefinition {
+  // A shortcut for determining the most restrictive gating that this expression performs. See the DestinyGatingScope enum's documentation for more details.
+  scope: DestinyGatingScope;
+}
+
+export interface DestinyActivityDifficultyTierSubcategoryOverride {
+  skullSubcategoryHash: number;
+  refreshTimeMinutes: number;
+  refreshTimeOffsetMinutes: number;
+}
+
+export interface DestinyActivitySelectableSkullCollectionDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  skullSubcategoryHashes: number[];
+  selectionType: DestinyActivitySelectableSkullCollectionSelectionType;
+  selectableActivitySkulls: DestinyActivitySelectableSkull[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyActivitySelectableSkullCollectionSelectionType {
+  selectionCount: number;
+  refreshTimeMinutes: number;
+  refreshTimeOffsetMinutes: number;
+}
+
+export interface DestinyActivitySelectableSkull {
+  requiredTraitHash: number | null;
+  requiredTraitExistence: boolean;
+  isEmptySkull: boolean;
+  loadoutRestrictionHash: number | null;
+  activitySkull: DestinyActivitySkull;
+}
+
+export interface DestinyActivityLoadoutRestrictionDefinition {
+  restrictedItemFilterHash: number;
+  restrictedEquipmentSlotHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
 // Represents a single state that a graph node might end up in. Depending on what's going on in the game, graph nodes could be shown in different ways or even excluded from view entirely.
 export interface DestinyActivityGraphNodeStateEntry {
   state: DestinyGraphNodeState;
@@ -2905,13 +3117,6 @@ export interface DestinyLinkedGraphDefinition {
   linkedGraphId: number;
   linkedGraphs: DestinyLinkedGraphEntryDefinition[];
   overview: string;
-}
-
-// Where the sausage gets made. Unlock Expressions are the foundation of the game's gating mechanics and investment-related restrictions. They can test Unlock Flags and Unlock Values for certain states, using a sufficient amount of logical operators such that unlock expressions are effectively Turing complete.
-// Use UnlockExpressionParser to evaluate expressions using an IUnlockContext parsed from Babel.
-export interface DestinyUnlockExpressionDefinition {
-  // A shortcut for determining the most restrictive gating that this expression performs. See the DestinyGatingScope enum's documentation for more details.
-  scope: DestinyGatingScope;
 }
 
 export interface DestinyLinkedGraphEntryDefinition {
@@ -3264,19 +3469,6 @@ export interface DestinyPresentationNodeBaseDefinition {
   traitHashes: number[];
   // A quick reference to presentation nodes that have this node as a child. Presentation nodes can be parented under multiple parents.
   parentNodeHashes: number[];
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-export interface DestinyTraitDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // An identifier for how this trait can be displayed. For example: a 'keyword' hint to show an explanation for certain related terms.
-  displayHint: string;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -4089,6 +4281,7 @@ export interface DestinySeasonDefinition {
   startDate: string | null;
   endDate: string | null;
   seasonPassHash: number | null;
+  seasonPassList: DestinySeasonPassReference[];
   seasonPassProgressionHash: number | null;
   artifactItemHash: number | null;
   sealPresentationNodeHash: number | null;
@@ -4104,6 +4297,40 @@ export interface DestinySeasonDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
+}
+
+// Defines the hash, unlock flag and start time of season passes
+export interface DestinySeasonPassReference {
+  // The Season Pass Hash
+  seasonPassHash: number;
+  // The Season Pass Start Date
+  seasonPassStartDate: string | null;
+  // The Season Pass End Date
+  seasonPassEndDate: string | null;
+}
+
+export interface DestinySeasonPassDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // This is the progression definition related to the progression for the initial levels 1-100 that provide item rewards for the Season pass. Further experience after you reach the limit is provided in the "Prestige" progression referred to by prestigeProgressionHash.
+  rewardProgressionHash: number;
+  // I know what you're thinking, but I promise we're not going to duplicate and drown you. Instead, we're giving you sweet, sweet power bonuses.
+  // Prestige progression is further progression that you can make on the Season pass after you gain max ranks, that will ultimately increase your power/light level over the theoretical limit.
+  prestigeProgressionHash: number;
+  linkRedirectPath: string;
+  color: DestinyColor;
+  images: DestinySeasonPassImages;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinySeasonPassImages {
+  iconImagePath: string;
+  themeBackgroundImagePath: string;
 }
 
 // Defines the name, start time and ranks included in an Act of an Episode.
@@ -4134,22 +4361,6 @@ export interface DestinySeasonPreviewImageDefinition {
   thumbnailImage: string;
   // An optional path to a high-resolution image, probably 1920x1080.
   highResImage: string;
-}
-
-export interface DestinySeasonPassDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // This is the progression definition related to the progression for the initial levels 1-100 that provide item rewards for the Season pass. Further experience after you reach the limit is provided in the "Prestige" progression referred to by prestigeProgressionHash.
-  rewardProgressionHash: number;
-  // I know what you're thinking, but I promise we're not going to duplicate and drown you. Instead, we're giving you sweet, sweet power bonuses.
-  // Prestige progression is further progression that you can make on the Season pass after you gain max ranks, that will ultimately increase your power/light level over the theoretical limit.
-  prestigeProgressionHash: number;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
 }
 
 export interface DestinyProgressionRewardItemQuantity {
@@ -5656,6 +5867,8 @@ export interface DestinyItemInstanceComponent {
   breakerTypeHash: number | null;
   // IF populated, this item supports Energy mechanics (i.e. Armor 2.0), and these are the current details of its energy type and available capacity to spend energy points.
   energy: DestinyItemInstanceEnergy;
+  // Gear Tier, if applicable, fished up from the unlock value items.gear_tier
+  gearTier: number | null;
 }
 
 export interface DestinyItemInstanceEnergy {
@@ -6320,6 +6533,10 @@ export interface DestinyPostGameCarnageReportData {
   startingPhaseIndex: number | null;
   // True if the activity was started from the beginning, if that information is available and the activity was played post Witch Queen release.
   activityWasStartedFromBeginning: boolean | null;
+  // Difficulty tier index value for the activity.
+  activityDifficultyTier: number | null;
+  // Collection of player-selected skull hashes active for the activity.
+  selectedSkullHashes: number[];
   // Details about the activity.
   activityDetails: DestinyHistoricalStatsActivity;
   // Collection of players and their data for this activity.
@@ -6796,6 +7013,10 @@ export interface DestinyFireteamFinderActivityGraphDefinition {
   relatedDirectorNodes: DestinyActivityGraphReference[];
   relatedInteractableActivities: DestinyActivityInteractableReference[];
   relatedLocationHashes: number[];
+  sortMatchmadeActivitiesToFront: boolean;
+  enabledOnTreeTypesListEnum: DestinyActivityTreeType[];
+  activityTreeChildSortMode: DestinyActivityTreeChildSortMode;
+  sortPriority: number | null;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -6975,6 +7196,31 @@ export interface DestinyFireteamFinderConstantsDefinition {
   allFireteamFinderActivityHashes: number[];
   guardianOathDisplayProperties: DestinyDisplayPropertiesDefinition;
   guardianOathTenets: DestinyDisplayPropertiesDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyInventoryItemConstantsDefinition {
+  // Gear tier overlay images
+  gearTierOverlayImagePaths: string[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+// Lists of items that can be used for a variety of purposes, including featuring them as new gear
+export interface DestinyItemFilterDefinition {
+  // The items in this set
+  setItems: number[];
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -8408,6 +8654,10 @@ export interface Destiny2CoreSettings {
   loadoutConstantsHash: number;
   guardianRankConstantsHash: number;
   fireteamFinderConstantsHash: number;
+  inventoryItemConstantsHash: number;
+  featuredItemsListHash: number;
+  armorArchetypePlugSetHash: number;
+  seasonalHubEventCardHash: number;
   guardianRanksRootNodeHash: number;
   currentRankProgressionHashes: number[];
   insertPlugFreeProtectedPlugItemHashes: number[];
