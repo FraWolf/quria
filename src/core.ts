@@ -12,7 +12,6 @@ import { Tokens } from "./contents/tokens";
 import { User } from "./contents/user";
 import { Trending } from "./contents/trending";
 import { Fireteam } from "./contents/fireteam";
-import { FireteamFinder } from "./contents/fireteamfinder";
 import { Social } from "./contents/social";
 import { Core } from "./contents/core";
 
@@ -30,7 +29,6 @@ export class Quria {
   public communitycontent: CommunityContent;
   public trending: Trending;
   public fireteam: Fireteam;
-  public fireteamfinder: FireteamFinder;
   public social: Social;
   public core: Core;
 
@@ -55,7 +53,6 @@ export class Quria {
     this.communitycontent = new CommunityContent(this.options.urls.api, this.options.headers);
     this.trending = new Trending(this.options.urls.api, this.options.headers);
     this.fireteam = new Fireteam(this.options.urls.api, this.options.headers);
-    this.fireteamfinder = new FireteamFinder(this.options.urls.api, this.options.headers);
     this.social = new Social(this.options.urls.api, this.options.headers);
     this.core = new Core(this.options.urls.api, this.options.headers);
   }
