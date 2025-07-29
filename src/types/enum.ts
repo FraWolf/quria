@@ -1182,8 +1182,8 @@ export enum DestinyGameVersions {
   TheWitchQueen = 256,
   Lightfall = 512,
   TheFinalShape = 1024,
-  EdgeOfFate = 28535,
-  Renegades = 28536,
+  EdgeOfFate = 2048,
+  Renegades = 4096,
 }
 
 // Represents the possible components that can be returned from Destiny "Get" calls such as GetProfile, GetCharacter, GetVendor etc...
@@ -1403,6 +1403,12 @@ export enum DestinyActivityDifficultyTier {
   Brave = 5,
   AlmostImpossible = 6,
   Impossible = 7,
+}
+
+export enum DestinyActivityRewardDisplayMode {
+  Aggregate = 0,
+  PickFirst = 1,
+  Count = 2,
 }
 
 // The reasons why an item cannot be equipped, if any. Many flags can be set, or "None" if

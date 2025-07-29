@@ -100,6 +100,7 @@ import {
   DestinyMilestoneDisplayPreference,
   DestinyMilestoneType,
   DestinyActivityDifficultyTier,
+  DestinyActivityRewardDisplayMode,
   EquipFailureReason,
   DestinyTalentNodeState,
   VendorItemStatus,
@@ -115,10 +116,10 @@ import {
   TrendingEntryType,
   FireteamPlatform,
   FireteamPlatformInviteResult,
-  DestinyFireteamFinderApplicationState,
-  DestinyFireteamFinderApplicationType,
-  DestinyFireteamFinderLobbyState,
-  DestinyFireteamFinderLobbyPrivacyScope,
+  PresenceStatus,
+  PresenceOnlineStateFlags,
+  FriendRelationshipState,
+  PlatformFriendType,
   DestinyActivityTreeType,
   DestinyActivityTreeChildSortMode,
   FireteamFinderCodeOptionType,
@@ -130,14 +131,6 @@ import {
   FireteamFinderOptionValueProviderType,
   FireteamFinderOptionValueFlags,
   FireteamFinderLabelFieldType,
-  DestinyFireteamFinderPlayerReadinessState,
-  DestinyFireteamFinderOfferState,
-  DestinyFireteamFinderListingFilterRangeType,
-  DestinyFireteamFinderListingFilterMatchType,
-  PresenceStatus,
-  PresenceOnlineStateFlags,
-  FriendRelationshipState,
-  PlatformFriendType,
   OptInFlags,
   GlobalAlertLevel,
   GlobalAlertType,
@@ -4687,6 +4680,8 @@ export interface DestinyProfileComponent {
   // A list of seasons that this profile owns. Unlike versionsOwned, these stay with the profile across Platforms, and thus will be valid.
   // It turns out that Stadia Pro subscriptions will give access to seasons but only while playing on Stadia and with an active subscription. So some users (users who have Stadia Pro but choose to play on some other platform) won't see these as available: it will be whatever seasons are available for the platform on which they last played.
   seasonHashes: number[];
+  // A list of season passes aka reward passes that this profile owns. Unlike versionsOwned, these stay with the profile across Platforms, and thus will be valid.
+  seasonPassHashes: number[];
   // A list of hashes for event cards that a profile owns. Unlike most values in versionsOwned, these stay with the profile across all platforms.
   eventCardHashesOwned: number[];
   // If populated, this is a reference to the season that is currently active.
@@ -5343,7 +5338,7 @@ export interface DestinyMilestoneActivity {
   activityModeHash: number | null;
   // The enumeration equivalent of the most specific Activity Mode under which this activity is played.
   activityModeType: number | null;
-  // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data. Note that, in the DestiyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
+  // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data. Note that, in the DestinyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
   modifierHashes: number[];
   // If you want more than just name/location/etc... you're going to have to dig into and show the variants of the conceptual activity. These will differ in seemingly arbitrary ways, like difficulty level and modifiers applied. Show it in whatever way tickles your fancy.
   variants: DestinyMilestoneActivityVariant[];
@@ -5388,11 +5383,11 @@ export interface DestinyMilestoneChallengeActivity {
   activityHash: number;
   challenges: DestinyChallengeStatus[];
   // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data.
-  // Note that, in the DestiyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
+  // Note that, in the DestinyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
   modifierHashes: number[];
   // The set of activity options for this activity, keyed by an identifier that's unique for this activity (not guaranteed to be unique between or across all activities, though should be unique for every *variant* of a given *conceptual* activity: for instance, the original D2 Raid has many variant DestinyActivityDefinitions. While other activities could potentially have the same option hashes, for any given D2 base Raid variant the hash will be unique).
   // As a concrete example of this data, the hashes you get for Raids will correspond to the currently active "Challenge Mode".
-  // We don't have any human readable information for these, but saavy 3rd party app users could manually associate the key (a hash identifier for the "option" that is enabled/disabled) and the value (whether it's enabled or disabled presently)
+  // We don't have any human readable information for these, but savvy 3rd party app users could manually associate the key (a hash identifier for the "option" that is enabled/disabled) and the value (whether it's enabled or disabled presently)
   // On our side, we don't necessarily even know what these are used for (the game designers know, but we don't), and we have no human readable data for them. In order to use them, you will have to do some experimentation.
   booleanActivityOptions: Record<string, boolean>;
   // If returned, this is the index into the DestinyActivityDefinition's "loadouts" property, indicating the currently active loadout requirements.
@@ -5752,15 +5747,27 @@ export interface DestinyActivity {
   difficultyTier: DestinyActivityDifficultyTier;
   challenges: DestinyChallengeStatus[];
   // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data.
-  // Note that, in the DestiyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
+  // Note that, in the DestinyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
   modifierHashes: number[];
   // The set of activity options for this activity, keyed by an identifier that's unique for this activity (not guaranteed to be unique between or across all activities, though should be unique for every *variant* of a given *conceptual* activity: for instance, the original D2 Raid has many variant DestinyActivityDefinitions. While other activities could potentially have the same option hashes, for any given D2 base Raid variant the hash will be unique).
   // As a concrete example of this data, the hashes you get for Raids will correspond to the currently active "Challenge Mode".
-  // We don't have any human readable information for these, but saavy 3rd party app users could manually associate the key (a hash identifier for the "option" that is enabled/disabled) and the value (whether it's enabled or disabled presently)
+  // We don't have any human readable information for these, but savvy 3rd party app users could manually associate the key (a hash identifier for the "option" that is enabled/disabled) and the value (whether it's enabled or disabled presently)
   // On our side, we don't necessarily even know what these are used for (the game designers know, but we don't), and we have no human readable data for them. In order to use them, you will have to do some experimentation.
   booleanActivityOptions: Record<string, boolean>;
   // If returned, this is the index into the DestinyActivityDefinition's "loadouts" property, indicating the currently active loadout requirements.
   loadoutRequirementIndex: number | null;
+  // A filtered list of reward mappings with only the currently visible reward items.
+  visibleRewards: DestinyActivityRewardMapping[];
+}
+
+export interface DestinyActivityRewardMapping {
+  displayBehavior: DestinyActivityRewardDisplayMode;
+  rewardItems: DestinyActivityRewardItem[];
+}
+
+export interface DestinyActivityRewardItem {
+  itemQuantity: DestinyItemQuantity;
+  uiStyle: string;
 }
 
 export interface DestinyActivityInteractableReference {
@@ -6924,7 +6931,7 @@ export interface DestinyPublicMilestoneChallengeActivity {
   activityHash: number;
   challengeObjectiveHashes: number[];
   // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data.
-  // Note that, in the DestiyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
+  // Note that, in the DestinyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
   modifierHashes: number[];
   // If returned, this is the index into the DestinyActivityDefinition's "loadouts" property, indicating the currently active loadout requirements.
   loadoutRequirementIndex: number | null;
@@ -6998,6 +7005,79 @@ export interface DestinyPublicActivityStatus {
   // Why "mock", you ask? Because these are the rewards as they are represented in the tooltip of the Activity.
   // These are often pointers to fake items that look good in a tooltip, but represent an abstract concept of what you will get for a reward rather than the specific items you may obtain.
   rewardTooltipItems: DestinyItemQuantity[];
+}
+
+export interface DestinyLoadoutConstantsDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  // This is the same icon as the one in the display properties, offered here as well with a more descriptive name.
+  whiteIconImagePath: string;
+  // This is a color-inverted version of the whiteIconImagePath.
+  blackIconImagePath: string;
+  // The maximum number of loadouts available to each character. The loadouts component API response can return fewer loadouts than this, as more loadouts are unlocked by reaching higher Guardian Ranks.
+  loadoutCountPerCharacter: number;
+  // A list of the socket category hashes to be filtered out of loadout item preview displays.
+  loadoutPreviewFilterOutSocketCategoryHashes: number[];
+  // A list of the socket type hashes to be filtered out of loadout item preview displays.
+  loadoutPreviewFilterOutSocketTypeHashes: number[];
+  // A list of the loadout name hashes in index order, for convenience.
+  loadoutNameHashes: number[];
+  // A list of the loadout icon hashes in index order, for convenience.
+  loadoutIconHashes: number[];
+  // A list of the loadout color hashes in index order, for convenience.
+  loadoutColorHashes: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyGuardianRankConstantsDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  rankCount: number;
+  guardianRankHashes: number[];
+  rootNodeHash: number;
+  iconBackgrounds: DestinyGuardianRankIconBackgroundsDefinition;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyGuardianRankIconBackgroundsDefinition {
+  backgroundEmptyBorderedImagePath: string;
+  backgroundEmptyBlueGradientBorderedImagePath: string;
+  backgroundFilledBlueBorderedImagePath: string;
+  backgroundFilledBlueGradientBorderedImagePath: string;
+  backgroundFilledBlueLowAlphaImagePath: string;
+  backgroundFilledBlueMediumAlphaImagePath: string;
+  backgroundFilledGrayMediumAlphaBorderedImagePath: string;
+  backgroundFilledGrayHeavyAlphaBorderedImagePath: string;
+  backgroundFilledWhiteMediumAlphaImagePath: string;
+  backgroundFilledWhiteImagePath: string;
+  backgroundPlateWhiteImagePath: string;
+  backgroundPlateBlackImagePath: string;
+  backgroundPlateBlackAlphaImagePath: string;
+}
+
+export interface DestinyFireteamFinderConstantsDefinition {
+  displayProperties: DestinyDisplayPropertiesDefinition;
+  fireteamFinderActivityGraphRootCategoryHashes: number[];
+  allFireteamFinderActivityHashes: number[];
+  guardianOathDisplayProperties: DestinyDisplayPropertiesDefinition;
+  guardianOathTenets: DestinyDisplayPropertiesDefinition[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
 }
 
 export interface DestinyFireteamFinderActivityGraphDefinition {
@@ -7123,79 +7203,6 @@ export interface DestinyFireteamFinderLabelDefinition {
 export interface DestinyFireteamFinderLabelGroupDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   descendingSortPriority: number;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-export interface DestinyLoadoutConstantsDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  // This is the same icon as the one in the display properties, offered here as well with a more descriptive name.
-  whiteIconImagePath: string;
-  // This is a color-inverted version of the whiteIconImagePath.
-  blackIconImagePath: string;
-  // The maximum number of loadouts available to each character. The loadouts component API response can return fewer loadouts than this, as more loadouts are unlocked by reaching higher Guardian Ranks.
-  loadoutCountPerCharacter: number;
-  // A list of the socket category hashes to be filtered out of loadout item preview displays.
-  loadoutPreviewFilterOutSocketCategoryHashes: number[];
-  // A list of the socket type hashes to be filtered out of loadout item preview displays.
-  loadoutPreviewFilterOutSocketTypeHashes: number[];
-  // A list of the loadout name hashes in index order, for convenience.
-  loadoutNameHashes: number[];
-  // A list of the loadout icon hashes in index order, for convenience.
-  loadoutIconHashes: number[];
-  // A list of the loadout color hashes in index order, for convenience.
-  loadoutColorHashes: number[];
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-export interface DestinyGuardianRankConstantsDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  rankCount: number;
-  guardianRankHashes: number[];
-  rootNodeHash: number;
-  iconBackgrounds: DestinyGuardianRankIconBackgroundsDefinition;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-export interface DestinyGuardianRankIconBackgroundsDefinition {
-  backgroundEmptyBorderedImagePath: string;
-  backgroundEmptyBlueGradientBorderedImagePath: string;
-  backgroundFilledBlueBorderedImagePath: string;
-  backgroundFilledBlueGradientBorderedImagePath: string;
-  backgroundFilledBlueLowAlphaImagePath: string;
-  backgroundFilledBlueMediumAlphaImagePath: string;
-  backgroundFilledGrayMediumAlphaBorderedImagePath: string;
-  backgroundFilledGrayHeavyAlphaBorderedImagePath: string;
-  backgroundFilledWhiteMediumAlphaImagePath: string;
-  backgroundFilledWhiteImagePath: string;
-  backgroundPlateWhiteImagePath: string;
-  backgroundPlateBlackImagePath: string;
-  backgroundPlateBlackAlphaImagePath: string;
-}
-
-export interface DestinyFireteamFinderConstantsDefinition {
-  displayProperties: DestinyDisplayPropertiesDefinition;
-  fireteamFinderActivityGraphRootCategoryHashes: number[];
-  allFireteamFinderActivityHashes: number[];
-  guardianOathDisplayProperties: DestinyDisplayPropertiesDefinition;
-  guardianOathTenets: DestinyDisplayPropertiesDefinition[];
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
