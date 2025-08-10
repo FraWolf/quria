@@ -1310,6 +1310,10 @@ export interface DestinyInventoryItemDefinition {
   backgroundColor: DestinyColor;
   // Whether or not this item is currently featured in the game, giving it a special watermark
   isFeaturedItem: boolean;
+  // Whether or not this item is holofoil, which has special icon treatment and in-game appearance.
+  isHolofoil: boolean;
+  // Whether or not this item is adept, which has increased stats and/or perks.
+  isAdept: boolean;
   // If we were able to acquire an in-game screenshot for the item, the path to that screenshot will be returned here. Note that not all items have screenshots: particularly not any non-equippable items.
   screenshot: string;
   // The localized title/name of the item's type. This can be whatever the designers want, and has no guarantee of consistency between items.
@@ -7227,7 +7231,7 @@ export interface DestinyInventoryItemConstantsDefinition {
 // Lists of items that can be used for a variety of purposes, including featuring them as new gear
 export interface DestinyItemFilterDefinition {
   // The items in this set
-  setItems: number[];
+  allowedItems: number[];
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
