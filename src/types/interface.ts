@@ -1198,6 +1198,7 @@ export interface DestinyDisplayPropertiesDefinition {
   // But usually, it will be a small square image that you can use as... well, an icon.
   // They are currently represented as 96px x 96px images.
   icon: string;
+  iconHash: number;
   iconSequences: DestinyIconSequenceDefinition[];
   // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
   highResIcon: string;
@@ -1206,6 +1207,22 @@ export interface DestinyDisplayPropertiesDefinition {
 
 export interface DestinyIconSequenceDefinition {
   frames: string[];
+}
+
+// Lists of icons that can be used for a variety of purposes
+export interface DestinyIconDefinition {
+  foreground: string;
+  background: string;
+  secondaryBackground: string;
+  specialBackground: string;
+  highResForeground: string;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
 }
 
 // A "Progression" in Destiny is best explained by an example.
@@ -1254,6 +1271,7 @@ export interface DestinyProgressionDisplayPropertiesDefinition {
   // But usually, it will be a small square image that you can use as... well, an icon.
   // They are currently represented as 96px x 96px images.
   icon: string;
+  iconHash: number;
   iconSequences: DestinyIconSequenceDefinition[];
   // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
   highResIcon: string;
@@ -2136,6 +2154,7 @@ export interface DestinyVendorDisplayPropertiesDefinition {
   // But usually, it will be a small square image that you can use as... well, an icon.
   // They are currently represented as 96px x 96px images.
   icon: string;
+  iconHash: number;
   iconSequences: DestinyIconSequenceDefinition[];
   // If this item has a high-res icon (at least for now, many things won't), then the path to that icon will be here.
   highResIcon: string;
@@ -6637,6 +6656,8 @@ export interface DestinyPostGameCarnageReportExtendedData {
   weapons: DestinyHistoricalWeaponStats[];
   // Collection of stats for the player in this activity.
   values: Record<string, DestinyHistoricalStatsValue>;
+  // Collection of stats from the player scoreboard in this activity.
+  scoreboardValues: Record<string, DestinyHistoricalStatsValue>;
 }
 
 export interface DestinyHistoricalWeaponStats {
@@ -7219,6 +7240,26 @@ export interface DestinyFireteamFinderLabelGroupDefinition {
 export interface DestinyInventoryItemConstantsDefinition {
   // Gear tier overlay images
   gearTierOverlayImagePaths: string[];
+  // Watermark drop shadow
+  watermarkDropShadowPath: string;
+  // Reverse drop shadow for crafted icon identifier
+  craftedBackgroundPath: string;
+  // Teal flag for featured item watermarks
+  featuredItemFlagPath: string;
+  // Gold masterwork glow
+  masterworkOverlayPath: string;
+  // Crafted weapon overlay path
+  craftedOverlayPath: string;
+  // Enhanced item overlay
+  enhancedItemOverlayPath: string;
+  // Layer between item and color background to denote holofoil status, introduced in v736
+  holofoilBackgroundOverlayPath: string;
+  // Layer between item and color background to denote holofoil status, introduced in v900
+  holofoil900BackgroundOverlayPath: string;
+  // Layer between item and color background to denote holofoil status, introduced in v900, animated
+  holofoil900AnimatedBackgroundOverlayPath: string;
+  // Layer between item and color background to denote universal ornament status
+  universalOrnamentBackgroundOverlayPath: string;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
