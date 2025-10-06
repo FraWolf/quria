@@ -37,6 +37,11 @@ import {
   GroupPotentialMemberStatus,
   GroupPotentialMembershipSearchResponse,
   GroupApplicationResponse,
+  GroupMemberCountFilter,
+  MembershipOption,
+  GroupHomepage,
+  GroupPostPublicity,
+  HostGuidedGamesPermissionLevel,
 } from "../../types";
 
 export class GroupV2 {
@@ -105,7 +110,7 @@ export class GroupV2 {
     groupType: GroupType,
     creationDate: GroupDateRange,
     sortBy: GroupSortBy,
-    groupMemberCountFilter: number | null,
+    groupMemberCountFilter: GroupMemberCountFilter | null,
     localeFilter: string,
     tagText: string,
     itemsPerPage: number,
@@ -196,15 +201,15 @@ export class GroupV2 {
     avatarImageIndex: number | null,
     tags: string,
     isPublic: boolean | null,
-    membershipOption: number | null,
+    membershipOption: MembershipOption | null,
     isPublicTopicAdminOnly: boolean | null,
     allowChat: boolean | null,
-    chatSecurity: number | null,
+    chatSecurity: ChatSecuritySetting | null,
     callsign: string,
     locale: string,
-    homepage: number | null,
+    homepage: GroupHomepage | null,
     enableInvitationMessagingForAdmins: boolean | null,
-    defaultPublicity: number | null,
+    defaultPublicity: GroupPostPublicity | null,
     tokens?: ITokens
   ): Promise<APIResponse<number>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/Edit/`;
@@ -269,9 +274,9 @@ export class GroupV2 {
     groupId: string,
     InvitePermissionOverride: boolean | null,
     UpdateCulturePermissionOverride: boolean | null,
-    HostGuidedGamePermissionOverride: number | null,
+    HostGuidedGamePermissionOverride: HostGuidedGamesPermissionLevel | null,
     UpdateBannerPermissionOverride: boolean | null,
-    JoinLevel: number | null,
+    JoinLevel: RuntimeGroupMemberType | null,
     tokens?: ITokens
   ): Promise<APIResponse<number>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/EditFounderOptions/`;
@@ -314,7 +319,7 @@ export class GroupV2 {
     groupId: string,
     chatEnabled: boolean | null,
     chatName: string,
-    chatSecurity: number | null,
+    chatSecurity: ChatSecuritySetting | null,
     tokens?: ITokens
   ): Promise<APIResponse<string>> {
     const requestURL = `${this.url}/GroupV2/${groupId}/OptionalConversations/Edit/${conversationId}/`;

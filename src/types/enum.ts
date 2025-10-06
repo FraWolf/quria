@@ -1470,6 +1470,7 @@ export enum VendorItemStatus {
   AlreadySelling = 512,
   Unsellable = 1024,
   SellingInhibited = 2048,
+  // DEPRECATED - Owned items use the NoUnlock state and a failure string indicating the proper display state.
   AlreadyOwned = 4096,
   DisplayOnly = 8192,
 }
@@ -1523,6 +1524,7 @@ export enum DestinyVendorItemState {
   Savings = 4194304,
   Ineligible = 8388608,
   ArtifactPerkBoosted = 16777216,
+  SeasonalArchiveFree = 33554432,
 }
 
 // If you look in the DestinyInventoryItemDefinition's "sockets" property, you'll see that there are two types of sockets: intrinsic, and "socketEntry."
