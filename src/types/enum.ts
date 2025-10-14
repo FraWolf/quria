@@ -390,6 +390,8 @@ export enum ItemState {
   Crafted = 8,
   // If this bit is set, the item has a 'highlighted' objective. You may want to represent this with an orange-red icon border color.
   HighlightedObjective = 16,
+  // If this bit is set, the item has been 'enhanced' by the player.
+  Enhanced = 32,
 }
 
 // There are many Progressions in Destiny (think Character Level, or Reputation). These are the various "Scopes" of Progressions, which affect many things: * Where/if they are stored * How they are calculated * Where they can be used in other game logic

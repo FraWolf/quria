@@ -2604,6 +2604,10 @@ export interface DestinyActivityDefinition {
   insertionPoints: DestinyActivityInsertionPointDefinition[];
   // A list of location mappings that are affected by this activity. Pulled out of DestinyLocationDefinitions for our/your lookup convenience.
   activityLocationMappings: DestinyEnvironmentLocationMapping[];
+  // Additional data used for display in the in-game Portal screen
+  curatorBlockDefinition: DestinyActivityCuratorBlockDefinition;
+  // Optional estimated duration, shown on the Portal tiles
+  durationEstimate: DestinyActivityDurationEstimate;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -2907,6 +2911,22 @@ export interface DestinyEnvironmentLocationMapping {
   activityHash: number | null;
 }
 
+export interface DestinyActivityCuratorBlockDefinition {
+  // Sort order
+  quickplaySortPriority: number;
+  // Whether this activity should be sorted to the front of the Portal category
+  quickplaySortToFront: boolean;
+}
+
+export interface DestinyActivityDurationEstimate {
+  // The number of filled pips shown on the Portal tile
+  durationPipsFilledCount: number;
+  // The total number of pips shown on the Portal tile
+  durationPipsTotalCount: number;
+  // The text string showing the estimated time to complete this activity
+  durationEstimateText: string;
+}
+
 // Okay, so Activities (DestinyActivityDefinition) take place in Destinations (DestinyDestinationDefinition). Destinations are part of larger locations known as Places (you're reading its documentation right now).
 // Places are more on the planetary scale, like "Earth" and "Your Mom."
 export interface DestinyPlaceDefinition {
@@ -3003,7 +3023,6 @@ export interface DestinyActivityDifficultyTierDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   recommendedActivityLevelOffset: number;
   fixedActivitySkulls: DestinyActivitySkull[];
-  tierEnabledUnlockExpression: DestinyUnlockExpressionDefinition;
   tierType: DestinyActivityDifficultyTierType;
   optionalRequiredTrait: number | null;
   activityLevel: number;
@@ -3049,13 +3068,6 @@ export interface DestinyActivitySelectableSkullExclusionGroupDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
-}
-
-// Where the sausage gets made. Unlock Expressions are the foundation of the game's gating mechanics and investment-related restrictions. They can test Unlock Flags and Unlock Values for certain states, using a sufficient amount of logical operators such that unlock expressions are effectively Turing complete.
-// Use UnlockExpressionParser to evaluate expressions using an IUnlockContext parsed from Babel.
-export interface DestinyUnlockExpressionDefinition {
-  // A shortcut for determining the most restrictive gating that this expression performs. See the DestinyGatingScope enum's documentation for more details.
-  scope: DestinyGatingScope;
 }
 
 export interface DestinyActivityDifficultyTierSubcategoryOverride {
@@ -3139,7 +3151,6 @@ export interface DestinyActivityGraphDisplayProgressionDefinition {
 export interface DestinyLinkedGraphDefinition {
   description: string;
   name: string;
-  unlockExpression: DestinyUnlockExpressionDefinition;
   linkedGraphId: number;
   linkedGraphs: DestinyLinkedGraphEntryDefinition[];
   overview: string;
@@ -5743,6 +5754,10 @@ export interface DestinyCharacterActivitiesComponent {
   availableActivities: DestinyActivity[];
   // The list of activity interactables that the player can interact with.
   availableActivityInteractables: DestinyActivityInteractableReference[];
+  // The activity difficulty tier states for this character.
+  difficultyTierCollections: Record<string, DestinyActivityDifficultyTierCollectionComponent>;
+  // The selectable activity skulls states for this character.
+  selectableSkullCollections: Record<string, DestinyActivitySelectableSkullCollectionComponent>;
   // If the user is in an activity, this will be the hash of the Activity being played. Note that you must combine this info with currentActivityModeHash to get a real picture of what the user is doing right now. For instance, PVP "Activities" are just maps: it's the ActivityMode that determines what type of PVP game they're playing.
   currentActivityHash: number;
   // If the user is in an activity, this will be the hash of the activity mode being played. Combine with currentActivityHash to give a person a full picture of what they're doing right now.
@@ -5793,6 +5808,8 @@ export interface DestinyActivity {
   loadoutRequirementIndex: number | null;
   // A filtered list of reward mappings with only the currently visible reward items.
   visibleRewards: DestinyActivityRewardMapping[];
+  // Whether or not this activity is currently in the "featured" carousel of the Portal
+  isFocusedActivity: boolean;
 }
 
 export interface DestinyActivityRewardMapping {
@@ -5829,6 +5846,27 @@ export interface DestinyActivityInteractableDefinition {
 export interface DestinyActivityInteractableEntryDefinition {
   // The activity that will trigger when you interact with this interactable.
   activityHash: number;
+}
+
+export interface DestinyActivityDifficultyTierCollectionComponent {
+  difficultyTierCollectionHash: number;
+  difficultyTiers: DestinyActivityDifficultyTierComponent[];
+}
+
+export interface DestinyActivityDifficultyTierComponent {
+  difficultyTierIndex: number;
+  fixedActivitySkulls: DestinyActivitySkullComponent[];
+}
+
+export interface DestinyActivitySkullComponent {
+  hash: number;
+  skullIdentifierHash: number;
+  isEnabled: boolean;
+}
+
+export interface DestinyActivitySelectableSkullCollectionComponent {
+  selectableSkullCollectionHash: number;
+  selectableSkulls: DestinyActivitySkullComponent[];
 }
 
 // Items can have objectives and progression. When you request this block, you will obtain information about any Objectives and progression tied to this item.
