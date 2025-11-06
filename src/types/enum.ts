@@ -390,6 +390,8 @@ export enum ItemState {
   Crafted = 8,
   // If this bit is set, the item has a 'highlighted' objective. You may want to represent this with an orange-red icon border color.
   HighlightedObjective = 16,
+  // If this bit is set, the item has been 'enhanced' by the player.
+  Enhanced = 32,
 }
 
 // There are many Progressions in Destiny (think Character Level, or Reputation). These are the various "Scopes" of Progressions, which affect many things: * Where/if they are stored * How they are calculated * Where they can be used in other game logic
@@ -1470,6 +1472,7 @@ export enum VendorItemStatus {
   AlreadySelling = 512,
   Unsellable = 1024,
   SellingInhibited = 2048,
+  // DEPRECATED - Owned items use the NoUnlock state and a failure string indicating the proper display state.
   AlreadyOwned = 4096,
   DisplayOnly = 8192,
 }
@@ -1523,6 +1526,7 @@ export enum DestinyVendorItemState {
   Savings = 4194304,
   Ineligible = 8388608,
   ArtifactPerkBoosted = 16777216,
+  SeasonalArchiveFree = 33554432,
 }
 
 // If you look in the DestinyInventoryItemDefinition's "sockets" property, you'll see that there are two types of sockets: intrinsic, and "socketEntry."

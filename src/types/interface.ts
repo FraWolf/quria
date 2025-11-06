@@ -83,13 +83,15 @@ import {
   ForumRecruitmentToneLabel,
   GroupDateRange,
   GroupSortBy,
+  GroupMemberCountFilter,
   IgnoreLength,
   GroupApplicationResolveState,
   PlatformErrorCodes,
+  DropStateEnum,
+  DestinyGameVersions,
   ItemBindStatus,
   TransferStatuses,
   ComponentPrivacySetting,
-  DestinyGameVersions,
   DestinyPresentationNodeState,
   DestinyRecordState,
   DestinyCollectibleState,
@@ -110,6 +112,7 @@ import {
   PeriodType,
   DestinyStatsCategoryType,
   UnitType,
+  DestinyStatsMergeMethod,
   AwaType,
   AwaUserSelection,
   AwaResponseReason,
@@ -634,7 +637,7 @@ export interface GroupQuery {
   groupType: GroupType;
   creationDate: GroupDateRange;
   sortBy: GroupSortBy;
-  groupMemberCountFilter: number | null;
+  groupMemberCountFilter: GroupMemberCountFilter | null;
   localeFilter: string;
   tagText: string;
   itemsPerPage: number;
@@ -663,15 +666,15 @@ export interface GroupEditAction {
   avatarImageIndex: number | null;
   tags: string;
   isPublic: boolean | null;
-  membershipOption: number | null;
+  membershipOption: MembershipOption | null;
   isPublicTopicAdminOnly: boolean | null;
   allowChat: boolean | null;
-  chatSecurity: number | null;
+  chatSecurity: ChatSecuritySetting | null;
   callsign: string;
   locale: string;
-  homepage: number | null;
+  homepage: GroupHomepage | null;
   enableInvitationMessagingForAdmins: boolean | null;
-  defaultPublicity: number | null;
+  defaultPublicity: GroupPostPublicity | null;
 }
 
 export interface GroupOptionsEditAction {
@@ -689,7 +692,7 @@ export interface GroupOptionsEditAction {
   // Always Allowed: Founder, Acting Founder, Admin
   // Allowed Overrides: None, Member, Beginner
   // Default is Member for clans, None for groups, although this means nothing for groups.
-  HostGuidedGamePermissionOverride: number | null;
+  HostGuidedGamePermissionOverride: HostGuidedGamesPermissionLevel | null;
   // Minimum Member Level allowed to update banner
   // Always Allowed: Founder, Acting Founder
   // True means admins have this power, false means they don't
@@ -697,7 +700,7 @@ export interface GroupOptionsEditAction {
   UpdateBannerPermissionOverride: boolean | null;
   // Level to join a member at when accepting an invite, application, or joining an open clan
   // Default is Beginner.
-  JoinLevel: number | null;
+  JoinLevel: RuntimeGroupMemberType | null;
 }
 
 export interface GroupOptionalConversationAddRequest {
@@ -708,7 +711,7 @@ export interface GroupOptionalConversationAddRequest {
 export interface GroupOptionalConversationEditRequest {
   chatEnabled: boolean | null;
   chatName: string;
-  chatSecurity: number | null;
+  chatSecurity: ChatSecuritySetting | null;
 }
 
 export interface GroupMemberLeaveResult {
@@ -2576,6 +2579,7 @@ export interface DestinyActivityDefinition {
   requirements: DestinyActivityRequirementsBlock;
   difficultyTierCollectionHash: number | null;
   selectableSkullCollectionHashes: number[];
+  selectableSkullCollections: DestinyActivitySelectableSkullCollections[];
   // Represents all of the possible activities that could be played in the Playlist, along with information that we can use to determine if they are active at the present time.
   playlistItems: DestinyActivityPlaylistItemDefinition[];
   // Unfortunately, in practice this is almost never populated. In theory, this is supposed to tell which Activity Graph to show if you bring up the director while in this activity.
@@ -2587,7 +2591,7 @@ export interface DestinyActivityDefinition {
   // If this activity had an activity mode directly defined on it, this will be the hash of that mode.
   directActivityModeHash: number | null;
   // If the activity had an activity mode directly defined on it, this will be the enum value of that mode.
-  directActivityModeType: number | null;
+  directActivityModeType: DestinyActivityModeType | null;
   // The set of all possible loadout requirements that could be active for this activity. Only one will be active at any given time, and you can discover which one through activity-associated data such as Milestones that have activity info on them.
   loadouts: DestinyActivityLoadoutRequirementSet[];
   // The hash identifiers for Activity Modes relevant to this activity.  Note that if this is a playlist, the specific playlist entry chosen will determine the actual activity modes that end up being relevant.
@@ -2600,6 +2604,10 @@ export interface DestinyActivityDefinition {
   insertionPoints: DestinyActivityInsertionPointDefinition[];
   // A list of location mappings that are affected by this activity. Pulled out of DestinyLocationDefinitions for our/your lookup convenience.
   activityLocationMappings: DestinyEnvironmentLocationMapping[];
+  // Additional data used for display in the in-game Portal screen
+  curatorBlockDefinition: DestinyActivityCuratorBlockDefinition;
+  // Optional estimated duration, shown on the Portal tiles
+  durationEstimate: DestinyActivityDurationEstimate;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -2794,6 +2802,12 @@ export interface DestinyActivityRequirementLabel {
   displayString: string;
 }
 
+export interface DestinyActivitySelectableSkullCollections {
+  selectableSkullCollectionHash: number;
+  minimumTierRank: number;
+  maximumTierRank: number;
+}
+
 // If the activity is a playlist, this is the definition for a specific entry in the playlist: a single possible combination of Activity and Activity Mode that can be chosen.
 export interface DestinyActivityPlaylistItemDefinition {
   // The hash identifier of the Activity that can be played. Use it to look up the DestinyActivityDefinition.
@@ -2801,7 +2815,7 @@ export interface DestinyActivityPlaylistItemDefinition {
   // If this playlist entry had an activity mode directly defined on it, this will be the hash of that mode.
   directActivityModeHash: number | null;
   // If the playlist entry had an activity mode directly defined on it, this will be the enum value of that mode.
-  directActivityModeType: number | null;
+  directActivityModeType: DestinyActivityModeType | null;
   // The hash identifiers for Activity Modes relevant to this entry.
   activityModeHashes: number[];
   // The activity modes - if any - in enum form. Because we can't seem to escape the enums.
@@ -2895,6 +2909,22 @@ export interface DestinyEnvironmentLocationMapping {
   objectiveHash: number | null;
   // If this is populated, this is the activity you have to be playing in order to see this location appear because of this mapping. (theoretically, a location can have multiple mappings, and some might require you to be in a specific activity when others don't)
   activityHash: number | null;
+}
+
+export interface DestinyActivityCuratorBlockDefinition {
+  // Sort order
+  quickplaySortPriority: number;
+  // Whether this activity should be sorted to the front of the Portal category
+  quickplaySortToFront: boolean;
+}
+
+export interface DestinyActivityDurationEstimate {
+  // The number of filled pips shown on the Portal tile
+  durationPipsFilledCount: number;
+  // The total number of pips shown on the Portal tile
+  durationPipsTotalCount: number;
+  // The text string showing the estimated time to complete this activity
+  durationEstimateText: string;
 }
 
 // Okay, so Activities (DestinyActivityDefinition) take place in Destinations (DestinyDestinationDefinition). Destinations are part of larger locations known as Places (you're reading its documentation right now).
@@ -2993,7 +3023,6 @@ export interface DestinyActivityDifficultyTierDefinition {
   displayProperties: DestinyDisplayPropertiesDefinition;
   recommendedActivityLevelOffset: number;
   fixedActivitySkulls: DestinyActivitySkull[];
-  tierEnabledUnlockExpression: DestinyUnlockExpressionDefinition;
   tierType: DestinyActivityDifficultyTierType;
   optionalRequiredTrait: number | null;
   activityLevel: number;
@@ -3039,13 +3068,6 @@ export interface DestinyActivitySelectableSkullExclusionGroupDefinition {
   index: number;
   // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
   redacted: boolean;
-}
-
-// Where the sausage gets made. Unlock Expressions are the foundation of the game's gating mechanics and investment-related restrictions. They can test Unlock Flags and Unlock Values for certain states, using a sufficient amount of logical operators such that unlock expressions are effectively Turing complete.
-// Use UnlockExpressionParser to evaluate expressions using an IUnlockContext parsed from Babel.
-export interface DestinyUnlockExpressionDefinition {
-  // A shortcut for determining the most restrictive gating that this expression performs. See the DestinyGatingScope enum's documentation for more details.
-  scope: DestinyGatingScope;
 }
 
 export interface DestinyActivityDifficultyTierSubcategoryOverride {
@@ -3129,7 +3151,6 @@ export interface DestinyActivityGraphDisplayProgressionDefinition {
 export interface DestinyLinkedGraphDefinition {
   description: string;
   name: string;
-  unlockExpression: DestinyUnlockExpressionDefinition;
   linkedGraphId: number;
   linkedGraphs: DestinyLinkedGraphEntryDefinition[];
   overview: string;
@@ -4454,7 +4475,7 @@ export interface DestinyProfileUserInfoCard {
   // If this profile is not in a cross save pairing, this will return the game versions that we believe this profile has access to.
   // For the time being, we will not return this information for any membership that is in a cross save pairing. The gist is that, once the pairing occurs, we do not currently have a consistent way to get that information for the profile's original Platform, and thus gameVersions would be too inconsistent (based on the last platform they happened to play on) for the info to be useful.
   // If we ever can get this data, this field will be deprecated and replaced with data on the DestinyLinkedProfileResponse itself, with game versions per linked Platform. But since we can't get that, we have this as a stop-gap measure for getting the data in the only situation that we currently need it.
-  unpairedGameVersions: number | null;
+  unpairedGameVersions: DestinyGameVersions | null;
   // A platform specific additional display name - ex: psn Real Name, bnet Unique Name, etc.
   supplementalDisplayName: string;
   // URL the Icon if available.
@@ -4709,6 +4730,8 @@ export interface DestinyProfileComponent {
   eventCardHashesOwned: number[];
   // If populated, this is a reference to the season that is currently active.
   currentSeasonHash: number | null;
+  // If populated, this is a reference to the season pass that is currently active.
+  currentSeasonPassHash: number | null;
   // If populated, this is the reward power cap for the current season.
   currentSeasonRewardPowerCap: number | null;
   // If populated, this is a reference to the event card that is currently active.
@@ -5360,7 +5383,7 @@ export interface DestinyMilestoneActivity {
   // The hash identifier of the most specific Activity Mode under which this activity is played. This is useful for situations where the activity in question is - for instance - a PVP map, but it's not clear what mode the PVP map is being played under. If it's a playlist, this will be less specific: but hopefully useful in some way.
   activityModeHash: number | null;
   // The enumeration equivalent of the most specific Activity Mode under which this activity is played.
-  activityModeType: number | null;
+  activityModeType: DestinyActivityModeType | null;
   // If the activity has modifiers, this will be the list of modifiers that all variants have in common. Perform lookups against DestinyActivityModifierDefinition which defines the modifier being applied to get at the modifier data. Note that, in the DestinyActivityDefinition, you will see many more modifiers than this being referred to: those are all *possible* modifiers for the activity, not the active ones. Use only the active ones to match what's really live.
   modifierHashes: number[];
   // If you want more than just name/location/etc... you're going to have to dig into and show the variants of the conceptual activity. These will differ in seemingly arbitrary ways, like difficulty level and modifiers applied. Show it in whatever way tickles your fancy.
@@ -5376,7 +5399,7 @@ export interface DestinyMilestoneActivityVariant {
   // The hash identifier of the most specific Activity Mode under which this activity is played. This is useful for situations where the activity in question is - for instance - a PVP map, but it's not clear what mode the PVP map is being played under. If it's a playlist, this will be less specific: but hopefully useful in some way.
   activityModeHash: number | null;
   // The enumeration equivalent of the most specific Activity Mode under which this activity is played.
-  activityModeType: number | null;
+  activityModeType: DestinyActivityModeType | null;
 }
 
 // Represents this player's personal completion status for the Activity under a Milestone, if the activity has trackable completion and progress information. (most activities won't, or the concept won't apply. For instance, it makes sense to talk about a tier of a raid as being Completed or having progress, but it doesn't make sense to talk about a Crucible Playlist in those terms.
@@ -5731,12 +5754,16 @@ export interface DestinyCharacterActivitiesComponent {
   availableActivities: DestinyActivity[];
   // The list of activity interactables that the player can interact with.
   availableActivityInteractables: DestinyActivityInteractableReference[];
+  // The activity difficulty tier states for this character.
+  difficultyTierCollections: Record<string, DestinyActivityDifficultyTierCollectionComponent>;
+  // The selectable activity skulls states for this character.
+  selectableSkullCollections: Record<string, DestinyActivitySelectableSkullCollectionComponent>;
   // If the user is in an activity, this will be the hash of the Activity being played. Note that you must combine this info with currentActivityModeHash to get a real picture of what the user is doing right now. For instance, PVP "Activities" are just maps: it's the ActivityMode that determines what type of PVP game they're playing.
   currentActivityHash: number;
   // If the user is in an activity, this will be the hash of the activity mode being played. Combine with currentActivityHash to give a person a full picture of what they're doing right now.
   currentActivityModeHash: number;
   // And the current activity's most specific mode type, if it can be found.
-  currentActivityModeType: number | null;
+  currentActivityModeType: DestinyActivityModeType | null;
   // If the user is in an activity, this will be the hashes of the DestinyActivityModeDefinition being played. Combine with currentActivityHash to give a person a full picture of what they're doing right now.
   currentActivityModeHashes: number[];
   // All Activity Modes that apply to the current activity being played, in enum form.
@@ -5781,6 +5808,8 @@ export interface DestinyActivity {
   loadoutRequirementIndex: number | null;
   // A filtered list of reward mappings with only the currently visible reward items.
   visibleRewards: DestinyActivityRewardMapping[];
+  // Whether or not this activity is currently in the "featured" carousel of the Portal
+  isFocusedActivity: boolean;
 }
 
 export interface DestinyActivityRewardMapping {
@@ -5817,6 +5846,27 @@ export interface DestinyActivityInteractableDefinition {
 export interface DestinyActivityInteractableEntryDefinition {
   // The activity that will trigger when you interact with this interactable.
   activityHash: number;
+}
+
+export interface DestinyActivityDifficultyTierCollectionComponent {
+  difficultyTierCollectionHash: number;
+  difficultyTiers: DestinyActivityDifficultyTierComponent[];
+}
+
+export interface DestinyActivityDifficultyTierComponent {
+  difficultyTierIndex: number;
+  fixedActivitySkulls: DestinyActivitySkullComponent[];
+}
+
+export interface DestinyActivitySkullComponent {
+  hash: number;
+  skullIdentifierHash: number;
+  isEnabled: boolean;
+}
+
+export interface DestinyActivitySelectableSkullCollectionComponent {
+  selectableSkullCollectionHash: number;
+  selectableSkulls: DestinyActivitySkullComponent[];
 }
 
 // Items can have objectives and progression. When you request this block, you will obtain information about any Objectives and progression tied to this item.
@@ -5892,7 +5942,7 @@ export interface DestinyItemInstanceComponent {
   // If you cannot equip the item, this is a flags enum that enumerates all of the reasons why you couldn't equip the item. You may need to refine your UI further by using unlockHashesRequiredToEquip and equipRequiredLevel.
   cannotEquipReason: EquipFailureReason;
   // If populated, this item has a breaker type corresponding to the given value. See DestinyBreakerTypeDefinition for more details.
-  breakerType: number | null;
+  breakerType: DestinyBreakerType | null;
   // If populated, this is the hash identifier for the item's breaker type. See DestinyBreakerTypeDefinition for more details.
   breakerTypeHash: number | null;
   // IF populated, this item supports Energy mechanics (i.e. Armor 2.0), and these are the current details of its energy type and available capacity to spend energy points.
@@ -6734,7 +6784,7 @@ export interface DestinyHistoricalStatsDefinition {
   // Optional URI to an icon for the statistic
   iconImage: string;
   // Optional icon for the statistic
-  mergeMethod: number | null;
+  mergeMethod: DestinyStatsMergeMethod | null;
   // Localized Unit Name for the stat.
   unitLabel: string;
   // Weight assigned to this stat indicating its relative impressiveness.
@@ -6931,7 +6981,7 @@ export interface DestinyPublicMilestoneActivity {
   // The hash identifier of the most specific Activity Mode under which this activity is played. This is useful for situations where the activity in question is - for instance - a PVP map, but it's not clear what mode the PVP map is being played under. If it's a playlist, this will be less specific: but hopefully useful in some way.
   activityModeHash: number | null;
   // The enumeration equivalent of the most specific Activity Mode under which this activity is played.
-  activityModeType: number | null;
+  activityModeType: DestinyActivityModeType | null;
 }
 
 // Represents a variant of an activity that's relevant to a milestone.
@@ -6941,7 +6991,7 @@ export interface DestinyPublicMilestoneActivityVariant {
   // The hash identifier of the most specific Activity Mode under which this activity is played. This is useful for situations where the activity in question is - for instance - a PVP map, but it's not clear what mode the PVP map is being played under. If it's a playlist, this will be less specific: but hopefully useful in some way.
   activityModeHash: number | null;
   // The enumeration equivalent of the most specific Activity Mode under which this activity is played.
-  activityModeType: number | null;
+  activityModeType: DestinyActivityModeType | null;
 }
 
 // A Milestone can have many Challenges. Challenges are just extra Objectives that provide a fun way to mix-up play and provide extra rewards.
@@ -7030,6 +7080,79 @@ export interface DestinyPublicActivityStatus {
   // Why "mock", you ask? Because these are the rewards as they are represented in the tooltip of the Activity.
   // These are often pointers to fake items that look good in a tooltip, but represent an abstract concept of what you will get for a reward rather than the specific items you may obtain.
   rewardTooltipItems: DestinyItemQuantity[];
+}
+
+export interface DestinyGlobalConstantsDefinition {
+  // Assorted constants for Pathfinder objectives
+  pathfinderConstants: DestinyPathfinderConstantsDefinition;
+  collectionsRootNodeHash: number;
+  collectionBadgesRootNodeHash: number;
+  activeTriumphsRootNodeHash: number;
+  activeSealsRootNodeHash: number;
+  legacyTriumphsRootNodeHash: number;
+  legacySealsRootNodeHash: number;
+  medalsRootNodeHash: number;
+  exoticCatalystsRootNodeHash: number;
+  loreRootNodeHash: number;
+  metricsRootNodeHash: number;
+  craftingRootNodeHash: number;
+  guardianRanksRootNodeHash: number;
+  seasonalHubEventCardHash: number;
+  destinyRewardPassRankSealImages: DestinyRewardPassRankSealImages;
+  destinySeasonalHubRankIconImages: DestinySeasonalHubRankIconImages;
+  armorArchetypePlugSetHash: number;
+  featuredItemsListHash: number;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyPathfinderConstantsDefinition {
+  // Pathfinder root node for The Pale Heart
+  thePaleHeartPathfinderRootNodeHash: number;
+  // Root presentation nodes for all currently valid Pathfinder boards
+  allPathfinderRootNodeHashes: number[];
+  // The current shape of Pathfinder boards, where a Pathfinder board is stored as as flat list of Records. The key of this dictionary is the index at which a tier starts, and the value is the total number of objectives in the tier.
+  pathfinderTreeTiers: Record<string, number>;
+  // The topology of the Pathfinder board. The key is the index of the Record in the Pathfinder board, and the value is a list of the indices of Records that are connected to the Key Record. Using this topology, clients can ascertain if a Record can be unlocked, by checking if the objective of any connected Record has been completed and/or claimed.
+  pathfinderTopology: Record<string, number[]>;
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
+}
+
+export interface DestinyRewardPassRankSealImages {
+  rewardPassRankSealImagePath: string;
+  rewardPassRankSealPremiumImagePath: string;
+  rewardPassRankSealPrestigeImagePath: string;
+  rewardPassRankSealPremiumPrestigeImagePath: string;
+}
+
+export interface DestinySeasonalHubRankIconImages {
+  seasonalHubRankIconUnearned: string;
+  seasonalHubRankIconEarning: string;
+  seasonalHubRankIconActive: string;
+}
+
+// Lists of items that can be used for a variety of purposes, including featuring them as new gear
+export interface DestinyItemFilterDefinition {
+  // The items in this set
+  allowedItems: number[];
+  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
+  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
+  hash: number;
+  // The index of the entity as it was found in the investment tables.
+  index: number;
+  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
+  redacted: boolean;
 }
 
 export interface DestinyLoadoutConstantsDefinition {
@@ -7246,8 +7369,14 @@ export interface DestinyInventoryItemConstantsDefinition {
   craftedBackgroundPath: string;
   // Teal flag for featured item watermarks
   featuredItemFlagPath: string;
-  // Gold masterwork glow
+  // Gold masterwork glow for non-Exotic items
   masterworkOverlayPath: string;
+  // Gold masterwork glow for Exotic items
+  masterworkExoticOverlayPath: string;
+  // Gold masterwork glow for non-Exotic Items, with a gold border
+  masterworkBorderedOverlayPath: string;
+  // Gold masterwork glow for Exotic items, with a gold border
+  masterworkExoticBorderedOverlayPath: string;
   // Crafted weapon overlay path
   craftedOverlayPath: string;
   // Enhanced item overlay
@@ -7260,19 +7389,10 @@ export interface DestinyInventoryItemConstantsDefinition {
   holofoil900AnimatedBackgroundOverlayPath: string;
   // Layer between item and color background to denote universal ornament status
   universalOrnamentBackgroundOverlayPath: string;
-  // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
-  // When entities refer to each other in Destiny content, it is this hash that they are referring to.
-  hash: number;
-  // The index of the entity as it was found in the investment tables.
-  index: number;
-  // If this is true, then there is an entity with this identifier/type combination, but BNet is not yet allowed to show it. Sorry!
-  redacted: boolean;
-}
-
-// Lists of items that can be used for a variety of purposes, including featuring them as new gear
-export interface DestinyItemFilterDefinition {
-  // The items in this set
-  allowedItems: number[];
+  // Layer between a legendary item and its color background to denote universal ornament status
+  universalOrnamentLegendaryBackgroundOverlayPath: string;
+  // Layer between an exotic item and its color background to denote universal ornament status
+  universalOrnamentExoticBackgroundOverlayPath: string;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
@@ -7422,7 +7542,7 @@ export interface PartnerOfferSkuHistoryResponse {
 export interface PartnerOfferHistoryResponse {
   PartnerOfferKey: string;
   MembershipId: string | null;
-  MembershipType: number | null;
+  MembershipType: BungieMembershipType | null;
   LocalizedName: string;
   LocalizedDescription: string;
   IsConsumable: boolean;
@@ -7439,7 +7559,7 @@ export interface TwitchDropHistoryResponse {
   Title: string;
   Description: string;
   CreatedAt: string | null;
-  ClaimState: number | null;
+  ClaimState: DropStateEnum | null;
 }
 
 export interface BungieRewardDisplay {
@@ -8390,7 +8510,7 @@ export interface PlatformFriend {
   platformDisplayName: string;
   friendPlatform: PlatformFriendType;
   destinyMembershipId: string | null;
-  destinyMembershipType: number | null;
+  destinyMembershipType: BungieMembershipType | null;
   bungieNetMembershipId: string | null;
   bungieGlobalDisplayName: string;
   bungieGlobalDisplayNameCode: number | null;
@@ -8449,6 +8569,7 @@ export interface Destiny2CoreSettings {
   exoticCatalystsRootNodeHash: number;
   loreRootNodeHash: number;
   craftingRootNodeHash: number;
+  globalConstantsHash: number;
   loadoutConstantsHash: number;
   guardianRankConstantsHash: number;
   fireteamFinderConstantsHash: number;
@@ -8467,6 +8588,7 @@ export interface Destiny2CoreSettings {
   ammoTypePrimaryIcon: string;
   currentSeasonalArtifactHash: number;
   currentSeasonHash: number | null;
+  currentSeasonPassHash: number | null;
   seasonalChallengesPresentationNodeHash: number | null;
   futureSeasonHashes: number[];
   pastSeasonHashes: number[];
