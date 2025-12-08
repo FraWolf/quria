@@ -771,6 +771,7 @@ export enum DestinyActivityModeType {
   IronBannerRift = 90,
   IronBannerZoneControl = 91,
   Relic = 92,
+  LawlessFrontier = 93,
 }
 
 // Activity Modes are grouped into a few possible broad categories.
@@ -2625,6 +2626,14 @@ export enum PlatformErrorCodes {
   ErrorEgsJwksMissing = 4007,
   ErrorEgsJwtMalformedHeader = 4008,
   ErrorEgsJwtMalformedPayload = 4009,
+  MarathonInternalError = 5000,
+  MarathonBabelConnectionTimeout = 5001,
+  MarathonServiceFailure = 5002,
+  MarathonInvalidRequest = 5003,
+  MarathonUnexpectedError = 5004,
+  MarathonAccountNotFound = 5005,
+  MarathonThrottledByGameServer = 5006,
+  MarathonErrorDeserializationFailure = 5007,
 }
 
 export enum DropStateEnum {

@@ -4758,6 +4758,7 @@ export interface DestinyEventCardDefinition {
   ticketVendorCategoryHash: number;
   endTime: string;
   rewardProgressionHash: number | null;
+  rewardProgressionHashList: number[];
   weeklyChallengesPresentationNodeHash: number | null;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
@@ -5276,6 +5277,8 @@ export interface DestinyCharacterProgressionComponent {
   checklists: Record<string, Record<string, boolean>>;
   // Data related to your progress on the current season's artifact that can vary per character.
   seasonalArtifact: DestinyArtifactCharacterScoped;
+  // Unclaimed rewards earned by completing Orders.
+  unclaimedOrderRewards: Record<string, number>;
 }
 
 // Mostly for historical purposes, we segregate Faction progressions from other progressions. This is just a DestinyProgression with a shortcut for finding the DestinyFactionDefinition of the faction related to the progression.
@@ -5810,6 +5813,10 @@ export interface DestinyActivity {
   visibleRewards: DestinyActivityRewardMapping[];
   // Whether or not this activity is currently in the "featured" carousel of the Portal
   isFocusedActivity: boolean;
+  // Indexes of failure if this activity is inaccessible as a fireteam leader
+  leaderRequirementFailureIndices: number[];
+  // Indexes of failure if this activity is inaccessible as a fireteam member
+  fireteamRequirementFailureIndices: number[];
 }
 
 export interface DestinyActivityRewardMapping {
@@ -7102,6 +7109,9 @@ export interface DestinyGlobalConstantsDefinition {
   destinySeasonalHubRankIconImages: DestinySeasonalHubRankIconImages;
   armorArchetypePlugSetHash: number;
   featuredItemsListHash: number;
+  portalActivityGraphRootNodesWithIcons: Record<string, string>;
+  orderRewardsUnlockValueHashesToRewardItemHashes: Record<string, number>;
+  questItemTraitToFeaturedQuestImagePath: Record<string, string>;
   // The unique identifier for this entity. Guaranteed to be unique for the type of entity, but not globally.
   // When entities refer to each other in Destiny content, it is this hash that they are referring to.
   hash: number;
